@@ -1,0 +1,36 @@
+@import _variables.pcss;
+@import _medias.pcss;
+@import _mixins.pcss;
+@import _utils.pcss;
+@import _header.pcss;
+@import _navbar.pcss;
+@import _footer.pcss;
+@import _list.pcss;
+@import _post.pcss;
+
+
+html {
+    font-size: responsive;
+}
+
+body {
+    padding: 0 0 var(--footer-height) 0;
+    /*overflow-x: hidden;*/
+    box-sizing: border-box;
+    /*lost-utility: edit;*/
+    @mixin body-2;
+}
+
+.subscribe-info {
+    color: var(--light-background-text) var(--primary-light-color);
+}
+
+.main-container {
+    position: relative;
+    color: var(--light-background-text);
+    background-color: var(--white-color);
+    lost-utility: clearfix;
+    @mixin shadow-2dp;
+}
+
+@import font-awesome;

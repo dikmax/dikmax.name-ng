@@ -1,0 +1,9 @@
+{
+    "use": [
+        "precss",
+        "autoprefixer"
+    ],
+    "autoprefixer": {
+        "browsers": "> 5%"
+    }
+}

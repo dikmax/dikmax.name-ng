@@ -1,0 +1,28 @@
+.list-post {
+    lost-center: var(--body-width) var(--body-padding) flex;
+    lost-utility: clearfix;
+    background-size: cover;
+
+    margin: 75px *;
+
+    @nest &:first-child {
+        margin-top: 0;
+    }
+
+    @nest & .cover img {
+        size: 100% auto;
+    }
+
+
+    @nest & .read-more {
+        width: 100%;
+        text-align: right;
+    }
+}
+
+.pager {
+    lost-center: var(--body-width) var(--body-padding) flex;
+    display: flex;
+    justify-content: space-between;
+    margin: var(--body-padding) *;
+}

@@ -1,0 +1,70 @@
+
+.main-page-header {
+    /*@mixin cover-background;*/
+    background-size: cover;
+    background-position: center;
+    background-color: color(var(--primary-color) a(.9));
+
+    background-image: url(../images/bg.jpg);
+    padding-top: var(--navbar-height);
+
+    lost-utility: clearfix;
+}
+
+.header {
+    @mixin cover-background;
+    background-attachment: fixed;
+    size: 100vw 100vh;
+    position: relative;
+    transform: translateZ(0);
+
+    @nest & .title-block {
+        /* TODO */
+        position: absolute * * 0 *;
+        transform: translateZ(0);
+
+        @media (--sm-screen) {
+            padding: 0 0 57px 0;
+            width: var(--body-width);
+            left: calc(50% - var(--body-width) / 2);
+        }
+    }
+
+    @nest & .title {
+        @mixin display-3;
+    }
+
+    @nest & .date {
+        font-style: italic;
+    }
+
+    @nest & .tags {
+        display: none;
+        position: fixed 100px 0 * *;
+
+        @media (--sm-screen) {
+            display: block;
+        }
+
+        @nest & a {
+            display: block;
+            float: right;
+            clear: right;
+            lost-utility: clearfix;
+            color: var(--dark-background-text);
+            font-size: 80%;
+            text-decoration: none;
+            font-style: italic;
+            background-color: var(--primary-color);
+            padding: 4px 8px 4px 12px;
+            margin: 4px *;
+
+            @mixin shadow-2dp;
+
+            @nest &:before {
+                content: '#';
+                display: inline;
+            }
+        }
+    }
+}
