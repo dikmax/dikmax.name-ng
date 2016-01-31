@@ -65,9 +65,23 @@
 }
 
 .sidebar-panel {
-    position: absolute 0 * 0 0;
-    width: 300px;
+    position: absolute 0 * 0 -var(--sidebar-width);
+    width: var(--sidebar-width);
     background: var(--white-color);
+    transition: left 0.3s;
+
+    @nest & a {
+        text-decoration: none;
+        color: var(--light-background-text);
+
+        @nest &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.sidebar.active .sidebar-panel {
+    left: 0;
 }
 
 .sidebar-brand {
@@ -81,5 +95,11 @@
 
 
 .sidebar-links {
+    padding: var(--body-padding) *;
 
+    @nest & a {
+        display: block;
+        padding: var(--body-padding);
+        font-weight: bold;
+    }
 }
