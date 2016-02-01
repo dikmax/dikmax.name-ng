@@ -111,3 +111,5 @@ cabal.sandbox.config
 *.hp
 .stack-work/
 
+
+/_build

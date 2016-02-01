@@ -1,6 +1,5 @@
 module Lib
-    ( someFunc
+    ( module Binary
     ) where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+import           Binary

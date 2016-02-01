@@ -13,18 +13,19 @@ build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
 
-library
-  hs-source-dirs:      src
-  exposed-modules:     Lib
-  build-depends:       base >= 4.7 && < 5
-  default-language:    Haskell2010
-
 executable dikmax.name
   hs-source-dirs:      src
   main-is:             Main.hs
+  other-modules:       Lib
+                     , Binary
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
-                     , dikmax-name
+                     , binary >= 0.7 && < 0.9
+                     , bytestring >= 0.10 && < 0.11
+                     , containers >= 0.5 && < 0.6
+                     , directory >= 1.2 && < 1.3
+                     , shake >= 0.15 && < 0.16
+                     , pandoc >= 1.15 && < 1.16
   default-language:    Haskell2010
 
 source-repository head
