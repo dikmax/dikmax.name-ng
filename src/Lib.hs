@@ -1,10 +1,12 @@
 {-# LANGUAGE FlexibleContexts #-}
 module Lib
     ( module Binary
+    , repeated
     , splitAll
     ) where
 
 import           Binary
+import           Data.List
 import           Data.Maybe
 import           Text.Regex.Posix
 
@@ -18,3 +20,18 @@ splitAll pattern = filter (not . null) . splitAll'
         Just (o, l) ->
             let (before, tmp) = splitAt o src
             in before : splitAll' (drop l tmp)
+
+-- From Unique package
+-- TODO more optimal version
+
+sg :: Ord a => [a] -> [[a]]
+sg = group . sort
+
+filterByLength :: Ord a => (Int -> Bool) -> [a] -> [[a]]
+filterByLength p = filter (p . length) . sg
+
+repeated :: Ord a => [a] -> [a]
+repeated = repeatedBy (>1)
+
+repeatedBy :: Ord a => (Int -> Bool) -> [a] -> [a]
+repeatedBy p = map head . filterByLength p

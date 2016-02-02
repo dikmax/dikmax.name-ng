@@ -1,5 +1,6 @@
 module Main where
 
+import           Control.Exception
 import qualified Data.Binary                as B
 import qualified Data.ByteString.Lazy       as LBS
 import           Data.List
@@ -13,6 +14,7 @@ import           System.Directory           (createDirectoryIfMissing)
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
 import           Text.Pandoc.Shared
+import           Text.Regex.Posix
 
 buildDir = "_build"
 pandocBuildDir = buildDir </> "pandoc"
@@ -49,18 +51,23 @@ build =
         need ["blogposts"]
 
 blogPosts :: Rules ()
-blogPosts =
+blogPosts = do
+    posts <- newCache $ \file -> liftIO $ decodePandocCache file
+
     phony "blogposts" $ do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
         let cacheFiles = map (\file -> pandocBuildDir </> dropDirectory1 file) postFiles
         need cacheFiles
-        postCacheContent <- mapM (\file -> liftIO $ decodePandocCache file) cacheFiles
+        postCacheContent <- mapM posts cacheFiles
         let cache = sortBy sortCache postCacheContent
-        putNormal $ show $ map (\(Pandoc m _) -> unMeta m) cache
-        return ()
+        let postsList = map idFromPost cache
+        putNormal $ show postsList
+        -- There should be no posts with same ids
+        -- TODO show error
+        assert (not $ null $ repeated postsList) $ return ()
     where
-        decodePandocCache :: FilePath -> IO (Pandoc)
-        decodePandocCache file = B.decodeFile file
+        decodePandocCache :: FilePath -> IO Pandoc
+        decodePandocCache = B.decodeFile
 
 -- Building posts cache
 buildPostsCache :: Rules ()
@@ -72,7 +79,9 @@ buildPostsCache =
         file <- liftIO $ readFile src
         -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown def file
-            updatedMeta = Meta $ M.alter (alterDate src) "date" $ unMeta meta
+            updatedMeta = Meta $ M.alter (alterDate src) "date"
+                               $ M.insert "id" (srcToId src)
+                               $ unMeta meta
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out (Pandoc updatedMeta content)
     where
@@ -80,6 +89,14 @@ buildPostsCache =
         alterDate _ r@(Just (MetaString _)) = r
         alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
         alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
+
+        pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
+
+        srcToId :: FilePath -> MetaValue
+        srcToId filePath =
+            case filePath =~ pat :: (String, String, String, [String]) of
+                (_, _, _, [v]) -> MetaString v
+                otherwise         -> error $ "Can't extract id from " ++ filePath
 
         dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
 
@@ -92,3 +109,9 @@ sortCache (Pandoc meta1 _) (Pandoc meta2 _) =
         cmp Nothing (Just (MetaString _)) = GT
         cmp (Just (MetaString str1)) (Just (MetaString str2)) = compare str2 str1
         cmp _ _ = EQ
+
+idFromPost :: Pandoc -> String
+idFromPost (Pandoc meta _) = maybe (error "Post have no id") getId $ lookupMeta "id" meta
+    where
+        getId (MetaString s) = s
+        getId s = error $ "Post id field have wrong value: " ++ show s

@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
 module Binary where
 
 import           Data.Binary (Binary (..))
