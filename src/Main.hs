@@ -12,6 +12,7 @@ import           Lib
 import           System.Directory           (createDirectoryIfMissing)
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
+import           Text.Pandoc.Shared
 
 buildDir = "_build"
 pandocBuildDir = buildDir </> "pandoc"
@@ -20,9 +21,15 @@ shakeBuildDir = buildDir </> "shake"
 siteDir = buildDir </> "site"
 sitePostsDir = siteDir </> "post"
 
+options :: ShakeOptions
+options = shakeOptions
+    { shakeFiles = shakeBuildDir
+    , shakeThreads = 0
+    , shakeTimings = True
+    }
 
 main :: IO ()
-main = shakeArgs shakeOptions{shakeFiles=shakeBuildDir} $ do
+main = shakeArgs options $ do
     want ["build"]
     clean
     build
@@ -63,21 +70,25 @@ buildPostsCache =
         need [src]
         putNormal $ "Reading post " ++ src
         file <- liftIO $ readFile src
-        -- Adding "file" key to metadata
+        -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown def file
-            updatedMeta = Meta $ M.insert "file" (MetaString src) $ unMeta meta
+            updatedMeta = Meta $ M.alter (alterDate src) "date" $ unMeta meta
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out (Pandoc updatedMeta content)
-        -- TODO use M.alter to add date if it's not present in metadata
+    where
+        alterDate :: FilePath -> Maybe MetaValue -> Maybe MetaValue
+        alterDate _ r@(Just (MetaString _)) = r
+        alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
+        alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
 
--- TODO
+        dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
+
 sortCache :: Pandoc -> Pandoc -> Ordering
 sortCache (Pandoc meta1 _) (Pandoc meta2 _) =
-    -- TODO use docDate
     cmp (lookupMeta "date" meta1) (lookupMeta "date" meta2)
     where
         cmp :: Maybe MetaValue -> Maybe MetaValue -> Ordering
-        cmp (Just (MetaString _)) Nothing = GT
-        cmp Nothing (Just (MetaString _)) = LT
-        cmp (Just (MetaString str1)) (Just (MetaString str2)) = compare str1 str2
+        cmp (Just (MetaString _)) Nothing = LT
+        cmp Nothing (Just (MetaString _)) = GT
+        cmp (Just (MetaString str1)) (Just (MetaString str2)) = compare str2 str1
         cmp _ _ = EQ
