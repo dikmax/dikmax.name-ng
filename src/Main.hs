@@ -3,6 +3,7 @@ module Main where
 import           Control.Exception
 import qualified Data.Binary                as B
 import qualified Data.ByteString.Lazy       as LBS
+import           Data.Hashable
 import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Development.Shake
@@ -15,6 +16,12 @@ import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
+
+type Posts = M.Map String Pandoc
+
+data PostsId = PostsId deriving (Eq)
+instance Hashable PostsId where
+    hashWithSalt _ _ = 0
 
 buildDir = "_build"
 pandocBuildDir = buildDir </> "pandoc"
@@ -52,22 +59,41 @@ build =
 
 blogPosts :: Rules ()
 blogPosts = do
-    posts <- newCache $ \file -> liftIO $ decodePandocCache file
+    posts <- newCache $ \file -> do
+        need [file]
+        liftIO $ decodePandocCache file
 
-    phony "blogposts" $ do
+    postsList <- newCache $ \_ -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
         let cacheFiles = map (\file -> pandocBuildDir </> dropDirectory1 file) postFiles
-        need cacheFiles
         postCacheContent <- mapM posts cacheFiles
         let cache = sortBy sortCache postCacheContent
-        let postsList = map idFromPost cache
-        putNormal $ show postsList
-        -- There should be no posts with same ids
-        -- TODO show error
-        assert (not $ null $ repeated postsList) $ return ()
+        return $ buildList cache
+
+    phony "blogposts" $ do
+        ps <- postsList PostsId
+        need $ map (\i -> sitePostsDir </> i </> "index.html") $ M.keys ps
+        -- putNormal $ show $ M.keys ps
+
+    sitePostsDir </> "*/index.html" %> \out -> do
+        ps <- postsList PostsId
+        let post = ps M.! (idFromDestFilePath out)
+        putNormal $ "Writing page " ++ out
+        liftIO $ writeFile out $ writeHtmlString def post
+
     where
         decodePandocCache :: FilePath -> IO Pandoc
         decodePandocCache = B.decodeFile
+
+        buildList :: [Pandoc] -> Posts
+        buildList [] = M.empty
+        buildList [p] = M.singleton (idFromPost p) p
+        buildList (p:ps) =
+            let key = idFromPost p;
+                listRest = buildList ps in
+            case key `M.member` listRest of
+                True -> error $ "Duplicate post key " ++ key
+                False -> M.insert key p listRest
 
 -- Building posts cache
 buildPostsCache :: Rules ()
@@ -80,7 +106,7 @@ buildPostsCache =
         -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown def file
             updatedMeta = Meta $ M.alter (alterDate src) "date"
-                               $ M.insert "id" (srcToId src)
+                               $ M.insert "id" (MetaString $ idFromSrcFilePath src)
                                $ unMeta meta
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out (Pandoc updatedMeta content)
@@ -89,14 +115,6 @@ buildPostsCache =
         alterDate _ r@(Just (MetaString _)) = r
         alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
         alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
-
-        pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
-
-        srcToId :: FilePath -> MetaValue
-        srcToId filePath =
-            case filePath =~ pat :: (String, String, String, [String]) of
-                (_, _, _, [v]) -> MetaString v
-                otherwise         -> error $ "Can't extract id from " ++ filePath
 
         dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
 
@@ -115,3 +133,19 @@ idFromPost (Pandoc meta _) = maybe (error "Post have no id") getId $ lookupMeta 
     where
         getId (MetaString s) = s
         getId s = error $ "Post id field have wrong value: " ++ show s
+
+idFromSrcFilePath :: FilePath -> String
+idFromSrcFilePath filePath =
+    case filePath =~ pat :: (String, String, String, [String]) of
+        (_, _, _, [v]) -> v
+        otherwise      -> error $ "Can't extract id from " ++ filePath
+    where
+        pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
+
+idFromDestFilePath :: FilePath -> String
+idFromDestFilePath filePath =
+    case filePath =~ pat :: (String, String, String, [String]) of
+        (_, _, _, [v]) -> v
+        otherwise      -> error $ "Can't extract id from " ++ filePath
+    where
+        pat = "/([^/]*)/index.html$"
