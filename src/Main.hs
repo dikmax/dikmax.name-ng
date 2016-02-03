@@ -19,9 +19,13 @@ import           Text.Regex.Posix
 
 type Posts = M.Map String Pandoc
 
-data PostsId = PostsId deriving (Eq)
-instance Hashable PostsId where
-    hashWithSalt _ _ = 0
+data PostsCache = PostsCacheById | PostsCacheByDate deriving (Eq)
+instance Hashable PostsCache where
+    hashWithSalt _ PostsCacheById = 0
+    hashWithSalt _ PostsCacheByDate = 1
+
+pageSize :: Int
+pageSize = 5
 
 buildDir = "_build"
 pandocBuildDir = buildDir </> "pandoc"
@@ -29,6 +33,8 @@ shakeBuildDir = buildDir </> "shake"
 
 siteDir = buildDir </> "site"
 sitePostsDir = siteDir </> "post"
+sitePagesDir = siteDir </> "page"
+indexHtml = "index.html"
 
 options :: ShakeOptions
 options = shakeOptions
@@ -71,15 +77,32 @@ blogPosts = do
         return $ buildList cache
 
     phony "blogposts" $ do
-        ps <- postsList PostsId
-        need $ map (\i -> sitePostsDir </> i </> "index.html") $ M.keys ps
+        ps <- postsList PostsCacheById
+        let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
+        let (d,m) = (M.size ps) `divMod` pageSize
+        let listFilePaths = [sitePagesDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 1 else 0)]]
+        need $ postsFilePaths ++ [siteDir </> indexHtml] ++ listFilePaths
         -- putNormal $ show $ M.keys ps
 
-    sitePostsDir </> "*/index.html" %> \out -> do
-        ps <- postsList PostsId
+    sitePostsDir </> "*" </> indexHtml %> \out -> do
+        ps <- postsList PostsCacheById
         let post = ps M.! (idFromDestFilePath out)
         putNormal $ "Writing page " ++ out
         liftIO $ writeFile out $ writeHtmlString def post
+
+    sitePagesDir </> "*" </> indexHtml %> \out -> do
+        ps <- postsList PostsCacheByDate
+        let page = (read $ idFromDestFilePath out) :: Int
+        let posts = [snd $ M.elemAt i ps | i <- [(page - 1) * pageSize .. min (page * pageSize - 1) (M.size ps - 1)]]
+        putNormal $ "Writing page " ++ out
+        liftIO $ writeFile out $ show posts
+
+    siteDir </> indexHtml %> \out -> do
+        ps <- postsList PostsCacheByDate
+        let page = 1
+        let posts = [snd $ M.elemAt i ps | i <- [(page - 1) * pageSize .. min (page * pageSize - 1) (M.size ps - 1)]]
+        putNormal $ "Writing page " ++ out
+        liftIO $ writeFile out $ show posts
 
     where
         decodePandocCache :: FilePath -> IO Pandoc
