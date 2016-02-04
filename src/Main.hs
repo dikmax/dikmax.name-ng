@@ -11,6 +11,7 @@ import           Development.Shake.Command
 import           Development.Shake.FilePath
 import           Development.Shake.Util
 import           Lib
+import           LucidWriter
 import           System.Directory           (createDirectoryIfMissing)
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
@@ -88,7 +89,7 @@ blogPosts = do
         ps <- postsList PostsCacheById
         let post = ps M.! (idFromDestFilePath out)
         putNormal $ "Writing page " ++ out
-        liftIO $ writeFile out $ writeHtmlString def post
+        liftIO $ writeFile out $ writeLucidString def post
 
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
