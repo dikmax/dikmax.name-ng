@@ -305,21 +305,20 @@ writeInline (Image inline target) = do
         replace "https://www.youtube.com/watch?v=" "" url
     -- http://dikmax.name/images/travel/2014-06-eurotrip/rome-santa-maria-maggiore-1.jpg -> rome-santa-maria-maggiore-1
     extractId = init . fst . breakOnEnd "." . snd . breakOnEnd "/"
-{-
-writeInline (Note block) = do
+
+writeInline (Note block) = do   -- TODO there should be a link to footer
   blocks <- concatBlocks block
   writerState <- get
   put writerState {
     notesList = notesList writerState ++ [blocks]
   }
-  let noteId = length (notesList writerState) + 1
-  return
-    [ Element "sup"
-      [ ("id", "note-" `append` idPrefix (writerOptions writerState) `append` pack (show noteId))
-      , ("class", "note-link")
-      ]
-      [ TextNode $ pack $ show noteId ]
-    ]
+  let noteId = P.length (notesList writerState) + 1
+  return $ sup_
+    [ id_ $ toStrict $ "note-" `append` idPrefix (writerOptions writerState) `append` pack (show noteId)
+    , class_ "note-link"
+    ] $ toHtml $ show noteId
+
+{-
 writeInline (Span attr inline) = do
   inlines <- concatInlines inline
   return [ Element "span" (writeAttr attr) inlines ]
