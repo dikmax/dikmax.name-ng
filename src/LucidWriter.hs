@@ -114,15 +114,11 @@ writeBlock (Para inline) = do
         [Image _ _] -> inlines
         _ -> p_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] inlines
 
-{-
-writeBlock (CodeBlock (identifier, classes, others) code) = return
-  [ Element "pre" mapAttrs
-    [ Element "code" mapAttrs
-      [ TextNode $ pack code ]
-    ]
-  ]
+writeBlock (CodeBlock (identifier, classes, others) code) =
+    return $ pre_ mapAttrs $ code_ mapAttrs $ toHtml code
   where
     mapAttrs = writeAttr (identifier, "sourceCode" : classes, others)
+{-
 writeBlock (RawBlock "html" str) = do
   modify (\s -> s { rawData = rawData s `append` pack str })
   return []
@@ -266,14 +262,16 @@ writeInline (RawInline "html" str) = do
   modify (\s -> s {rawInline = rawInline s `append` pack str})
   return []
 writeInline (RawInline _ _) = return []
+-}
 writeInline (Link inline target) = do
   inlines <- concatInlines inline
   writerState <- get
-  return [
-    Element "a"
-      [("href", linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target) (siteDomain (writerOptions writerState))),
-        ("title", pack $ snd target)] inlines]
--}
+  return $ a_
+    [ href_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState))
+        (pack $ fst target) (siteDomain (writerOptions writerState))
+    , title_ $ toStrict $ pack $ snd target
+    ] inlines
+
 writeInline (Image inline target) = do
     inlines <- concatInlines inline
     writerState <- get
