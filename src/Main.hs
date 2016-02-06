@@ -44,6 +44,12 @@ options = shakeOptions
     , shakeTimings = True
     }
 
+readerOptions :: ReaderOptions
+readerOptions = def
+    { readerSmart = True
+    , readerParseRaw = True
+    }
+
 main :: IO ()
 main = shakeArgs options $ do
     want ["build"]
@@ -128,7 +134,7 @@ buildPostsCache =
         putNormal $ "Reading post " ++ src
         file <- liftIO $ readFile src
         -- Set "date" from fileName if not present + change field type
-        let (Pandoc meta content) = handleError $ readMarkdown def file
+        let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
             updatedMeta = Meta $ M.alter (alterDate src) "date"
                                $ M.insert "id" (MetaString $ idFromSrcFilePath src)
                                $ unMeta meta

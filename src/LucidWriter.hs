@@ -5,6 +5,7 @@ module LucidWriter (writeLucid, writeLucidString) where
 import           Control.Monad.State
 import           Data.Data
 import           Data.Default
+import qualified Data.Text           as T
 import           Data.Text.Lazy      hiding (map)
 import           Lucid
 import           Lucid.Base
@@ -31,8 +32,6 @@ instance Default LucidWriterOptions where
 
 data WriterStateData = WriterStateData
     { notesList     :: [Html ()]
-    , rawData       :: Text
-    , rawInline     :: Text
     , writerOptions :: LucidWriterOptions
     , countBlocks   :: Int
     }
@@ -40,8 +39,6 @@ data WriterStateData = WriterStateData
 emptyState :: WriterStateData
 emptyState = WriterStateData
     { notesList     = []
-    , rawData       = ""
-    , rawInline     = ""
     , writerOptions = def
     , countBlocks   = 0
     }
@@ -54,7 +51,7 @@ writeLucidString options pandoc = unpack $ renderText $ writeLucid options pando
 writeLucid :: LucidWriterOptions -> Pandoc -> Html ()
 writeLucid options pandoc
     | debugOutput options =
-        pre_ (toHtml $ writeNative def pandoc)
+        pre_ [] (toHtml $ writeNative def pandoc)
     | otherwise = evalState (writeLucid' pandoc) emptyState { writerOptions = updateOptions }
     where
         updateOptions = options
@@ -64,48 +61,21 @@ writeLucid options pandoc
 writeLucid' :: Pandoc -> WriterState (Html ())
 writeLucid' (Pandoc _ blocks) = do
     mainBlocks <- concatBlocks blocks
-    return $ mainBlocks
-    {-
-    mainBlocks <- concatBlocks blocks
-    footerBlocks <- getFooter
-    return $ mainBlocks ++ footerBlocks
-    -}
-
-parseRawString :: Text -> Html ()
-parseRawString = toHtmlRaw
-{-
-  | raw == "" = mempty
-  | otherwise = either (\a -> [TextNode $ pack a]) extractData $ parseHTML "raw" $ encodeUtf8 raw
-  where
-    extractData (HtmlDocument _ _ content) = content
-    extractData (XmlDocument _ _ content) = content
--}
+    footer <- getFooter
+    return $ do
+        mainBlocks
+        footer
 
 concatBlocks :: [Block] -> WriterState (Html ())
 concatBlocks blocks = do
-    result <- mapM concatBlocks' blocks
-    writerState <- get
-    put writerState {rawData = ""}
-    return $ do
-        mconcat result
-        parseRawString $ rawData writerState
-
-concatBlocks' :: Block -> WriterState (Html ())
-concatBlocks' block@(Plain _) = writeBlock block
-concatBlocks' block@(RawBlock _ _) = writeBlock block
-concatBlocks' block = do
-    writerState <- get
-    put writerState {rawData = ""}
-    items <- writeBlock block
-    return $ do
-          parseRawString $ rawData writerState
-          items
+    result <- mapM writeBlock blocks
+    return $ mconcat result
 
 writeBlock :: Block -> WriterState (Html ())
 writeBlock (Plain inline) = do
     inlines <- concatInlines inline
-    -- modify (\s -> s { rawData = rawData s `append` decodeUtf8 (toByteString $ renderHtmlFragment UTF8 inlines) } )
-    return mempty
+    return inlines
+
 writeBlock (Para inline) = do
     s <- get
     put s { countBlocks = countBlocks s + 1 }
@@ -118,151 +88,143 @@ writeBlock (CodeBlock (identifier, classes, others) code) =
     return $ pre_ mapAttrs $ code_ mapAttrs $ toHtml code
   where
     mapAttrs = writeAttr (identifier, "sourceCode" : classes, others)
-{-
+
 writeBlock (RawBlock "html" str) = do
-  modify (\s -> s { rawData = rawData s `append` pack str })
-  return []
-writeBlock (RawBlock _ _) = return []
+  return $ toHtmlRaw str
+writeBlock (RawBlock _ _) = return mempty
+
 writeBlock (BlockQuote blocks) = do
   items <- concatBlocks blocks
-  return [ Element "blockquote" [] items ]
+  return $ blockquote_ items
+
 writeBlock (OrderedList (startNum, numStyle, _) listItems) = do
-  s <- get
-  put s { countBlocks = countBlocks s + 1 }
-  items <- foldM processListItems [] listItems
-  return [ Element "ol"
-    ( [("type", case numStyle of
-        Decimal    -> "1"
-        LowerAlpha -> "a"
-        UpperAlpha -> "A"
-        LowerRoman -> "i"
-        UpperRoman -> "I"
-        _          -> "1"
-      ), ("id", pack $ "p-" ++ show (countBlocks s + 1)) ] ++
-      [ ("start", pack $ show startNum) | startNum /= 1 ]
-    )
-    items ]
+    s <- get
+    put s { countBlocks = countBlocks s + 1 }
+    items <- mapM processListItems listItems
+    return $ ol_ (attributes $ countBlocks s) $ mconcat items
+    where
+        char :: T.Text
+        char = case numStyle of
+            Decimal    -> "1"
+            LowerAlpha -> "a"
+            UpperAlpha -> "A"
+            LowerRoman -> "i"
+            UpperRoman -> "I"
+            _          -> "1"
+        attributes :: Int -> [Attribute]
+        attributes s = [type_ char, id_ $ toStrict $ pack $ "p-" ++ show (s + 1)] ++
+            [ start_ $ toStrict $ pack $ show startNum | startNum /= 1 ]
+
 writeBlock (BulletList listItems) = do
   s <- get
   put s { countBlocks = countBlocks s + 1 }
-  items <- foldM processListItems [] listItems
-  return [ Element "ul" [("id", pack $ "p-" ++ show (countBlocks s + 1))] items ]
-writeBlock (DefinitionList _) = return [TextNode "DefinitionList not implemented"]
+  items <- mapM processListItems listItems
+  return $ ul_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] $ mconcat items
+
 writeBlock (Header 1 _ inline) = do  -- TODO second header parameter
   s <- get
   put s { countBlocks = countBlocks s + 1 }
   inlines <- concatInlines inline
-  return [Element "h2" [("id", pack $ "p-" ++ show (countBlocks s + 1))] inlines]
+  return $ h2_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] inlines
 writeBlock (Header 2 _ inline) = do
   s <- get
   put s { countBlocks = countBlocks s + 1 }
   inlines <- concatInlines inline
-  return [Element "h3" [("id", pack $ "p-" ++ show (countBlocks s + 1))] inlines]
+  return $ h3_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] inlines
 writeBlock (Header 3 _ inline) = do
   s <- get
   put s { countBlocks = countBlocks s + 1 }
   inlines <- concatInlines inline
-  return [Element "h4" [("id", pack $ "p-" ++ show (countBlocks s + 1))] inlines]
+  return $ h4_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] inlines
 writeBlock (Header 4 _ inline) = do
   s <- get
   put s { countBlocks = countBlocks s + 1 }
   inlines <- concatInlines inline
-  return [Element "h5" [("id", pack $ "p-" ++ show (countBlocks s + 1))] inlines]
+  return $ h5_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] inlines
 writeBlock (Header _ _ inline) = do
   s <- get
   put s { countBlocks = countBlocks s + 1 }
   inlines <- concatInlines inline
-  return [Element "h6" [("id", pack $ "p-" ++ show (countBlocks s + 1))] inlines]
-writeBlock HorizontalRule = return [Element "hr" [] []]
-writeBlock (Table {}) = return [TextNode "Table not implemented"]
+  return $ h6_ [id_ $ toStrict $ pack $ "p-" ++ show (countBlocks s + 1)] inlines
+
+writeBlock HorizontalRule = return $ hr_ []
+
 writeBlock (Div attr blocks) = do
   items <- concatBlocks blocks
-  return [Element "div" (writeAttr attr) items]
-writeBlock Null = return []
--}
+  return $ div_ (writeAttr attr) items
+
+writeBlock Null = return mempty
+
 writeBlock b = return $ toHtml (show (toConstr b) ++ " not implemented")
 
-{-
-processListItems :: Html () -> [Block] -> WriterState (Html ())
-processListItems nodes blocks = do
-  items <- concatBlocks blocks
-  return (nodes ++ [Element "li" [] items])
--}
+processListItems :: [Block] -> WriterState (Html ())
+processListItems blocks = do
+    items <- concatBlocks blocks
+    return $ li_ items
+
 writeAttr :: Attr -> [Attribute]
 writeAttr (identifier, classes, others) =
-  [id_ $ toStrict $ pack identifier | identifier /= ""] ++
-  [class_ $ classesString | classesString /= ""] ++
-  map (\(k, v) -> makeAttribute (toStrict $ pack k) (toStrict $ pack v)) others
-  where
-    classesString = toStrict $ intercalate " " $ map pack classes
+    [id_ $ toStrict $ pack identifier | identifier /= ""] ++
+    [class_ $ classesString | classesString /= ""] ++
+    map (\(k, v) -> makeAttribute (toStrict $ pack k) (toStrict $ pack v)) others
+    where
+        classesString = toStrict $ intercalate " " $ map pack classes
 
 concatInlines :: [Inline] -> WriterState (Html ())
 concatInlines inlines = do
-  result <- mapM concatInlines' inlines
-  writerState <- get
-  put writerState {rawInline = ""}
-  return $ do
-      mconcat result
-      parseRawString (rawInline writerState)
-
-concatInlines' :: Inline -> WriterState (Html ())
-concatInlines' inline = do
-  writerState <- get
-  if rawInline writerState == ""
-    then writeInline inline
-    else do
-      {- str <- writeRawInline inline
-      put writerState
-        { rawInline = rawInline writerState `append` str
-        }-}
-      return mempty
+    result <- mapM writeInline inlines
+    return $ mconcat result
 
 writeInline :: Inline -> WriterState (Html ())
 writeInline (Str string) = return $ toHtml string
-{-
+
 writeInline (Emph inline) = do
-  inlines <- concatInlines inline
-  return [Element "em" [] inlines]
+    inlines <- concatInlines inline
+    return $ em_ inlines
+
 writeInline (Strong inline) = do
-  inlines <- concatInlines inline
-  return [Element "strong" [] inlines]
+    inlines <- concatInlines inline
+    return $ strong_ inlines
+
 writeInline (Strikeout inline) = do
-  inlines <- concatInlines inline
-  return [Element "s" [] inlines]
+    inlines <- concatInlines inline
+    return $ term "s" inlines
+
 writeInline (Superscript inline) = do
-  inlines <- concatInlines inline
-  return [Element "sup" [] inlines]
+    inlines <- concatInlines inline
+    return $ sup_ inlines
+
 writeInline (Subscript inline) = do
-  inlines <- concatInlines inline
-  return [Element "sub" [] inlines]
+    inlines <- concatInlines inline
+    return $ sub_ inlines
+
 writeInline (SmallCaps inline) = do
-  inlines <- concatInlines inline
-  return [Element "span" [("style", "font-variant: small-caps;")] inlines]
+    inlines <- concatInlines inline
+    return $ span_ [style_ "font-variant: small-caps;"] inlines
+
 writeInline (Quoted SingleQuote inline) = do
-  inlines <- concatInlines inline
-  return $ [TextNode "'"] ++ inlines ++ [TextNode "'"]
+    inlines <- concatInlines inline
+    return $ do {"'"; inlines; "'"}
+
 writeInline (Quoted DoubleQuote inline) = do
-  inlines <- concatInlines inline
-  return $ [TextNode "«"] ++ inlines ++ [TextNode "»"]
-writeInline (Cite _ _) = return [TextNode "Cite not implemented"]
--}
+    inlines <- concatInlines inline
+    return $ do {"«"; inlines; "»"}
+
 writeInline (Code attr code) = return $ code_ (writeAttr attr) (toHtml code)
+
 writeInline Space = return " "
+
 writeInline LineBreak = return $ br_ []
-{-
-writeInline (Math InlineMath str) = return
-  [ Element "span" [("class", "math")]
-    [ TextNode $ "\\(" `append` pack str `append` "\\)" ]
-  ]
-writeInline (Math DisplayMath str) = return
-  [ Element "span" [("class", "math")]
-    [ TextNode $ "\\[" `append` pack str `append` "\\]" ]
-  ]
-writeInline (RawInline "html" str) = do
-  modify (\s -> s {rawInline = rawInline s `append` pack str})
-  return []
-writeInline (RawInline _ _) = return []
--}
+
+writeInline (Math InlineMath str) = return $ span_ [class_ "math"] $
+    toHtml $ "\\(" `append` pack str `append` "\\)"
+
+writeInline (Math DisplayMath str) = return $ span_ [class_ "math"] $
+    toHtml $ "\\[" `append` pack str `append` "\\]"
+
+writeInline (RawInline "html" str) = return $ toHtmlRaw str
+writeInline (RawInline _ _) = return mempty
+
 writeInline (Link inline target) = do
   inlines <- concatInlines inline
   writerState <- get
@@ -300,137 +262,53 @@ writeInline (Image inline target) = do
                 if (null $ renderText inlines)
                     then p_ [class_ "figure-description"] inlines
                     else mempty
-  where
-    videoId url = takeWhile (/= '&') $ replace "http://www.youtube.com/watch?v=" "" $
-        replace "https://www.youtube.com/watch?v=" "" url
-    -- http://dikmax.name/images/travel/2014-06-eurotrip/rome-santa-maria-maggiore-1.jpg -> rome-santa-maria-maggiore-1
-    extractId = init . fst . breakOnEnd "." . snd . breakOnEnd "/"
+    where
+        videoId url = takeWhile (/= '&') $ replace "http://www.youtube.com/watch?v=" "" $
+            replace "https://www.youtube.com/watch?v=" "" url
+        -- http://dikmax.name/images/travel/2014-06-eurotrip/rome-santa-maria-maggiore-1.jpg -> rome-santa-maria-maggiore-1
+        extractId = init . fst . breakOnEnd "." . snd . breakOnEnd "/"
+
+        fixImageTitle :: String -> String
+        fixImageTitle title
+            | P.take 4 title == "fig:" = P.drop 4 title
+            | otherwise = title
+
 
 writeInline (Note block) = do   -- TODO there should be a link to footer
-  blocks <- concatBlocks block
-  writerState <- get
-  put writerState {
-    notesList = notesList writerState ++ [blocks]
-  }
-  let noteId = P.length (notesList writerState) + 1
-  return $ sup_
-    [ id_ $ toStrict $ "note-" `append` idPrefix (writerOptions writerState) `append` pack (show noteId)
-    , class_ "note-link"
-    ] $ toHtml $ show noteId
+    blocks <- concatBlocks block
+    writerState <- get
+    put writerState {
+        notesList = notesList writerState ++ [blocks]
+    }
+    let noteId = P.length (notesList writerState) + 1
+    return $ sup_
+        [ id_ $ toStrict $ "note-" `append` idPrefix (writerOptions writerState) `append` pack (show noteId)
+        , class_ "note-link"
+        ] $ toHtml $ show noteId
 
-{-
 writeInline (Span attr inline) = do
-  inlines <- concatInlines inline
-  return [ Element "span" (writeAttr attr) inlines ]
--}
+    inlines <- concatInlines inline
+    return $ span_ (writeAttr attr) inlines
+
 writeInline i = return $ toHtml (show (toConstr i) ++ " not implemented")
-{-
-concatRawInlines :: [Inline] -> WriterState Text
-concatRawInlines inlines = do
-  writerState <- get
-  put writerState {rawInline = ""}
-  result <- foldM concatRawInlines' "" inlines
-  put writerState {rawInline = rawInline writerState}
-  return result
-
-concatRawInlines' :: Text -> Inline -> WriterState Text
-concatRawInlines' text inline = do
-  str <- writeRawInline inline
-  return $ text `append` str
-
-writeRawAttr :: Attr -> Text
-writeRawAttr attr =
-  -- TODO value escaping
-  intercalate " " $ map (\(k, v) -> k `append` "=\"" `append` v `append` "\"") $ writeAttr attr
-
-writeRawInline :: Inline -> WriterState Text
-writeRawInline (Str string) = return $ pack string
-writeRawInline (Emph inline) = do
-  inlines <- concatRawInlines inline
-  return ("<em>" `append` inlines `append` "</em>")
-writeRawInline (Strong inline) = do
-  inlines <- concatRawInlines inline
-  return ("<strong>" `append` inlines `append` "</strong>")
-writeRawInline (Strikeout inline) = do
-  inlines <- concatRawInlines inline
-  return ("<s>" `append` inlines `append` "</s>")
-writeRawInline (Superscript inline) = do
-  inlines <- concatRawInlines inline
-  return ("<sup>" `append` inlines `append` "</sup>")
-writeRawInline (Subscript inline) = do
-  inlines <- concatRawInlines inline
-  return ("<sub>" `append` inlines `append` "</sub>")
-writeRawInline (SmallCaps inline) = do
-  inlines <- concatRawInlines inline
-  return ("<span style=\"font-variant: small-caps;\">" `append` inlines `append` "</span>")
-writeRawInline (Quoted SingleQuote inline) = do
-  inlines <- concatRawInlines inline
-  return ("'" `append` inlines `append` "'")
-writeRawInline (Quoted DoubleQuote inline) = do
-  inlines <- concatRawInlines inline
-  return ("«" `append` inlines `append` "»")
-writeRawInline (Cite _ _) = return "Cite not implemented"
-writeRawInline (Code attr code) =
-  return ("<code " `append` writeRawAttr attr `append` ">" `append` pack code `append` "</code>" )
-writeRawInline Space = return " "
-writeRawInline LineBreak = return "<br />"
-writeRawInline (Math _ _) = return "Math not implemented"
-writeRawInline (RawInline "html" str) = return $ pack str
-writeRawInline (RawInline _ _) = return ""
-writeRawInline (Link inline target) = do
-  inlines <- concatRawInlines inline
-  return ("<a " `append` writeRawAttr ("", [], [("href", fst target), ("title", snd target)]) `append` ">"
-    `append` inlines `append` "</a>" )
-  --writeInline (Image _ _) = [TextNode "Image not implemented"]
-writeRawInline (Image inline target) = do
-  inlines <- concatRawInlines inline
-  return ("<div class=\"\">" `append`
-    (if inline /= [] then "<p class=\"figure-description\">" `append` inlines `append` "</p>" else "")
-    `append` "<img " `append`
-    writeRawAttr ("", [], [ ("src", fst target)
-        -- , ("title", fixImageTitle $ snd target)
-        , ("alt", fixImageTitle $ snd target)
-        , ("class", "img-polaroid")
-        ]) `append` " />"
-    )
-writeRawInline (Note block) = do
-  blocks <- concatBlocks block
-  writerState <- get
-  put writerState {
-    notesList = notesList writerState ++ [blocks]
-  }
-  let noteId = length (notesList writerState) + 1
-  return
-    ("<sup id=\"node-" `append` idPrefix (writerOptions writerState) `append` pack (show noteId) `append`
-      "\" class=\"note-link\">" `append` pack (show noteId) `append` "</sup>")
-writeRawInline (Span attr inline) = do
-  inlines <- concatRawInlines inline
-  return ("<span " `append` writeRawAttr attr `append` ">" `append` inlines `append` "</span>" )
-
 
 getFooter :: WriterState (Html ())
 getFooter = do
-  writerState <- get
-  return
-    div_ [class_ "footnotes"] $ do
-        hr_
-        ol_ $ transformNotes (notesList writerState) 1 ("note-" `append` idPrefix (writerOptions writerState))
-         {- | not $ null $ notesList writerState -}
-  where
-    transformNotes :: [Html ()] -> Int -> Text -> Html ()
-    transformNotes (n:ns) i prefix = do
-        li_ [data_ "for" (prefix `append` pack (show i))] n
-        transformNotes ns (i+1) prefix
-    transformNotes [] _ _ = mempty
--}
+    writerState <- get
+    return $
+        if not $ P.null $ notesList writerState
+            then div_ [class_ "footnotes"] $ do
+                hr_ []
+                ol_ $ transformNotes (notesList writerState) 1 ("note-" `append` idPrefix (writerOptions writerState))
+            else mempty
+            {- | not $ null $ notesList writerState -}
+    where
+        transformNotes :: [Html ()] -> Int -> Text -> Html ()
+        transformNotes (n:ns) i prefix = do
+            li_ [data_ "for" (toStrict $ prefix `append` pack (show i))] n
+            transformNotes ns (i+1) prefix
+        transformNotes [] _ _ = mempty
 
--- TODO to local scope ?
-fixImageTitle :: String -> String
-fixImageTitle title
-    | P.take 4 title == "fig:" = P.drop 4 title
-    | otherwise = title
-
--- TODO to local scope ?
 linkToAbsolute :: Bool -> Text -> Text -> Text
 linkToAbsolute False link _ = link
 linkToAbsolute True link "" = link
