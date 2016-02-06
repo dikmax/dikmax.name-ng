@@ -16,8 +16,13 @@ cabal-version:       >=1.10
 executable dikmax.name
   hs-source-dirs:      src
   main-is:             Main.hs
-  other-modules:       Lib
-                     , Binary
+  other-modules:       Binary
+                     , Lib
+                     , LucidWriter
+                     , Template
+                     , Template.Common
+                     , Template.Header
+                     , Template.Post
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , binary >= 0.7 && < 0.9
