@@ -113,3 +113,4 @@ cabal.sandbox.config
 
 
 /_build
+/images

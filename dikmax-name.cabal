@@ -30,7 +30,7 @@ executable dikmax.name
                      , Template.Page.Post
                      , Template.PostList
                      , Template.Subscribe
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:         -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base
                      , binary >= 0.7 && < 0.9
                      , bytestring >= 0.10 && < 0.11

@@ -11,6 +11,7 @@ import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake
 import           Development.Shake.Command
+import           Development.Shake.Config
 import           Development.Shake.FilePath
 import           Development.Shake.Util
 import           Lib
@@ -47,6 +48,8 @@ indexHtml = "index.html"
 nodeModulesDir = "node_modules"
 nodeModulesBinDir = nodeModulesDir </> ".bin"
 
+imagesDir = "images"
+
 postcss = nodeModulesBinDir </> "postcss"
 
 options :: ShakeOptions
@@ -65,12 +68,14 @@ readerOptions = def
 
 main :: IO ()
 main = shakeArgs options $ do
+    usingConfigFile "build.cfg"
     want ["build"]
     clean
     runServer
     prerequisites
     build
     styles
+    images
     blogPosts
 
     buildPostsCache
@@ -100,6 +105,7 @@ prerequisites =
         putNormal "Checking prerequisites"
         check "node"
         check "npm"
+        check "rsync"
     where
         check command = do
             Exit code <- cmd (EchoStdout False) "which" command
@@ -110,10 +116,12 @@ build :: Rules ()
 build =
     phony "build" $ do
         need ["prerequisites"]
-        need ["blogposts", siteDir </> "css/styles.css"]
+        need ["sync-images"]
+        need ["images", "blogposts", siteDir </> "css/styles.css"]
 
 blogPosts :: Rules ()
 blogPosts = do
+    -- Builing posts cache
     posts <- newCache $ \file -> do
         need [file]
         liftIO $ decodePandocCache file
@@ -217,12 +225,40 @@ styles =
         cmd (FileStdout out) postcss "-c" "postcss.json" src
 
 
+-- Build images
+images :: Rules ()
+images = do
+    phony "sync-images" $ do
+        srcImagesDir <- getConfig "IMAGES_DIR"
+        when (isJust srcImagesDir) $ cmd "rsync" "--recursive" "--delete"
+            "--force" [fromMaybe "" srcImagesDir] imagesDir
+
+    phony "images" $ do
+        imageFiles <- getDirectoryFiles "." imagesPatterns
+        need [siteDir </> x | x <- imageFiles]
+
+    forM_ imagesPatterns buildStatic
+
+    where
+        imagesPatterns :: [FilePath]
+        imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
+
+
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
     [postcss] &%> \_ -> do
         need ["package.json"]
         cmd "npm" "install"
+
+-- Static files, that just should be copied to `siteDir`
+buildStatic :: FilePath -> Rules ()
+buildStatic pattern =
+    siteDir </> pattern %> \out -> do
+        let src = dropDirectory2 out
+        putNormal $ "Copying file " ++ out
+        copyFileChanged src out
+
 
 idFromPost :: Pandoc -> String
 idFromPost (Pandoc meta _) = maybe (error "Post have no id") getId $ lookupMeta "id" meta
