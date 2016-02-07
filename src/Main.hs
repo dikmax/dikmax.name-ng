@@ -2,6 +2,7 @@
 module Main where
 
 import           Control.Exception
+import           Control.Monad
 import qualified Data.Binary                as B
 import qualified Data.ByteString.Lazy       as LBS
 import           Data.Hashable
@@ -15,6 +16,7 @@ import           Development.Shake.Util
 import           Lib
 import           Lucid
 import           LucidWriter
+import           Server
 import           System.Directory           (createDirectoryIfMissing)
 import           System.Exit
 import qualified Template                   as T
@@ -65,6 +67,7 @@ main :: IO ()
 main = shakeArgs options $ do
     want ["build"]
     clean
+    runServer
     prerequisites
     build
     styles
@@ -79,6 +82,17 @@ clean =
     phony "clean" $ do
         putNormal "Cleaning files in _build"
         removeFilesAfter "_build" ["//*"]
+
+runServer :: Rules ()
+runServer =
+    phony "server" $ do
+        liftIO $ createDirectoryIfMissing True "log"
+        accessLog <- doesFileExist "log/access.log"
+        when (accessLog == False) $ liftIO $ writeFile "log/access.log" ""
+        errorLog <- doesFileExist "log/error.log"
+        when (errorLog == False) $ liftIO $ writeFile "log/error.log" ""
+
+        liftIO $ server siteDir
 
 prerequisites :: Rules ()
 prerequisites =
@@ -169,6 +183,7 @@ blogPosts = do
 
         renderList :: [Pandoc] -> [Html ()]
         renderList posts = map (writeLucid def) posts
+
 
 -- Building posts cache
 buildPostsCache :: Rules ()
