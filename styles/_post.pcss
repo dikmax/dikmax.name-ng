@@ -3,7 +3,13 @@
     counter-reset: imgs;
     z-index: 2;
 
-    @nest & > * {
+    @nest & > p {
+        width: 100%;
+        lost-center: var(--body-width) var(--body-padding);
+
+        margin: calc(var(--body-font-size) * 2.5) *;
+    }
+    @nest & > *:not(p) {
         width: 100%;
         lost-center: var(--body-width) var(--body-padding) flex;
 

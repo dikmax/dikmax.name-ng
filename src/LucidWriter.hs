@@ -236,16 +236,16 @@ writeInline (Image inline target) = do
                 if null $ renderText inlines
                     then p_ [class_ "figure-description"] inlines
                     else mempty
-        else div_ [id_ $ toStrict (extractId $ pack $ fst target), class_ "figure"] $
-            div_ [class_ "figure-inner"] $ do
-                img_ [ src_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target)
-                        (siteDomain (writerOptions writerState))
-                    , alt_ $ toStrict $ pack $ fixImageTitle $ snd target
-                    , class_ "img-polaroid"
-                    ]
-                if null $ renderText inlines
-                    then p_ [class_ "figure-description"] inlines
-                    else mempty
+        else figure_ [id_ $ toStrict (extractId $ pack $ fst target), class_ "figure"] $
+            div_ [class_ "outer-container"] $
+                div_ [class_ "inner-container"] $ do
+                    img_ [ src_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target)
+                            (siteDomain (writerOptions writerState))
+                        , alt_ $ toStrict $ pack $ fixImageTitle $ snd target
+                        ]
+                    if null $ renderText inlines
+                        then p_ [class_ "figure-description"] inlines
+                        else mempty
     where
         videoId url = takeWhile (/= '&') $ replace "http://www.youtube.com/watch?v=" "" $
             replace "https://www.youtube.com/watch?v=" "" url

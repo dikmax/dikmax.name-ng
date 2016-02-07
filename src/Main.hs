@@ -230,9 +230,18 @@ images :: Rules ()
 images = do
     phony "sync-images" $ do
         srcImagesDir <- getConfig "IMAGES_DIR"
-        when (isJust srcImagesDir) $ cmd "rsync" "--recursive" "--delete"
-            "--force" [fromMaybe "" srcImagesDir] imagesDir
+        when (isJust srcImagesDir) $ do
+            let dir = fromMaybe "" srcImagesDir
+            files <- getDirectoryFiles dir ["//*"]
+            putNormal $ show files
+            -- TODO copy only if file not exists
+            forM_ files (\file -> do
+                liftIO $ createDirectoryIfMissing True $ takeDirectory (imagesDir </> file)
+                putNormal $ "Copying file " ++ (imagesDir </> file)
+                copyFileChanged (dir </> file) (imagesDir </> file)
+                )
 
+    -- TODO read files directly???
     phony "images" $ do
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need [siteDir </> x | x <- imageFiles]

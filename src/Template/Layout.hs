@@ -10,7 +10,7 @@ layout content = doctypehtml_ $ do
     head_ $ do
         meta_ [charset_ "UTF-8"]
         title_ "Document" -- TODO
-        link_ [rel_ "stylesheet", href_ "css/styles.css"]
+        link_ [rel_ "stylesheet", href_ "/css/styles.css"]
     body_ $ do
         content
 
