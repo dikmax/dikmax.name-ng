@@ -6,6 +6,7 @@ import qualified Data.ByteString.Lazy       as LBS
 import           Data.Hashable
 import           Data.List
 import qualified Data.Map.Lazy              as M
+import           Data.Maybe
 import           Development.Shake
 import           Development.Shake.Command
 import           Development.Shake.FilePath
@@ -78,12 +79,11 @@ blogPosts = do
         need [file]
         liftIO $ decodePandocCache file
 
-    postsList <- newCache $ \_ -> do
+    postsList <- newCache $ \t -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
         let cacheFiles = map (\file -> pandocBuildDir </> dropDirectory1 file) postFiles
         postCacheContent <- mapM posts cacheFiles
-        let cache = sortBy sortCache postCacheContent
-        return $ buildList cache
+        return $ buildList t postCacheContent
 
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
@@ -102,30 +102,46 @@ blogPosts = do
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let page = (read $ idFromDestFilePath out) :: Int
-        let posts = [snd $ M.elemAt i ps | i <- [(page - 1) * pageSize .. min (page * pageSize - 1) (M.size ps - 1)]]
+        let listLast = M.size ps - 1
+        let rangeStart = (page - 1) * pageSize
+        let rangeEnd = min (page * pageSize - 1) listLast
+        let posts = [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
         putNormal $ "Writing page " ++ out
-        liftIO $ writeFile out $ show posts
+        liftIO $  renderToFile out $ renderList posts
 
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let page = 1
-        let posts = [snd $ M.elemAt i ps | i <- [(page - 1) * pageSize .. min (page * pageSize - 1) (M.size ps - 1)]]
+        let listLast = M.size ps - 1
+        let rangeStart = (page - 1) * pageSize
+        let rangeEnd = min (page * pageSize - 1) listLast
+        let posts = [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
         putNormal $ "Writing page " ++ out
-        liftIO $ writeFile out $ show posts
+        liftIO $ renderToFile out $ renderList posts
 
     where
         decodePandocCache :: FilePath -> IO Pandoc
         decodePandocCache = B.decodeFile
 
-        buildList :: [Pandoc] -> Posts
-        buildList [] = M.empty
-        buildList [p] = M.singleton (idFromPost p) p
-        buildList (p:ps) =
+        buildList :: PostsCache -> [Pandoc] -> Posts
+        buildList _ [] = M.empty
+        buildList PostsCacheById [p] = M.singleton (idFromPost p) p
+        buildList PostsCacheById (p:ps) =
             let key = idFromPost p;
-                listRest = buildList ps in
+                listRest = buildList PostsCacheById ps in
             case key `M.member` listRest of
                 True -> error $ "Duplicate post key " ++ key
                 False -> M.insert key p listRest
+        buildList PostsCacheByDate [p] = M.singleton (dateFromPost p) p
+        buildList PostsCacheByDate (p:ps) =
+            let key = dateFromPost p;
+                listRest = buildList PostsCacheByDate ps in
+            case key `M.member` listRest of
+                True -> error $ "Duplicate post key " ++ key
+                False -> M.insert key p listRest
+
+        renderList :: [Pandoc] -> Html ()
+        renderList posts = do {mapM (writeLucid def) posts; return ()}
 
 -- Building posts cache
 buildPostsCache :: Rules ()
@@ -150,21 +166,17 @@ buildPostsCache =
 
         dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
 
-sortCache :: Pandoc -> Pandoc -> Ordering
-sortCache (Pandoc meta1 _) (Pandoc meta2 _) =
-    cmp (lookupMeta "date" meta1) (lookupMeta "date" meta2)
-    where
-        cmp :: Maybe MetaValue -> Maybe MetaValue -> Ordering
-        cmp (Just (MetaString _)) Nothing = LT
-        cmp Nothing (Just (MetaString _)) = GT
-        cmp (Just (MetaString str1)) (Just (MetaString str2)) = compare str2 str1
-        cmp _ _ = EQ
-
 idFromPost :: Pandoc -> String
 idFromPost (Pandoc meta _) = maybe (error "Post have no id") getId $ lookupMeta "id" meta
     where
         getId (MetaString s) = s
         getId s = error $ "Post id field have wrong value: " ++ show s
+
+dateFromPost :: Pandoc -> String
+dateFromPost (Pandoc meta _) = maybe (error "Post have no date") getDate $ lookupMeta "date" meta
+    where
+        getDate (MetaString s) = s
+        getDate s = error $ "Post date field have wrong value: " ++ show s
 
 idFromSrcFilePath :: FilePath -> String
 idFromSrcFilePath filePath =
