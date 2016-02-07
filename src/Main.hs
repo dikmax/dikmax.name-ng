@@ -233,15 +233,15 @@ images = do
         when (isJust srcImagesDir) $ do
             let dir = fromMaybe "" srcImagesDir
             files <- getDirectoryFiles dir ["//*"]
-            putNormal $ show files
-            -- TODO copy only if file not exists
+            -- TODO delete no more existent files
             forM_ files (\file -> do
-                liftIO $ createDirectoryIfMissing True $ takeDirectory (imagesDir </> file)
-                putNormal $ "Copying file " ++ (imagesDir </> file)
-                copyFileChanged (dir </> file) (imagesDir </> file)
+                exists <- doesFileExist (imagesDir </> file)
+                unless exists $ do
+                    liftIO $ createDirectoryIfMissing True $ takeDirectory (imagesDir </> file)
+                    putNormal $ "Copying file " ++ (imagesDir </> file)
+                    copyFileChanged (dir </> file) (imagesDir </> file)
                 )
 
-    -- TODO read files directly???
     phony "images" $ do
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need [siteDir </> x | x <- imageFiles]
