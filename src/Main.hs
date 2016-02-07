@@ -97,7 +97,7 @@ blogPosts = do
         ps <- postsList PostsCacheById
         let post = ps M.! (idFromDestFilePath out)
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.post $ writeLucid def post
+        liftIO $ renderToFile out $ T.postPage $ writeLucid def post
 
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
@@ -107,7 +107,7 @@ blogPosts = do
         let rangeEnd = min (page * pageSize - 1) listLast
         let posts = [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
         putNormal $ "Writing page " ++ out
-        liftIO $  renderToFile out $ renderList posts
+        liftIO $  renderToFile out $ T.listPage $ renderList posts
 
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
@@ -117,7 +117,7 @@ blogPosts = do
         let rangeEnd = min (page * pageSize - 1) listLast
         let posts = [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ renderList posts
+        liftIO $ renderToFile out $ T.indexPage $ renderList posts
 
     where
         decodePandocCache :: FilePath -> IO Pandoc
@@ -140,8 +140,8 @@ blogPosts = do
                 True -> error $ "Duplicate post key " ++ key
                 False -> M.insert key p listRest
 
-        renderList :: [Pandoc] -> Html ()
-        renderList posts = do {mapM (writeLucid def) posts; return ()}
+        renderList :: [Pandoc] -> [Html ()]
+        renderList posts = map (writeLucid def) posts
 
 -- Building posts cache
 buildPostsCache :: Rules ()
