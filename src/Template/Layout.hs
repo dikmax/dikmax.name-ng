@@ -16,5 +16,5 @@ layout content = doctypehtml_ $ do
 
         footer_ [class_ "footer"] $
             div_ [class_ "footer-container"] $
-                toHtmlRaw $ ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
+                toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
                     \Любимый корректор: Анастасия Барбосова" :: Text)

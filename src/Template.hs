@@ -1,9 +1,7 @@
 module Template
-    ( module Template.Page.Index
-    , module Template.Page.List
-    , module Template.Page.Post
+    ( module X
     ) where
 
-import           Template.Page.Index
-import           Template.Page.List
-import           Template.Page.Post
+import           Template.Page.Index as X
+import           Template.Page.List as X
+import           Template.Page.Post as X

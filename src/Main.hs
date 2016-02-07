@@ -88,9 +88,9 @@ runServer =
     phony "server" $ do
         liftIO $ createDirectoryIfMissing True "log"
         accessLog <- doesFileExist "log/access.log"
-        when (accessLog == False) $ liftIO $ writeFile "log/access.log" ""
+        unless accessLog $ liftIO $ writeFile "log/access.log" ""
         errorLog <- doesFileExist "log/error.log"
-        when (errorLog == False) $ liftIO $ writeFile "log/error.log" ""
+        unless errorLog $ liftIO $ writeFile "log/error.log" ""
 
         liftIO $ server siteDir
 
@@ -103,9 +103,7 @@ prerequisites =
     where
         check command = do
             Exit code <- cmd (EchoStdout False) "which" command
-            if code /= ExitSuccess
-                then error $ "PREREQUISITE: '" ++ command ++ "' is not available"
-                else return ()
+            when (code /= ExitSuccess) $ error $ "PREREQUISITE: '" ++ command ++ "' is not available"
 
 
 build :: Rules ()
@@ -129,14 +127,14 @@ blogPosts = do
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
         let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
-        let (d,m) = (M.size ps) `divMod` pageSize
+        let (d,m) = M.size ps `divMod` pageSize
         let listFilePaths = [sitePagesDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 1 else 0)]]
         need $ postsFilePaths ++ [siteDir </> indexHtml] ++ listFilePaths
         -- putNormal $ show $ M.keys ps
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheById
-        let post = ps M.! (idFromDestFilePath out)
+        let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.postPage $ writeLucid def post
 
@@ -170,19 +168,19 @@ blogPosts = do
         buildList PostsCacheById (p:ps) =
             let key = idFromPost p;
                 listRest = buildList PostsCacheById ps in
-            case key `M.member` listRest of
-                True -> error $ "Duplicate post key " ++ key
-                False -> M.insert key p listRest
+            if key `M.member` listRest
+                then error $ "Duplicate post key " ++ key
+                else M.insert key p listRest
         buildList PostsCacheByDate [p] = M.singleton (dateFromPost p) p
         buildList PostsCacheByDate (p:ps) =
             let key = dateFromPost p;
                 listRest = buildList PostsCacheByDate ps in
-            case key `M.member` listRest of
-                True -> error $ "Duplicate post key " ++ key
-                False -> M.insert key p listRest
+            if key `M.member` listRest
+                then error $ "Duplicate post key " ++ key
+                else M.insert key p listRest
 
         renderList :: [Pandoc] -> [Html ()]
-        renderList posts = map (writeLucid def) posts
+        renderList = map (writeLucid def)
 
 
 -- Building posts cache
@@ -211,7 +209,7 @@ buildPostsCache =
 
 -- Build styles
 styles :: Rules ()
-styles = do
+styles =
     siteDir </> "css/*.css" %> \out -> do
         let src = "styles" </> dropDirectory3 out -<.> "pcss"
         files <- getDirectoryFiles "." ["styles//*"]

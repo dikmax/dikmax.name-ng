@@ -6,7 +6,7 @@ import           Lucid
 
 postList ::[Html ()] -> Html ()
 postList posts =
-    div_ [class_ "main-contaier"] $ do
+    div_ [class_ "main-container"] $ do
         mconcat $ map postSingle posts
 
         div_ [class_ "pager"] $ do
@@ -22,7 +22,7 @@ postSingle content =
         div_ [class_ "cover"] $
             img_ [src_ "images/cover.jpg", alt_ ""]
 
-        div_ [class_ "description"] $ content
+        div_ [class_ "description"] content
 
         div_ [class_ "read-more"] $
             a_ [href_ "#"] "Читать далее..."

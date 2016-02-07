@@ -45,7 +45,7 @@ postPage content = layout $ do
 
         div_ [id_ "disqus_thread", class_ "container"] mempty
         div_ [class_ "container disqus-post"] $ do
-            script_ $ "var disqus_config = function () {\
+            script_ "var disqus_config = function () {\
                 \    this.page.url = 'http://dikmax.name/post/satrip-2015-results/';\
                 \    this.page.identifier = 'satrip-2015-results';\
                 \    this.page.title = 'SATrip 2015: Итоги';\
@@ -61,4 +61,4 @@ postPage content = layout $ do
 
             noscript_ $ do
                 "Please enable JavaScript to view the "
-                a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] $ "comments powered by Disqus."
+                a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] "comments powered by Disqus."

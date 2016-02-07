@@ -21,7 +21,7 @@ navigation = do
             span_ [class_ "navbar-nav"] navLinks
 
 
-    nav_ [class_ "sidebar active"] $
+    nav_ [class_ "sidebar"] $
         div_ [class_ "sidebar-panel"] $ do
             div_ [class_ "sidebar-brand"] "[dikmax's name]"
             nav_ [class_ "sidebar-links"] navLinks
