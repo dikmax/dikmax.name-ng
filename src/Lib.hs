@@ -1,6 +1,8 @@
 {-# LANGUAGE FlexibleContexts #-}
 module Lib
     ( module Binary
+    , dropDirectory2
+    , dropDirectory3
     , repeated
     , splitAll
     ) where
@@ -8,6 +10,7 @@ module Lib
 import           Binary
 import           Data.List
 import           Data.Maybe
+import           Development.Shake.FilePath
 import           Text.Regex.Posix
 
 splitAll :: String    -- ^ Pattern
@@ -35,3 +38,9 @@ repeated = repeatedBy (>1)
 
 repeatedBy :: Ord a => (Int -> Bool) -> [a] -> [a]
 repeatedBy p = map head . filterByLength p
+
+dropDirectory2 :: FilePath -> FilePath
+dropDirectory2 = dropDirectory1 . dropDirectory1
+
+dropDirectory3 :: FilePath -> FilePath
+dropDirectory3 = dropDirectory2 . dropDirectory1

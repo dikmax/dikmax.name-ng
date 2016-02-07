@@ -2,4 +2,4 @@
 
 module Template.Common where
 
-import Lucid
+import           Lucid

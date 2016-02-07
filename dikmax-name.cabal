@@ -5,9 +5,9 @@ description:         Please see README.md
 homepage:            http://github.com/githubuser/dikmaxName#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2010 Author Here
+author:              Maxim Dikun
+maintainer:          me@dikmax.name
+copyright:           2016 Maxim Dikun
 category:            Web
 build-type:          Simple
 -- extra-source-files:

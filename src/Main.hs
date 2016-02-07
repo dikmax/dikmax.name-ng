@@ -1,3 +1,4 @@
+
 module Main where
 
 import           Control.Exception
@@ -15,6 +16,7 @@ import           Lib
 import           Lucid
 import           LucidWriter
 import           System.Directory           (createDirectoryIfMissing)
+import           System.Exit
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
@@ -40,11 +42,17 @@ sitePostsDir = siteDir </> "post"
 sitePagesDir = siteDir </> "page"
 indexHtml = "index.html"
 
+nodeModulesDir = "node_modules"
+nodeModulesBinDir = nodeModulesDir </> ".bin"
+
+postcss = nodeModulesBinDir </> "postcss"
+
 options :: ShakeOptions
 options = shakeOptions
-    { shakeFiles = shakeBuildDir
-    , shakeThreads = 0
-    , shakeTimings = True
+    { shakeFiles    = shakeBuildDir
+    , shakeThreads  = 0
+    , shakeTimings  = True
+    , shakeProgress = progressSimple
     }
 
 readerOptions :: ReaderOptions
@@ -57,10 +65,14 @@ main :: IO ()
 main = shakeArgs options $ do
     want ["build"]
     clean
+    prerequisites
     build
+    styles
     blogPosts
 
     buildPostsCache
+
+    npmPackages
 
 clean :: Rules ()
 clean =
@@ -68,10 +80,25 @@ clean =
         putNormal "Cleaning files in _build"
         removeFilesAfter "_build" ["//*"]
 
+prerequisites :: Rules ()
+prerequisites =
+    phony "prerequisites" $ do
+        putNormal "Checking prerequisites"
+        check "node"
+        check "npm"
+    where
+        check command = do
+            Exit code <- cmd (EchoStdout False) "which" command
+            if code /= ExitSuccess
+                then error $ "PREREQUISITE: '" ++ command ++ "' is not available"
+                else return ()
+
+
 build :: Rules ()
 build =
     phony "build" $ do
-        need ["blogposts"]
+        need ["prerequisites"]
+        need ["blogposts", siteDir </> "css/styles.css"]
 
 blogPosts :: Rules ()
 blogPosts = do
@@ -147,7 +174,7 @@ blogPosts = do
 buildPostsCache :: Rules ()
 buildPostsCache =
     pandocBuildDir <//> "*.md" %> \out -> do
-        let src = "posts" </> dropDirectory1 (dropDirectory1 out)
+        let src = "posts" </> dropDirectory2 out
         need [src]
         putNormal $ "Reading post " ++ src
         file <- liftIO $ readFile src
@@ -165,6 +192,24 @@ buildPostsCache =
         alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
 
         dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
+
+
+-- Build styles
+styles :: Rules ()
+styles = do
+    siteDir </> "css/*.css" %> \out -> do
+        let src = "styles" </> dropDirectory3 out -<.> "pcss"
+        files <- getDirectoryFiles "." ["styles//*"]
+        need (postcss : "postcss.json" : files)
+        cmd (FileStdout out) postcss "-c" "postcss.json" src
+
+
+-- npm packages
+npmPackages :: Rules ()
+npmPackages =
+    [postcss] &%> \_ -> do
+        need ["package.json"]
+        cmd "npm" "install"
 
 idFromPost :: Pandoc -> String
 idFromPost (Pandoc meta _) = maybe (error "Post have no id") getId $ lookupMeta "id" meta

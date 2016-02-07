@@ -2,7 +2,7 @@
 
 module Template.Navigation (navigation) where
 
-import Lucid
+import           Lucid
 
 navLinks :: Html ()
 navLinks = do

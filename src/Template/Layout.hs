@@ -2,8 +2,8 @@
 
 module Template.Layout (layout) where
 
-import Data.Text.Lazy
-import Lucid
+import           Data.Text.Lazy
+import           Lucid
 
 layout :: Html () -> Html ()
 layout content = doctypehtml_ $ do

@@ -2,11 +2,11 @@
 
 module Template.Page.Post (postPage) where
 
-import Data.Text.Lazy
-import Lucid
-import Template.Common
-import Template.Layout
-import Template.Navigation
+import           Data.Text.Lazy
+import           Lucid
+import           Template.Common
+import           Template.Layout
+import           Template.Navigation
 
 postPage :: Html () -> Html ()
 postPage content = layout $ do

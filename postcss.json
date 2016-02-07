@@ -1,9 +1,16 @@
 {
     "use": [
-        "precss",
-        "autoprefixer"
+        "postcss-import",
+        "postcss-mixins",
+        "postcss-cssnext",
+        "postcss-short",
+        "lost",
+        "postcss-responsive-type",
+        "postcss-quantity-queries",
+        "postcss-normalize"
     ],
-    "autoprefixer": {
-        "browsers": "> 5%"
+    "cssnext": {
+        "browsers": "> 5%",
+        "compress": false
     }
 }

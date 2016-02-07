@@ -2,10 +2,10 @@
 
 module Template.Page.List (listPage) where
 
-import Lucid
-import Template.Layout
-import Template.Navigation
-import Template.PostList
+import           Lucid
+import           Template.Layout
+import           Template.Navigation
+import           Template.PostList
 
 
 listPage :: [Html ()] -> Html ()

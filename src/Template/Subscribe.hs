@@ -2,7 +2,7 @@
 
 module Template.Subscribe (subscribe) where
 
-import Lucid
+import           Lucid
 
 subscribe :: Html ()
 subscribe =

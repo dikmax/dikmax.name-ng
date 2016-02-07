@@ -2,7 +2,7 @@
 
 module Template.PostList (postList) where
 
-import Lucid
+import           Lucid
 
 postList ::[Html ()] -> Html ()
 postList posts =

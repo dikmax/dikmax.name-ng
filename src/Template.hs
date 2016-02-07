@@ -4,6 +4,6 @@ module Template
     , module Template.Page.Post
     ) where
 
-import Template.Page.Index
-import Template.Page.List
-import Template.Page.Post
+import           Template.Page.Index
+import           Template.Page.List
+import           Template.Page.Post
