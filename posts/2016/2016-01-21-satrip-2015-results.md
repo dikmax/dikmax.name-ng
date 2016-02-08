@@ -1,12 +1,15 @@
 ---
 title: "SATrip 2015: Итоги"
-date: "2016-01-21T07:35:00+01:00"
-collection: "latest-travel"
+date: 2016-01-21T07:35:00+01:00
+collection: latest-travel
 published: true
-tags: "satrip, satrip-2015, отпуск, бразилия, путешествие, фотки"
+tags: [satrip, satrip-2015, отпуск, бразилия, путешествие, фотки]
+cover:
+    img: /images/travel/2015-09-satrip/end-selfies.jpg
+    hcenter: 50%
+    vcenter: 100%
+    background: dark
 ---
-
-![](/images/travel/2015-09-satrip/end-selfies.jpg "Селфи")
 
 Уже четыре месяца, как мы\ вернулись из\ нашего супер-тура по\ Южной Америке. Всё это время я\ совместно с\ любимым
 корректором живописал наши приключения и\ открытия, местный колорит и\ потрясающую природу. И\ по\ традиции

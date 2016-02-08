@@ -3,14 +3,24 @@
 module Template.Page.Post (postPage) where
 
 import           Data.Text.Lazy
+import           Lib
 import           Lucid
 import           Template.Common
 import           Template.Layout
 import           Template.Navigation
+import           Text.Pandoc
 
-postPage :: Html () -> Html ()
-postPage content = layout $ do
-    header_ [class_ "header light-background", style_ "background-image: url(images/cover.jpg)"] $
+postPage :: Meta -> Html () -> Html ()
+postPage meta content = layout $ do
+    let cover = getCover meta
+    header_
+        [ class_ $ toStrict $
+            "header " `append` if coverType cover == CoverDark then "dark-background" else "light-background"
+        , style_ $ toStrict $
+            (maybe "" (\i -> "background-image: url(" `append` pack i `append` ");") $ coverImg cover)
+            `append` "background-position-x: " `append` pack (coverHCenter cover) `append` ";"
+            `append` "background-position-y: " `append` pack (coverVCenter cover) `append` ";"
+        ] $
         div_ [class_ "title-block"] $ do
             div_ [class_ "title"] "Осень в Минске"
             div_ [data_ "post-date" "2015-10-02T08:25:00+0000", class_ "date"] "Пятница, 2 октября 2015"
@@ -22,10 +32,15 @@ postPage content = layout $ do
         div_ [class_ "post-meta"] $ do
             p_ [class_ "tags"] $ do
                 a_ [href_ "/tag/satrip/"] "satrip"
+                " "
                 a_ [href_ "/tag/satrip-2015/"] "satrip-2015"
+                " "
                 a_ [href_ "/tag/бразилия/"] "бразилия"
+                " "
                 a_ [href_ "/tag/отпуск/"] "отпуск"
+                " "
                 a_ [href_ "/tag/путешествие/"] "путешествие"
+                " "
                 a_ [href_ "/tag/фотки/"] "фотки"
 
             div_ [class_ "share-buttons"] $ do

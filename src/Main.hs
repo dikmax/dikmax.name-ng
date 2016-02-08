@@ -144,7 +144,7 @@ blogPosts = do
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.postPage $ writeLucid def post
+        liftIO $ renderToFile out $ T.postPage (getMeta post) $ writeLucid def post
 
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
@@ -262,8 +262,8 @@ npmPackages =
 
 -- Static files, that just should be copied to `siteDir`
 buildStatic :: FilePath -> Rules ()
-buildStatic pattern =
-    siteDir </> pattern %> \out -> do
+buildStatic filePath =
+    siteDir </> filePath %> \out -> do
         let src = dropDirectory2 out
         putNormal $ "Copying file " ++ out
         copyFileChanged src out
@@ -285,7 +285,7 @@ idFromSrcFilePath :: FilePath -> String
 idFromSrcFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
         (_, _, _, [v]) -> v
-        otherwise      -> error $ "Can't extract id from " ++ filePath
+        _              -> error $ "Can't extract id from " ++ filePath
     where
         pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
 
@@ -293,6 +293,6 @@ idFromDestFilePath :: FilePath -> String
 idFromDestFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
         (_, _, _, [v]) -> v
-        otherwise      -> error $ "Can't extract id from " ++ filePath
+        _              -> error $ "Can't extract id from " ++ filePath
     where
         pat = "/([^/]*)/index.html$"

@@ -79,7 +79,7 @@ writeBlock (Plain inline) =
 writeBlock (Para inline) = withCountBlocksIncrement $ \c -> do
     inlines <- concatInlines inline
     return $ case inline of
-        [Image _ _] -> inlines
+        [Image{}] -> inlines
         _ -> p_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
 
 writeBlock (CodeBlock (identifier, classes, others) code) =
@@ -115,21 +115,21 @@ writeBlock (BulletList listItems) = withCountBlocksIncrement $ \c -> do
   items <- mapM processListItems listItems
   return $ ul_ [id_ $ toStrict $ pack $ "p-" ++ show c] $ mconcat items
 
-writeBlock (Header 1 _ inline) = withCountBlocksIncrement $ \c -> do  -- TODO second header parameter
+writeBlock (Header 1 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h2_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
-writeBlock (Header 2 _ inline) = withCountBlocksIncrement $ \c -> do
+  return $ h2_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+writeBlock (Header 2 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h3_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
-writeBlock (Header 3 _ inline) = withCountBlocksIncrement $ \c -> do
+  return $ h3_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+writeBlock (Header 3 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h4_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
-writeBlock (Header 4 _ inline) = withCountBlocksIncrement $ \c -> do
+  return $ h4_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+writeBlock (Header 4 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h5_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
-writeBlock (Header _ _ inline) = withCountBlocksIncrement $ \c -> do
+  return $ h5_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+writeBlock (Header _ attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h6_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
+  return $ h6_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
 
 writeBlock HorizontalRule = return $ hr_ []
 
@@ -200,6 +200,8 @@ writeInline Space = return " "
 
 writeInline LineBreak = return $ br_ []
 
+writeInline SoftBreak = return " "
+
 writeInline (Math InlineMath str) = return $ span_ [class_ "math"] $
     toHtml $ "\\(" `append` pack str `append` "\\)"
 
@@ -209,23 +211,25 @@ writeInline (Math DisplayMath str) = return $ span_ [class_ "math"] $
 writeInline (RawInline "html" str) = return $ toHtmlRaw str
 writeInline (RawInline _ _) = return mempty
 
-writeInline (Link inline target) = do
-  inlines <- concatInlines inline
-  writerState <- get
-  return $ a_
-    [ href_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState))
-        (pack $ fst target) (siteDomain (writerOptions writerState))
-    , title_ $ toStrict $ pack $ snd target
-    ] inlines
+writeInline (Link attr inline target) = do
+    inlines <- concatInlines inline
+    writerState <- get
+    return $ a_
+        (writeAttr attr ++
+            [ href_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState))
+                (pack $ fst target) (siteDomain (writerOptions writerState))
+            , title_ $ toStrict $ pack $ snd target
+            ]
+        ) inlines
 
-writeInline (Image inline target) = do
+writeInline (Image attr inline target) = do
     inlines <- concatInlines inline
     writerState <- get
 
     return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target) ||
             "https://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target)
         -- Youtube video
-        then div_ [class_ "figure"] $
+        then div_ (class_ "figure" : writeAttr attr) $
             div_ [class_ "embed-responsive embed-responsive-16by9"] $ do
                 iframe_
                     [ src_ $ toStrict $ "https://www.youtube.com/embed/" `append`
@@ -236,7 +240,7 @@ writeInline (Image inline target) = do
                 if null $ renderText inlines
                     then p_ [class_ "figure-description"] inlines
                     else mempty
-        else figure_ [id_ $ toStrict (extractId $ pack $ fst target), class_ "figure"] $
+        else figure_ ([id_ $ toStrict (extractId $ pack $ fst target), class_ "figure"] ++ writeAttr attr) $
             div_ [class_ "outer-container"] $
                 div_ [class_ "inner-container"] $ do
                     img_ [ src_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target)

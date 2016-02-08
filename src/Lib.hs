@@ -1,43 +1,82 @@
 {-# LANGUAGE FlexibleContexts #-}
 module Lib
     ( module Binary
+    , PostCoverType(..)
+    , PostCover(..)
     , dropDirectory2
     , dropDirectory3
-    , repeated
+    , getCover
+    , getMeta
     , splitAll
     ) where
 
 import           Binary
+import           Data.Default
 import           Data.List
+import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake.FilePath
+import           Text.Pandoc
+import           Text.Pandoc.Shared
 import           Text.Regex.Posix
+
+data PostCoverType = CoverLight | CoverDark deriving (Eq)
+
+data PostCover = PostCover
+    { coverImg     :: Maybe String
+    , coverVCenter :: String
+    , coverHCenter :: String
+    , coverType    :: PostCoverType
+    } deriving (Eq)
+
+instance Default PostCover where
+    def = PostCover
+        { coverImg     = Nothing
+        , coverVCenter = "center"
+        , coverHCenter = "center"
+        , coverType    = CoverDark
+        }
+
 
 splitAll :: String    -- ^ Pattern
          -> String    -- ^ String to split
          -> [String]  -- ^ Result
-splitAll pattern = filter (not . null) . splitAll'
-  where
-    splitAll' src = case listToMaybe (src =~~ pattern) of
-        Nothing     -> [src]
-        Just (o, l) ->
-            let (before, tmp) = splitAt o src
-            in before : splitAll' (drop l tmp)
+splitAll p = filter (not . null) . splitAll'
+    where
+        splitAll' src = case listToMaybe (src =~~ p) of
+            Nothing     -> [src]
+            Just (o, l) ->
+                let (before, tmp) = splitAt o src
+                in before : splitAll' (drop l tmp)
 
--- From Unique package
--- TODO more optimal version
+getMeta :: Pandoc -> Meta
+getMeta (Pandoc meta _) = meta
 
-sg :: Ord a => [a] -> [[a]]
-sg = group . sort
+getCover :: Meta -> PostCover
+getCover meta =
+    case lookupMeta "cover" meta of
+        Just (MetaMap m) -> cover m
+        _                -> def
+    where
+        cover m = PostCover
+            { coverImg     = extractString $ M.lookup "img" m
+            , coverVCenter = fromMaybe "center" $ extractString $ M.lookup "vcenter" m
+            , coverHCenter = fromMaybe "center" $ extractString $ M.lookup "hcenter" m
+            , coverType    = extractType $ M.lookup "background" m
+            }
 
-filterByLength :: Ord a => (Int -> Bool) -> [a] -> [[a]]
-filterByLength p = filter (p . length) . sg
+        extractString :: Maybe MetaValue -> Maybe String
+        extractString (Just (MetaString str)) = Just str
+        extractString (Just (MetaInlines inlines)) = Just $ concatMap stringify inlines
+        extractString _ = Nothing
 
-repeated :: Ord a => [a] -> [a]
-repeated = repeatedBy (>1)
+        extractType :: Maybe MetaValue -> PostCoverType
+        extractType (Just (MetaString str)) =
+            if str == "light" then CoverLight else CoverDark
+        extractType (Just (MetaInlines inlines)) =
+            if concatMap stringify inlines == "light" then CoverLight else CoverDark
+        extractType _ = CoverDark
 
-repeatedBy :: Ord a => (Int -> Bool) -> [a] -> [a]
-repeatedBy p = map head . filterByLength p
 
 dropDirectory2 :: FilePath -> FilePath
 dropDirectory2 = dropDirectory1 . dropDirectory1
