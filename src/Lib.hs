@@ -5,7 +5,8 @@ module Lib
     , PostCover(..)
     , dropDirectory2
     , dropDirectory3
-    , getCover
+    , getPostCover
+    , getPostTitle
     , getMeta
     , splitAll
     ) where
@@ -52,8 +53,8 @@ splitAll p = filter (not . null) . splitAll'
 getMeta :: Pandoc -> Meta
 getMeta (Pandoc meta _) = meta
 
-getCover :: Meta -> PostCover
-getCover meta =
+getPostCover :: Meta -> PostCover
+getPostCover meta =
     case lookupMeta "cover" meta of
         Just (MetaMap m) -> cover m
         _                -> def
@@ -77,6 +78,12 @@ getCover meta =
             if concatMap stringify inlines == "light" then CoverLight else CoverDark
         extractType _ = CoverDark
 
+getPostTitle :: Meta -> String
+getPostTitle meta =
+    case lookupMeta "title" meta of
+        Just (MetaString str)      -> str
+        Just (MetaInlines inlines) -> concatMap stringify inlines
+        _                          -> "No proper title found."
 
 dropDirectory2 :: FilePath -> FilePath
 dropDirectory2 = dropDirectory1 . dropDirectory1

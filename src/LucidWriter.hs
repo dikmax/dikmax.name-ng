@@ -237,9 +237,8 @@ writeInline (Image attr inline target) = do
                     , makeAttribute "allowfullscreen" "allowfullscreen"
                     , class_ "img-polaroid embed-responsive-item"
                     ] mempty
-                if null $ renderText inlines
-                    then p_ [class_ "figure-description"] inlines
-                    else mempty
+                unless (P.null inline) $
+                    p_ [class_ "figure-description"] inlines
         else figure_ ([id_ $ toStrict (extractId $ pack $ fst target), class_ "figure"] ++ writeAttr attr) $
             div_ [class_ "outer-container"] $
                 div_ [class_ "inner-container"] $ do
@@ -247,9 +246,8 @@ writeInline (Image attr inline target) = do
                             (siteDomain (writerOptions writerState))
                         , alt_ $ toStrict $ pack $ fixImageTitle $ snd target
                         ]
-                    if null $ renderText inlines
-                        then p_ [class_ "figure-description"] inlines
-                        else mempty
+                    unless (P.null inline) $
+                        p_ [class_ "figure-description"] inlines
     where
         videoId url = takeWhile (/= '&') $ replace "http://www.youtube.com/watch?v=" "" $
             replace "https://www.youtube.com/watch?v=" "" url
