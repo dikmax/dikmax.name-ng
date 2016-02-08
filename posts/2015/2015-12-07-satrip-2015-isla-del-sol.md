@@ -1,12 +1,12 @@
 ---
 title: "SATrip 2015: Исла-дель-Соль"
-date: "2015-12-07T07:40:00+01:00"
-collection: "latest-travel"
+date: 2015-12-07T07:40:00+01:00
+collection: latest-travel
 published: true
-tags: "satrip, satrip-2015, боливия, отпуск, путешествие, фотки"
+tags: [satrip, satrip-2015, боливия, отпуск, путешествие, фотки]
+cover:
+    img: /images/travel/2015-09-satrip/isla-del-sol-cover.jpg
 ---
-
-![](/images/travel/2015-09-satrip/isla-del-sol-cover.jpg)
 
 11\ сентября, в\ последний день нашего пребывания в\ Боливии, мы отправились на\ Isla del Sol\ --- Остров Солнца. Остров
 не\ слишком большой, но\ прозрачная вода озера и\ песчаные пляжи производят впечатление идиллии, ещё\ бы пальм сюда\ ---

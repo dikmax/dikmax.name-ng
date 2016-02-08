@@ -1,12 +1,12 @@
 ---
 title: "SATrip 2015: Копакабана"
-date: "2015-12-02T07:40:00+01:00"
-collection: "latest-travel"
+date: 2015-12-02T07:40:00+01:00
+collection: latest-travel
 published: true
-tags: "satrip, satrip-2015, боливия, отпуск, путешествие, фотки"
+tags: [satrip, satrip-2015, боливия, отпуск, путешествие, фотки]
+cover:
+    img: /images/travel/2015-09-satrip/copacabana-cover.jpg
 ---
-
-![](/images/travel/2015-09-satrip/copacabana-cover.jpg)
 
 Копакабана\ --- это не\ только самый длинный пляж в\ Рио, но\ и\ курортный город в\ Боливии на\ берегу самого большого
 высокогорного озера\ --- Титикаки. У\ нас оставалось немного времени до\ обратного самолёта из\ Куско в\ Рио-де-Жанейро,

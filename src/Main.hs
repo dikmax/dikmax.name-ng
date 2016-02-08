@@ -149,20 +149,13 @@ blogPosts = do
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let page = (read $ idFromDestFilePath out) :: Int
-        let listLast = M.size ps - 1
-        let rangeStart = (page - 1) * pageSize
-        let rangeEnd = min (page * pageSize - 1) listLast
-        let posts = [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
+        let posts = postsPage ps page
         putNormal $ "Writing page " ++ out
         liftIO $  renderToFile out $ T.listPage $ renderList posts
 
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
-        let page = 1
-        let listLast = M.size ps - 1
-        let rangeStart = (page - 1) * pageSize
-        let rangeEnd = min (page * pageSize - 1) listLast
-        let posts = [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
+        let posts = postsPage ps 1
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.indexPage $ renderList posts
 
@@ -189,6 +182,13 @@ blogPosts = do
 
         renderList :: [Pandoc] -> [Html ()]
         renderList = map (writeLucid def)
+
+        postsPage ps page =
+            [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
+            where
+                listLast = M.size ps - 1
+                rangeStart = (page - 1) * pageSize
+                rangeEnd = min (page * pageSize - 1) listLast
 
 
 -- Building posts cache

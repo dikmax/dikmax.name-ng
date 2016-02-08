@@ -1,12 +1,12 @@
 ---
 title: "SATrip 2015: Едем в Боливию"
-date: "2015-11-02T11:00:00+03:00"
-collection: "latest-travel"
+date: 2015-11-02T11:00:00+03:00
+collection: latest-travel
 published: true
-tags: "satrip, satrip-2015, боливия, отпуск, перу, путешествие, фотки"
+tags: [satrip, satrip-2015, боливия, отпуск, перу, путешествие, фотки]
+cover:
+    img: /images/travel/2015-09-satrip/bolivia-cover.jpg
 ---
-
-![](/images/travel/2015-09-satrip/bolivia-cover.jpg "Добро пожаловать в Боливию")
 
 В\ этот раз я\ хочу с\ вами поделиться душещипательной историей о\ том, как мы\ ехали в\ Ла-Пас, неофициальную столицу
 Боливии. Будет много текста и\ мало фотографий, я\ предупредил.

@@ -1,12 +1,12 @@
 ---
 title: "SATrip 2015: водопады Игуасу"
-date: "2015-12-24T16:45:00+01:00"
-collection: "latest-travel"
+date: 2015-12-24T16:45:00+01:00
+collection: latest-travel
 published: true
-tags: "satrip, satrip-2015, отпуск, бразилия, путешествие, фотки"
+tags: [satrip, satrip-2015, отпуск, бразилия, путешествие, фотки]
+cover:
+    img: /images/travel/2015-09-satrip/iguazu-cover.jpg
 ---
-
-![](/images/travel/2015-09-satrip/iguazu-cover.jpg)
 
 Изначально целей в\ нашей большом южноамериканском путешествии было две, не\ считая, конечно, самого Рио-де-Жанейро.
 Первая из\ них\ --- [Мачу-Пикчу][machu-picchu], а\ вторая - водопады Игуасу. Что, кстати, не\ удивительно, ведь когда

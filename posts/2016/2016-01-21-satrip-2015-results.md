@@ -142,16 +142,16 @@ cover:
 
 # SATrip 2015
 
-0. [Начало](/post/satrip-2015-paris/)
-1. [Париж](/post/satrip-2015-paris/)
-2. [Рио-де-Жанейро, часть\ 1](/post/satrip-2015-rio-1/)
-3. [Рио-де-Жанейро, часть\ 2](/post/satrip-2015-rio-2/)
-4. [Рио-де-Жанейро, часть\ 3](/post/satrip-2015-rio-3/)
-5. [Из\ Рио в\ Куско](/post/satrip-2015-rio-to-cusco/)
-6. [Дорога в\ Мачу-Пикчу](/post/satrip-2015-road-to-machu-picchu/)
-7. [Мачу-Пикчу](/post/satrip-2015-machu-picchu/)
-8. [Едем в\ Боливию](/post/satrip-2015-to-bolivia/)
-9. [Ла-Пас](/post/satrip-2015-la-paz/)
+0.  [Начало](/post/satrip-2015-paris/)
+1.  [Париж](/post/satrip-2015-paris/)
+2.  [Рио-де-Жанейро, часть\ 1](/post/satrip-2015-rio-1/)
+3.  [Рио-де-Жанейро, часть\ 2](/post/satrip-2015-rio-2/)
+4.  [Рио-де-Жанейро, часть\ 3](/post/satrip-2015-rio-3/)
+5.  [Из\ Рио в\ Куско](/post/satrip-2015-rio-to-cusco/)
+6.  [Дорога в\ Мачу-Пикчу](/post/satrip-2015-road-to-machu-picchu/)
+7.  [Мачу-Пикчу](/post/satrip-2015-machu-picchu/)
+8.  [Едем в\ Боливию](/post/satrip-2015-to-bolivia/)
+9.  [Ла-Пас](/post/satrip-2015-la-paz/)
 10. [Солончак Уюни](/post/satrip-2015-uyuni-salt-flats/)
 11. [Юг Боливии](/post/satrip-2015-south-of-bolivia/)
 12. [Национальный парк Эдуардо Авароа](/post/satrip-2015-bolivia-national-park/)
@@ -166,8 +166,8 @@ cover:
 [bolivia-vizas]: /post/satrip-2015-rio-to-cusco/#p-34
 [brazil-vizas]: http://ncmps.by/vizovaya-podderzhka.html
 [eurotrip-2014]: /post/eurotrip-2014-results/
-[Expedia]: https://www.expedia.com
-[Google Flights]: https://www.google.de/flights/
-[The World]: http://shop.lonelyplanet.com/world/lonely-planet-guide-to-the-world-1/
+[expedia]: https://www.expedia.com
+[google flights]: https://www.google.de/flights/
+[the world]: http://shop.lonelyplanet.com/world/lonely-planet-guide-to-the-world-1/
 [phone]: http://catalog.onliner.by/mobile/philips/xeniume180
 [uyuni]: /post/satrip-2015-south-of-bolivia/

@@ -1,12 +1,12 @@
 ---
 title: "SATrip 2015: Дорога в Мачу-Пикчу"
-date: "2015-10-26T12:55:00+03:00"
-collection: "latest-travel"
+date: 2015-10-26T12:55:00+03:00
+collection: latest-travel
 published: true
-tags: "satrip, satrip-2015, отпуск, перу, путешествие, фотки"
+tags: [satrip, satrip-2015, отпуск, перу, путешествие, фотки]
+cover:
+    img: /images/travel/2015-09-satrip/machu-picchu-1-cover.jpg
 ---
-
-![](/images/travel/2015-09-satrip/machu-picchu-1-cover.jpg "Горы Мачу-Пикчу")
 
 В\ прошлый раз я\ говорил, что скоро будет Мачу-Пикчу. Так и\ есть! Но\ сначала туда нужно ещё добраться. Поэтому
 нынешний пост\ --- о\ дороге к\ городу инков (красивенные фотографии прилагаются).

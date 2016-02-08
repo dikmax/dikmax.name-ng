@@ -28,5 +28,21 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "BSD3",
+
+  "remarkConfig": {
+      "plugins": {
+        "lint": {
+          "maximum-line-length": 120,
+          "no-consecutive-blank-lines": false,
+          "no-html": false,
+          "no-missing-blank-lines": false,
+          "no-multiple-toplevel-headings": false,
+          "ordered-list-marker-value": false
+        }
+      },
+      "settings": {
+        "footnotes": true
+      }
+  }
 }

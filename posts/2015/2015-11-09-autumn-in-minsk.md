@@ -1,12 +1,12 @@
 ---
 title: "Осень в Минске"
-date: "2015-11-09T09:40:00+03:00"
-collection: "proofreaders-stories"
+date: 2015-11-09T09:40:00+03:00
+collection: proofreaders-stories
 published: true
-tags: "беларусь, гостевой пост, фотки"
+tags: [беларусь, гостевой пост, фотки]
+cover:
+    img: /images/travel/2015-10-minsk/cover.jpg
 ---
-
-![](/images/travel/2015-10-minsk/cover.jpg)
 
 ***Гостевой пост в\ блоге. Текст и\ фотографии подготовил любимый корректор.***
 
