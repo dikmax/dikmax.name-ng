@@ -1,8 +1,6 @@
 
 module Main where
 
-import           Codec.Picture
-import           Codec.Picture.Types
 import           Control.Exception
 import           Control.Monad
 import qualified Data.Binary                as B
@@ -43,6 +41,7 @@ pageSize = 5
 
 buildDir = "_build"
 pandocBuildDir = buildDir </> "pandoc"
+imagesBuildDir = buildDir </> "images"
 shakeBuildDir = buildDir </> "shake"
 
 siteDir = buildDir </> "site"
@@ -83,15 +82,20 @@ main = shakeArgs options $ do
     images
     blogPosts
 
+    buildImagesCache
     buildPostsCache
 
     npmPackages
 
 clean :: Rules ()
-clean =
+clean = do
     phony "clean" $ do
-        putNormal "Cleaning files in _build"
-        removeFilesAfter "_build" ["//*"]
+        putNormal $ "Cleaning files in " ++ siteDir
+        removeFilesAfter siteDir ["//*"]
+
+    phony "full-clean" $ do
+        putNormal $ "Cleaning files in " ++ buildDir
+        removeFilesAfter buildDir ["//*"]
 
 runServer :: Rules ()
 runServer =
@@ -119,14 +123,15 @@ build :: Rules ()
 build =
     phony "build" $ do
         need ["prerequisites"]
+        need ["sync-images"]
         need ["images", "blogposts", siteDir </> "css/styles.css"]
 
 blogPosts :: Rules ()
 blogPosts = do
-    -- Builing posts cache
+    -- Building posts cache
     posts <- newCache $ \file -> do
         need [file]
-        liftIO $ decodePandocCache file
+        liftIO $ B.decodeFile file :: Action Pandoc
 
     postsList <- newCache $ \t -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
@@ -162,9 +167,6 @@ blogPosts = do
         liftIO $ renderToFile out $ T.indexPage $ renderList posts
 
     where
-        decodePandocCache :: FilePath -> IO Pandoc
-        decodePandocCache = B.decodeFile
-
         buildList :: PostsCache -> [Pandoc] -> Posts
         buildList _ [] = M.empty
         buildList PostsCacheById [p] = M.singleton (idFromPost p) p
@@ -192,19 +194,42 @@ blogPosts = do
                 rangeStart = (page - 1) * pageSize
                 rangeEnd = min (page * pageSize - 1) listLast
 
+buildImagesCache :: Rules ()
+buildImagesCache =
+    imagesBuildDir <//> "*.meta" %> \out -> do
+        let src' = imagesDir </> dropDirectory2 out
+        let src = take (length src' - 5) src'
+        need [src]
+        putNormal $ "Reading image " ++ src
+        Stdout pixel <- cmd "convert" src "-resize" "1x1!" "txt:-"
+        liftIO $ createDirectoryIfMissing True (takeDirectory out)
+        liftIO $ B.encodeFile out $ def
+            { imageColor = extractColor pixel}
+    where
+        extractColor p =
+            case p =~ pat :: (String, String, String, [String]) of
+                (_, _, _, [v]) -> v
+                _              -> error $ "Can't extract color from " ++ p
+            where
+                pat = " (#[0-9A-F]{6})[0-9A-F]{0,2} " -- Could be with opacity, drop it
 
 -- Building posts cache
 buildPostsCache :: Rules ()
-buildPostsCache =
+buildPostsCache = do
+    -- Building posts cache
+    images <- newCache $ \file -> do
+        need [file]
+        liftIO $ B.decodeFile file :: Action ImageMeta
+
     pandocBuildDir <//> "*.md" %> \out -> do
         let src = "posts" </> dropDirectory2 out
-        need ["sync-images", src]
+        need [src]
         putNormal $ "Reading post " ++ src
         file <- liftIO $ readFile src
         -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
         color <- if isNothing $ coverColor $ getPostCover meta
-            then liftIO $ calcPostColor $ coverImg $ getPostCover meta
+            then getImageColor images $ coverImg $ getPostCover meta
             else return $ coverColor $ getPostCover meta
         let updatedMeta = Meta $ M.alter (alterDate src) "date"
                                $ M.insert "id" (MetaString $ idFromSrcFilePath src)
@@ -218,29 +243,13 @@ buildPostsCache =
         alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
         alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
 
-        calcPostColor :: Maybe String -> IO (Maybe String)
-        calcPostColor (Just filePath)
-            | "/images/" `isPrefixOf` filePath && ".jpg" `isSuffixOf` filePath = do
-                exists <- D.doesFileExist $ tail filePath
-                unless exists $ error $ "Cover " ++ filePath ++ " not exists"
-                bs <- BS.readFile $ tail filePath
-                let img = either error extractImage $ decodeJpeg bs
-                let (r, g, b, c) = pixelFold
-                        (\(ra, ga, ba, c) _ _ (PixelRGB8 r g b) ->
-                            (ra + toInteger r, ga + toInteger g, ba + toInteger b, c + 1)) (0, 0, 0, 0) img
-                            :: (Integer, Integer, Integer, Integer)
-                return $ case c of
-                    0 -> Nothing
-                    _ -> Just $ "rgb(" ++ show (r `div` c) ++ "," ++ show (g `div` c) ++ "," ++ show (b `div` c) ++ ")"
+        getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
+        getImageColor images (Just filePath)
+            | "/images/" `isPrefixOf` filePath = do
+                meta <- images $ buildDir ++ filePath ++ ".meta"
+                return $ Just $ imageColor meta
             | otherwise = return Nothing
-        calcPostColor Nothing = return Nothing
-
-        extractImage :: DynamicImage -> Image PixelRGB8
-        extractImage (ImageY8 img) = convertImage img
-        extractImage (ImageRGB8 img) = img
-        extractImage (ImageCMYK8 img) = convertImage img
-        extractImage (ImageYCbCr8 img) = convertImage img
-        extractImage _ = error "Image colorspace not implemented"
+        getImageColor _ Nothing = return Nothing
 
         dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
 
@@ -274,7 +283,6 @@ images = do
                 )
 
     phony "images" $ do
-        need ["sync-images"]
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need [siteDir </> x | x <- imageFiles]
 

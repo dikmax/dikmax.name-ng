@@ -1,8 +1,7 @@
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE DeriveGeneric, FlexibleContexts #-}
 module Lib
     ( module Binary
+    , ImageMeta(..)
     , PostCoverType(..)
     , PostCover(..)
     , dropDirectory2
@@ -15,12 +14,13 @@ module Lib
     ) where
 
 import           Binary
-import           Codec.Picture.Types
+import           Data.Binary                (Binary (..))
 import           Data.Default
 import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake.FilePath
+import           GHC.Generics               (Generic)
 import           Text.Pandoc
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
@@ -41,18 +41,6 @@ instance Default PostCover where
         , coverHCenter = "center"
         , coverColor   = Nothing
         }
-
-
-splitAll :: String    -- ^ Pattern
-         -> String    -- ^ String to split
-         -> [String]  -- ^ Result
-splitAll p = filter (not . null) . splitAll'
-    where
-        splitAll' src = case listToMaybe (src =~~ p) of
-            Nothing     -> [src]
-            Just (o, l) ->
-                let (before, tmp) = splitAt o src
-                in before : splitAll' (drop l tmp)
 
 getMeta :: Pandoc -> Meta
 getMeta (Pandoc meta _) = meta
@@ -89,11 +77,37 @@ getPostTitle meta =
         Just (MetaInlines inlines) -> concatMap stringify inlines
         _                          -> "No proper title found."
 
+data ImageMeta = ImageMeta
+    { imageWidth :: Int
+    , imageHeight :: Int
+    , imageColor :: String
+    , imageThumbnail :: String
+    } deriving (Eq, Show, Generic)
+
+instance Binary ImageMeta
+
+instance Default ImageMeta where
+    def = ImageMeta
+        { imageWidth = 0
+        , imageHeight = 0
+        , imageColor = ""
+        , imageThumbnail = ""
+        }
+
+splitAll :: String    -- ^ Pattern
+         -> String    -- ^ String to split
+         -> [String]  -- ^ Result
+splitAll p = filter (not . null) . splitAll'
+    where
+        splitAll' src = case listToMaybe (src =~~ p) of
+            Nothing     -> [src]
+            Just (o, l) ->
+                let (before, tmp) = splitAt o src
+                in before : splitAll' (drop l tmp)
+
+
 dropDirectory2 :: FilePath -> FilePath
 dropDirectory2 = dropDirectory1 . dropDirectory1
 
 dropDirectory3 :: FilePath -> FilePath
 dropDirectory3 = dropDirectory2 . dropDirectory1
-
-instance ColorSpaceConvertible Pixel8 PixelRGB8 where
-    convertPixel v = PixelRGB8 v v v
