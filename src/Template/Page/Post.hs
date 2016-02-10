@@ -14,12 +14,12 @@ postPage :: Meta -> Html () -> Html ()
 postPage meta content = layout $ do
     let cover = getPostCover meta
     header_
-        [ class_ $ toStrict $
-            "header " `append` if coverType cover == CoverDark then "dark-background" else "light-background"
+        [ class_ "header"
         , style_ $ toStrict $
-            maybe "" (\i -> "background-image: url(" `append` pack i `append` ");") (coverImg cover)
-            `append` "background-position-x: " `append` pack (coverHCenter cover) `append` ";"
-            `append` "background-position-y: " `append` pack (coverVCenter cover) `append` ";"
+            maybe "" (\i -> "background-image:url(" `append` pack i `append` ");") (coverImg cover)
+            `append` maybe "" (\i -> "background-color:" `append` pack i `append` ";") (coverColor cover)
+            `append` "background-position-x:" `append` pack (coverHCenter cover) `append` ";"
+            `append` "background-position-y:" `append` pack (coverVCenter cover)
         ] $
         div_ [class_ "title-block"] $ do
             div_ [class_ "title"] $ toHtml $ pack $ getPostTitle meta

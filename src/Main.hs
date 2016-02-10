@@ -1,10 +1,14 @@
 
 module Main where
 
+import           Codec.Picture
+import           Codec.Picture.Types
 import           Control.Exception
 import           Control.Monad
 import qualified Data.Binary                as B
+import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Lazy       as LBS
+import           Data.Data
 import           Data.Hashable
 import           Data.List
 import qualified Data.Map.Lazy              as M
@@ -19,6 +23,7 @@ import           Lucid
 import           LucidWriter
 import           Server
 import           System.Directory           (createDirectoryIfMissing)
+import qualified System.Directory           as D
 import           System.Exit
 import qualified Template                   as T
 import           Text.Pandoc
@@ -103,9 +108,7 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        check "node"
-        check "npm"
-        check "rsync"
+        mapM_ check ["node", "npm", "rsync", "convert"]
     where
         check command = do
             Exit code <- cmd (EchoStdout False) "which" command
@@ -116,7 +119,6 @@ build :: Rules ()
 build =
     phony "build" $ do
         need ["prerequisites"]
-        need ["sync-images"]
         need ["images", "blogposts", siteDir </> "css/styles.css"]
 
 blogPosts :: Rules ()
@@ -196,13 +198,17 @@ buildPostsCache :: Rules ()
 buildPostsCache =
     pandocBuildDir <//> "*.md" %> \out -> do
         let src = "posts" </> dropDirectory2 out
-        need [src]
+        need ["sync-images", src]
         putNormal $ "Reading post " ++ src
         file <- liftIO $ readFile src
         -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
-            updatedMeta = Meta $ M.alter (alterDate src) "date"
+        color <- if isNothing $ coverColor $ getPostCover meta
+            then liftIO $ calcPostColor $ coverImg $ getPostCover meta
+            else return $ coverColor $ getPostCover meta
+        let updatedMeta = Meta $ M.alter (alterDate src) "date"
                                $ M.insert "id" (MetaString $ idFromSrcFilePath src)
+                               $ M.insert "cover" (setPostCover $ (getPostCover meta) {coverColor = color})
                                $ unMeta meta
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out (Pandoc updatedMeta content)
@@ -211,6 +217,30 @@ buildPostsCache =
         alterDate _ r@(Just (MetaString _)) = r
         alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
         alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
+
+        calcPostColor :: Maybe String -> IO (Maybe String)
+        calcPostColor (Just filePath)
+            | "/images/" `isPrefixOf` filePath && ".jpg" `isSuffixOf` filePath = do
+                exists <- D.doesFileExist $ tail filePath
+                unless exists $ error $ "Cover " ++ filePath ++ " not exists"
+                bs <- BS.readFile $ tail filePath
+                let img = either error extractImage $ decodeJpeg bs
+                let (r, g, b, c) = pixelFold
+                        (\(ra, ga, ba, c) _ _ (PixelRGB8 r g b) ->
+                            (ra + toInteger r, ga + toInteger g, ba + toInteger b, c + 1)) (0, 0, 0, 0) img
+                            :: (Integer, Integer, Integer, Integer)
+                return $ case c of
+                    0 -> Nothing
+                    _ -> Just $ "rgb(" ++ show (r `div` c) ++ "," ++ show (g `div` c) ++ "," ++ show (b `div` c) ++ ")"
+            | otherwise = return Nothing
+        calcPostColor Nothing = return Nothing
+
+        extractImage :: DynamicImage -> Image PixelRGB8
+        extractImage (ImageY8 img) = convertImage img
+        extractImage (ImageRGB8 img) = img
+        extractImage (ImageCMYK8 img) = convertImage img
+        extractImage (ImageYCbCr8 img) = convertImage img
+        extractImage _ = error "Image colorspace not implemented"
 
         dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
 
@@ -229,6 +259,7 @@ styles =
 images :: Rules ()
 images = do
     phony "sync-images" $ do
+        putNormal "Syncing images"
         srcImagesDir <- getConfig "IMAGES_DIR"
         when (isJust srcImagesDir) $ do
             let dir = fromMaybe "" srcImagesDir
@@ -243,6 +274,7 @@ images = do
                 )
 
     phony "images" $ do
+        need ["sync-images"]
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need [siteDir </> x | x <- imageFiles]
 

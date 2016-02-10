@@ -1,4 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 module Lib
     ( module Binary
     , PostCoverType(..)
@@ -8,10 +10,12 @@ module Lib
     , getPostCover
     , getPostTitle
     , getMeta
+    , setPostCover
     , splitAll
     ) where
 
 import           Binary
+import           Codec.Picture.Types
 import           Data.Default
 import           Data.List
 import qualified Data.Map.Lazy              as M
@@ -27,7 +31,7 @@ data PostCover = PostCover
     { coverImg     :: Maybe String
     , coverVCenter :: String
     , coverHCenter :: String
-    , coverType    :: PostCoverType
+    , coverColor   :: Maybe String
     } deriving (Eq)
 
 instance Default PostCover where
@@ -35,7 +39,7 @@ instance Default PostCover where
         { coverImg     = Nothing
         , coverVCenter = "center"
         , coverHCenter = "center"
-        , coverType    = CoverDark
+        , coverColor   = Nothing
         }
 
 
@@ -63,7 +67,7 @@ getPostCover meta =
             { coverImg     = extractString $ M.lookup "img" m
             , coverVCenter = fromMaybe "center" $ extractString $ M.lookup "vcenter" m
             , coverHCenter = fromMaybe "center" $ extractString $ M.lookup "hcenter" m
-            , coverType    = extractType $ M.lookup "background" m
+            , coverColor   = extractString $ M.lookup "color" m
             }
 
         extractString :: Maybe MetaValue -> Maybe String
@@ -71,12 +75,12 @@ getPostCover meta =
         extractString (Just (MetaInlines inlines)) = Just $ concatMap stringify inlines
         extractString _ = Nothing
 
-        extractType :: Maybe MetaValue -> PostCoverType
-        extractType (Just (MetaString str)) =
-            if str == "light" then CoverLight else CoverDark
-        extractType (Just (MetaInlines inlines)) =
-            if concatMap stringify inlines == "light" then CoverLight else CoverDark
-        extractType _ = CoverDark
+setPostCover :: PostCover -> MetaValue
+setPostCover cover =
+    MetaMap $ M.fromList $
+        [("img", MetaString $ fromMaybe "" $ coverImg cover) |isJust $ coverImg cover ] ++
+        [("vcenter", MetaString $ coverVCenter cover), ("hcenter", MetaString $ coverHCenter cover)] ++
+        [("color", MetaString $ fromMaybe "" $ coverColor cover) | isJust $ coverColor cover]
 
 getPostTitle :: Meta -> String
 getPostTitle meta =
@@ -90,3 +94,6 @@ dropDirectory2 = dropDirectory1 . dropDirectory1
 
 dropDirectory3 :: FilePath -> FilePath
 dropDirectory3 = dropDirectory2 . dropDirectory1
+
+instance ColorSpaceConvertible Pixel8 PixelRGB8 where
+    convertPixel v = PixelRGB8 v v v

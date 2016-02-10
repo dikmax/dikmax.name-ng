@@ -21,8 +21,10 @@
     @nest & .title-block {
         /* TODO */
         position: absolute * * 0 *;
-        box-shadow: 0 0px 100px 71px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
+        color: var(--dark-background-text);
         background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px 10px 0 0;
 
         @media (--sm-screen) {
             padding: 0 0 57px 0;
@@ -37,35 +39,5 @@
 
     @nest & .date {
         font-style: italic;
-    }
-
-    @nest & .tags {
-        display: none;
-        position: fixed 100px 0 * *;
-
-        @media (--sm-screen) {
-            display: block;
-        }
-
-        @nest & a {
-            display: block;
-            float: right;
-            clear: right;
-            lost-utility: clearfix;
-            color: var(--dark-background-text);
-            font-size: 80%;
-            text-decoration: none;
-            font-style: italic;
-            background-color: var(--primary-color);
-            padding: 4px 8px 4px 12px;
-            margin: 4px *;
-
-            @mixin shadow-2dp;
-
-            @nest &:before {
-                content: '#';
-                display: inline;
-            }
-        }
     }
 }
