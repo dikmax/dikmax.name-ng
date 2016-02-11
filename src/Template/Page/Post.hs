@@ -12,15 +12,9 @@ import           Text.Pandoc
 
 postPage :: Meta -> Html () -> Html ()
 postPage meta content = layout $ do
-    let cover = getPostCover meta
     header_
         [ class_ "header"
-        , style_ $ toStrict $
-            maybe "" (\i -> "background-image:url(" `append` pack i `append` ");") (coverImg cover)
-            `append` maybe "" (\i -> "background-color:" `append` pack i `append` ";") (coverColor cover)
-            `append` "background-position-x:" `append` pack (coverHCenter cover) `append` ";"
-            `append` "background-position-y:" `append` pack (coverVCenter cover)
-        ] $
+        , coverToStyle $ getPostCover meta ] $
         div_ [class_ "title-block"] $ do
             div_ [class_ "title"] $ toHtml $ pack $ getPostTitle meta
             div_ [data_ "post-date" "2015-10-02T08:25:00+0000", class_ "date"] "Пятница, 2 октября 2015" -- TODO

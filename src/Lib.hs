@@ -1,7 +1,6 @@
-{-# LANGUAGE DeriveGeneric, FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Lib
-    ( module Binary
-    , ImageMeta(..)
+    ( ImageMeta(..)
     , PostCoverType(..)
     , PostCover(..)
     , dropDirectory2
@@ -13,34 +12,13 @@ module Lib
     , splitAll
     ) where
 
-import           Binary
-import           Data.Binary                (Binary (..))
-import           Data.Default
-import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake.FilePath
-import           GHC.Generics               (Generic)
 import           Text.Pandoc
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
-
-data PostCoverType = CoverLight | CoverDark deriving (Eq)
-
-data PostCover = PostCover
-    { coverImg     :: Maybe String
-    , coverVCenter :: String
-    , coverHCenter :: String
-    , coverColor   :: Maybe String
-    } deriving (Eq)
-
-instance Default PostCover where
-    def = PostCover
-        { coverImg     = Nothing
-        , coverVCenter = "center"
-        , coverHCenter = "center"
-        , coverColor   = Nothing
-        }
+import           Types
 
 getMeta :: Pandoc -> Meta
 getMeta (Pandoc meta _) = meta
@@ -76,23 +54,6 @@ getPostTitle meta =
         Just (MetaString str)      -> str
         Just (MetaInlines inlines) -> concatMap stringify inlines
         _                          -> "No proper title found."
-
-data ImageMeta = ImageMeta
-    { imageWidth :: Int
-    , imageHeight :: Int
-    , imageColor :: String
-    , imageThumbnail :: String
-    } deriving (Eq, Show, Generic)
-
-instance Binary ImageMeta
-
-instance Default ImageMeta where
-    def = ImageMeta
-        { imageWidth = 0
-        , imageHeight = 0
-        , imageColor = ""
-        , imageThumbnail = ""
-        }
 
 splitAll :: String    -- ^ Pattern
          -> String    -- ^ String to split

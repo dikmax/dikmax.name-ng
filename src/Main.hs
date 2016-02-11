@@ -60,8 +60,8 @@ blog :: Rules ()
 blog = do
     -- Building posts cache
     posts <- newCache $ \file -> do
-        need [file]
-        liftIO $ B.decodeFile file :: Action Pandoc
+        need [pandocCacheDir </> file]
+        liftIO $ B.decodeFile $ pandocCacheDir </> file :: Action Pandoc
 
     -- Building images cache
     images <- newCache $ \file -> do
@@ -70,8 +70,7 @@ blog = do
 
     postsList <- newCache $ \t -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
-        let cacheFiles = map (\file -> pandocCacheDir </> file) postFiles
-        postCacheContent <- mapM posts cacheFiles
+        postCacheContent <- mapM posts postFiles
         return $ buildList t postCacheContent
 
     phony "blogposts" $ do
@@ -80,7 +79,6 @@ blog = do
         let (d,m) = M.size ps `divMod` pageSize
         let listFilePaths = [sitePagesDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 1 else 0)]]
         need $ postsFilePaths ++ [siteDir </> indexHtml] ++ listFilePaths
-        -- putNormal $ show $ M.keys ps
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheById
@@ -91,20 +89,22 @@ blog = do
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let page = (read $ idFromDestFilePath out) :: Int
-        let posts = postsPage ps page
+        let postsOnPage = getPostsForPage ps page
         putNormal $ "Writing page " ++ out
-        liftIO $  renderToFile out $ T.listPage $ renderList posts
+        liftIO $  renderToFile out $ T.listPage $ renderList postsOnPage
 
+    -- Main page
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
-        let posts = postsPage ps 1
+        let postsOnPage = getPostsForPage ps 1
+        welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.indexPage $ renderList posts
+        liftIO $ renderToFile out $ T.indexPage (getMeta welcome) (writeLucid def welcome) (renderList postsOnPage)
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
-        need [src]
         putNormal $ "Reading post " ++ src
+        need [src]
         file <- liftIO $ readFile src
         -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
@@ -112,7 +112,7 @@ blog = do
             then getImageColor images $ coverImg $ getPostCover meta
             else return $ coverColor $ getPostCover meta
         let updatedMeta = Meta $ M.alter (alterDate src) "date"
-                               $ M.insert "id" (MetaString $ idFromSrcFilePath src)
+                               $ M.alter (\_ -> MetaString <$> idFromSrcFilePath src) "id"
                                $ M.insert "cover" (setPostCover $ (getPostCover meta) {coverColor = color})
                                $ unMeta meta
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
@@ -139,7 +139,7 @@ blog = do
         renderList :: [Pandoc] -> [Html ()]
         renderList = map (writeLucid def)
 
-        postsPage ps page =
+        getPostsForPage ps page =
             [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
             where
                 listLast = M.size ps - 1
@@ -249,11 +249,11 @@ dateFromPost (Pandoc meta _) = maybe (error "Post have no date") getDate $ looku
         getDate (MetaString s) = s
         getDate s = error $ "Post date field have wrong value: " ++ show s
 
-idFromSrcFilePath :: FilePath -> String
+idFromSrcFilePath :: FilePath -> Maybe String
 idFromSrcFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [v]) -> v
-        _              -> error $ "Can't extract id from " ++ filePath
+        (_, _, _, [v]) -> Just v
+        _              -> Nothing
     where
         pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
 
