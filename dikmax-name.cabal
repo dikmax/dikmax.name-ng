@@ -17,9 +17,11 @@ executable dikmax.name
   hs-source-dirs:      src
   main-is:             Main.hs
   other-modules:       Binary
+                     , Config
                      , FileServe
                      , Lib
                      , LucidWriter
+                     , Rules
                      , Server
                      , Template
                      , Template.Common
@@ -30,7 +32,8 @@ executable dikmax.name
                      , Template.Page.Post
                      , Template.PostList
                      , Template.Subscribe
-  ghc-options:         -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
+                     , Types
+  ghc-options:         -Wall -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base
                      , binary >= 0.7 && < 0.9
                      , bytestring >= 0.10 && < 0.11

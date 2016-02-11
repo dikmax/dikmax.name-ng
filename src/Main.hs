@@ -1,13 +1,9 @@
 
 module Main where
 
-import           Control.Exception
+import           Config
 import           Control.Monad
 import qualified Data.Binary                as B
-import qualified Data.ByteString            as BS
-import qualified Data.ByteString.Lazy       as LBS
-import           Data.Data
-import           Data.Hashable
 import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
@@ -19,50 +15,15 @@ import           Development.Shake.Util
 import           Lib
 import           Lucid
 import           LucidWriter
-import           Server
+import           Rules
 import           System.Directory           (createDirectoryIfMissing)
-import qualified System.Directory           as D
-import           System.Exit
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
+import           Types
 
-type Posts = M.Map String Pandoc
-
-data PostsCache = PostsCacheById | PostsCacheByDate deriving (Eq)
-instance Hashable PostsCache where
-    hashWithSalt _ PostsCacheById = 0
-    hashWithSalt _ PostsCacheByDate = 1
-
-pageSize :: Int
-pageSize = 5
-
-buildDir = "_build"
-pandocBuildDir = buildDir </> "pandoc"
-imagesBuildDir = buildDir </> "images"
-shakeBuildDir = buildDir </> "shake"
-
-siteDir = buildDir </> "site"
-sitePostsDir = siteDir </> "post"
-sitePagesDir = siteDir </> "page"
-indexHtml = "index.html"
-
-nodeModulesDir = "node_modules"
-nodeModulesBinDir = nodeModulesDir </> ".bin"
-
-imagesDir = "images"
-
-postcss = nodeModulesBinDir </> "postcss"
-
-options :: ShakeOptions
-options = shakeOptions
-    { shakeFiles    = shakeBuildDir
-    , shakeThreads  = 0
-    , shakeTimings  = True
-    , shakeProgress = progressSimple
-    }
 
 readerOptions :: ReaderOptions
 readerOptions = def
@@ -75,48 +36,17 @@ main = shakeArgs options $ do
     usingConfigFile "build.cfg"
     want ["build"]
     clean
+
     runServer
     prerequisites
     build
     styles
     images
-    blogPosts
+    blog
 
     buildImagesCache
-    buildPostsCache
 
     npmPackages
-
-clean :: Rules ()
-clean = do
-    phony "clean" $ do
-        putNormal $ "Cleaning files in " ++ siteDir
-        removeFilesAfter siteDir ["//*"]
-
-    phony "full-clean" $ do
-        putNormal $ "Cleaning files in " ++ buildDir
-        removeFilesAfter buildDir ["//*"]
-
-runServer :: Rules ()
-runServer =
-    phony "server" $ do
-        liftIO $ createDirectoryIfMissing True "log"
-        accessLog <- doesFileExist "log/access.log"
-        unless accessLog $ liftIO $ writeFile "log/access.log" ""
-        errorLog <- doesFileExist "log/error.log"
-        unless errorLog $ liftIO $ writeFile "log/error.log" ""
-
-        liftIO $ server siteDir
-
-prerequisites :: Rules ()
-prerequisites =
-    phony "prerequisites" $ do
-        putNormal "Checking prerequisites"
-        mapM_ check ["node", "npm", "rsync", "convert"]
-    where
-        check command = do
-            Exit code <- cmd (EchoStdout False) "which" command
-            when (code /= ExitSuccess) $ error $ "PREREQUISITE: '" ++ command ++ "' is not available"
 
 
 build :: Rules ()
@@ -126,16 +56,21 @@ build =
         need ["sync-images"]
         need ["images", "blogposts", siteDir </> "css/styles.css"]
 
-blogPosts :: Rules ()
-blogPosts = do
+blog :: Rules ()
+blog = do
     -- Building posts cache
     posts <- newCache $ \file -> do
         need [file]
         liftIO $ B.decodeFile file :: Action Pandoc
 
+    -- Building images cache
+    images <- newCache $ \file -> do
+        need [file]
+        liftIO $ B.decodeFile file :: Action ImageMeta
+
     postsList <- newCache $ \t -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
-        let cacheFiles = map (\file -> pandocBuildDir </> dropDirectory1 file) postFiles
+        let cacheFiles = map (\file -> pandocCacheDir </> file) postFiles
         postCacheContent <- mapM posts cacheFiles
         return $ buildList t postCacheContent
 
@@ -166,6 +101,23 @@ blogPosts = do
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.indexPage $ renderList posts
 
+    pandocCacheDir <//> "*.md" %> \out -> do
+        let src = dropDirectory2 out
+        need [src]
+        putNormal $ "Reading post " ++ src
+        file <- liftIO $ readFile src
+        -- Set "date" from fileName if not present + change field type
+        let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
+        color <- if isNothing $ coverColor $ getPostCover meta
+            then getImageColor images $ coverImg $ getPostCover meta
+            else return $ coverColor $ getPostCover meta
+        let updatedMeta = Meta $ M.alter (alterDate src) "date"
+                               $ M.insert "id" (MetaString $ idFromSrcFilePath src)
+                               $ M.insert "cover" (setPostCover $ (getPostCover meta) {coverColor = color})
+                               $ unMeta meta
+        liftIO $ createDirectoryIfMissing True (takeDirectory out)
+        liftIO $ B.encodeFile out (Pandoc updatedMeta content)
+
     where
         buildList :: PostsCache -> [Pandoc] -> Posts
         buildList _ [] = M.empty
@@ -194,6 +146,22 @@ blogPosts = do
                 rangeStart = (page - 1) * pageSize
                 rangeEnd = min (page * pageSize - 1) listLast
 
+        alterDate :: FilePath -> Maybe MetaValue -> Maybe MetaValue
+        alterDate _ r@(Just (MetaString _)) = r
+        alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
+        alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
+
+        getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
+        getImageColor images (Just filePath)
+            | "/images/" `isPrefixOf` filePath = do
+                meta <- images $ buildDir ++ filePath ++ ".meta"
+                return $ Just $ imageColor meta
+            | otherwise = return Nothing
+        getImageColor _ Nothing = return Nothing
+
+        dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
+
+
 buildImagesCache :: Rules ()
 buildImagesCache =
     imagesBuildDir <//> "*.meta" %> \out -> do
@@ -212,46 +180,6 @@ buildImagesCache =
                 _              -> error $ "Can't extract color from " ++ p
             where
                 pat = " (#[0-9A-F]{6})[0-9A-F]{0,2} " -- Could be with opacity, drop it
-
--- Building posts cache
-buildPostsCache :: Rules ()
-buildPostsCache = do
-    -- Building posts cache
-    images <- newCache $ \file -> do
-        need [file]
-        liftIO $ B.decodeFile file :: Action ImageMeta
-
-    pandocBuildDir <//> "*.md" %> \out -> do
-        let src = "posts" </> dropDirectory2 out
-        need [src]
-        putNormal $ "Reading post " ++ src
-        file <- liftIO $ readFile src
-        -- Set "date" from fileName if not present + change field type
-        let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
-        color <- if isNothing $ coverColor $ getPostCover meta
-            then getImageColor images $ coverImg $ getPostCover meta
-            else return $ coverColor $ getPostCover meta
-        let updatedMeta = Meta $ M.alter (alterDate src) "date"
-                               $ M.insert "id" (MetaString $ idFromSrcFilePath src)
-                               $ M.insert "cover" (setPostCover $ (getPostCover meta) {coverColor = color})
-                               $ unMeta meta
-        liftIO $ createDirectoryIfMissing True (takeDirectory out)
-        liftIO $ B.encodeFile out (Pandoc updatedMeta content)
-    where
-        alterDate :: FilePath -> Maybe MetaValue -> Maybe MetaValue
-        alterDate _ r@(Just (MetaString _)) = r
-        alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
-        alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
-
-        getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
-        getImageColor images (Just filePath)
-            | "/images/" `isPrefixOf` filePath = do
-                meta <- images $ buildDir ++ filePath ++ ".meta"
-                return $ Just $ imageColor meta
-            | otherwise = return Nothing
-        getImageColor _ Nothing = return Nothing
-
-        dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
 
 
 -- Build styles

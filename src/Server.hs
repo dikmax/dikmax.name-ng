@@ -6,7 +6,6 @@ import           Control.Applicative
 import           FileServe
 import           Snap.Core
 import           Snap.Http.Server
-import           Data.ByteString as B
 
 server :: FilePath -> IO ()
 server = quickHttpServe . site
