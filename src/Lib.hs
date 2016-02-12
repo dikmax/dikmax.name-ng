@@ -17,6 +17,7 @@ import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake.FilePath
 import           Text.Pandoc
+import           Text.Pandoc.Lens
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
 import           Types

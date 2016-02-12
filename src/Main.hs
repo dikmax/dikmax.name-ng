@@ -15,12 +15,12 @@ import           Development.Shake.FilePath
 import           Development.Shake.Util
 import           Lib
 import           Lucid
-import           LucidWriter
 import           Rules
 import           System.Directory           (createDirectoryIfMissing)
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
+import           Text.Pandoc.LucidWriter
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
 import           Types

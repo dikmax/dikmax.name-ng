@@ -16,11 +16,9 @@ cabal-version:       >=1.10
 executable dikmax.name
   hs-source-dirs:      src
   main-is:             Main.hs
-  other-modules:       Binary
-                     , Config
+  other-modules:       Config
                      , FileServe
                      , Lib
-                     , LucidWriter
                      , Rules
                      , Server
                      , Template
@@ -32,6 +30,9 @@ executable dikmax.name
                      , Template.Page.Post
                      , Template.PostList
                      , Template.Subscribe
+                     , Text.Pandoc.Binary
+                     , Text.Pandoc.Lens
+                     , Text.Pandoc.LucidWriter
                      , Types
   ghc-options:         -Wall -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base
@@ -46,6 +47,7 @@ executable dikmax.name
                      , lucid >= 2.9 && < 2.10
                      , mtl >= 2.2 && < 2.3
                      , pandoc >= 1.16 && < 1.17
+                     , pandoc-types >= 1.16 && < 1.17
                      , regex-posix >= 0.95 && < 1.0
                      , shake >= 0.15 && < 0.16
                      , snap-core >= 0.9.8 && < 1.0

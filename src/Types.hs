@@ -1,7 +1,6 @@
 {-# LANGUAGE DeriveGeneric, TemplateHaskell #-}
 module Types where
 
-import           Binary ()
 import           Control.Lens
 import           Data.Binary
 import           Data.Default
@@ -9,6 +8,7 @@ import           Data.Hashable
 import qualified Data.Map.Lazy              as M
 import           GHC.Generics               (Generic)
 import           Text.Pandoc
+import           Text.Pandoc.Binary ()
 
 type Posts = M.Map String Pandoc
 

@@ -1,4 +1,4 @@
-module Binary where
+module Text.Pandoc.Binary where
 
 import           Data.Binary (Binary (..))
 import           Text.Pandoc

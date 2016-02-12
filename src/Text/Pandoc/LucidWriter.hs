@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module LucidWriter (writeLucid, writeLucidString) where
+module Text.Pandoc.LucidWriter (writeLucid, writeLucidString) where
 
 import           Control.Monad.State
 import           Data.Data
