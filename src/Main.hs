@@ -3,6 +3,7 @@ module Main where
 
 import           Config
 import           Control.Monad
+import           Control.Lens
 import qualified Data.Binary                as B
 import           Data.List
 import qualified Data.Map.Lazy              as M
@@ -108,16 +109,15 @@ blog = do
         file <- liftIO $ readFile src
         -- Set "date" from fileName if not present + change field type
         let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
-        color <- if isNothing $ coverColor $ getPostCover meta
-            then getImageColor images $ coverImg $ getPostCover meta
-            else return $ coverColor $ getPostCover meta
+        color <- if isNothing $ getPostCover meta ^. coverColor
+            then getImageColor images $ getPostCover meta ^. coverImg
+            else return $ getPostCover meta ^. coverColor
         let updatedMeta = Meta $ M.alter (alterDate src) "date"
                                $ M.alter (\_ -> MetaString <$> idFromSrcFilePath src) "id"
-                               $ M.insert "cover" (setPostCover $ (getPostCover meta) {coverColor = color})
+                               $ M.insert "cover" (setPostCover $ (getPostCover meta) & coverColor .~ color)
                                $ unMeta meta
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out (Pandoc updatedMeta content)
-
     where
         buildList :: PostsCache -> [Pandoc] -> Posts
         buildList _ [] = M.empty

@@ -12,6 +12,7 @@ module Lib
     , splitAll
     ) where
 
+import           Control.Lens
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake.FilePath
@@ -30,10 +31,10 @@ getPostCover meta =
         _                -> def
     where
         cover m = PostCover
-            { coverImg     = extractString $ M.lookup "img" m
-            , coverVCenter = fromMaybe "center" $ extractString $ M.lookup "vcenter" m
-            , coverHCenter = fromMaybe "center" $ extractString $ M.lookup "hcenter" m
-            , coverColor   = extractString $ M.lookup "color" m
+            { _coverImg     = extractString $ M.lookup "img" m
+            , _coverVCenter = fromMaybe "center" $ extractString $ M.lookup "vcenter" m
+            , _coverHCenter = fromMaybe "center" $ extractString $ M.lookup "hcenter" m
+            , _coverColor   = extractString $ M.lookup "color" m
             }
 
         extractString :: Maybe MetaValue -> Maybe String
@@ -44,9 +45,9 @@ getPostCover meta =
 setPostCover :: PostCover -> MetaValue
 setPostCover cover =
     MetaMap $ M.fromList $
-        [("img", MetaString $ fromMaybe "" $ coverImg cover) |isJust $ coverImg cover ] ++
-        [("vcenter", MetaString $ coverVCenter cover), ("hcenter", MetaString $ coverHCenter cover)] ++
-        [("color", MetaString $ fromMaybe "" $ coverColor cover) | isJust $ coverColor cover]
+        [("img", MetaString $ fromMaybe "" $ cover ^. coverImg) | isJust $ cover ^. coverImg ] ++
+        [("vcenter", MetaString $ cover ^. coverVCenter), ("hcenter", MetaString $ cover ^. coverHCenter)] ++
+        [("color", MetaString $ fromMaybe "" $ cover ^. coverColor) | isJust $ cover ^. coverColor]
 
 getPostTitle :: Meta -> String
 getPostTitle meta =

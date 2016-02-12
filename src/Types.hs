@@ -1,14 +1,14 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric, TemplateHaskell #-}
 module Types where
 
 import           Binary ()
+import           Control.Lens
 import           Data.Binary
 import           Data.Default
 import           Data.Hashable
 import qualified Data.Map.Lazy              as M
 import           GHC.Generics               (Generic)
 import           Text.Pandoc
-
 
 type Posts = M.Map String Pandoc
 
@@ -20,19 +20,21 @@ instance Hashable PostsCache where
 data PostCoverType = CoverLight | CoverDark deriving (Eq)
 
 data PostCover = PostCover
-    { coverImg     :: Maybe String
-    , coverVCenter :: String
-    , coverHCenter :: String
-    , coverColor   :: Maybe String
+    { _coverImg     :: Maybe String
+    , _coverVCenter :: String
+    , _coverHCenter :: String
+    , _coverColor   :: Maybe String
     } deriving (Eq)
 
 instance Default PostCover where
     def = PostCover
-        { coverImg     = Nothing
-        , coverVCenter = "center"
-        , coverHCenter = "center"
-        , coverColor   = Nothing
+        { _coverImg     = Nothing
+        , _coverVCenter = "center"
+        , _coverHCenter = "center"
+        , _coverColor   = Nothing
         }
+
+makeLenses ''PostCover
 
 data ImageMeta = ImageMeta
     { imageWidth :: Int
