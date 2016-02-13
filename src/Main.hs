@@ -88,14 +88,15 @@ blog = do
         ps <- postsList PostsCacheByDate
         let page = (read $ idFromDestFilePath out) :: Int
         let postsOnPage = getPostsForPage ps page
+        let olderPage = getOlderPage ps page
+        let newerPage = getNewerPage ps page
         putNormal $ "Writing page " ++ out
-        liftIO $  renderToFile out $ T.listPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage olderPage newerPage postsOnPage
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let postsOnPage = getPostsForPage ps 1
-        putNormal $ show $ extractTeaser ((postsOnPage !! 1) ^. fileContent)
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.indexPage welcome postsOnPage
@@ -144,6 +145,16 @@ blog = do
                 listLast = M.size ps - 1
                 rangeStart = (page - 1) * pageSize
                 rangeEnd = min (page * pageSize - 1) listLast
+
+        getOlderPage ps page
+            | page * pageSize - 1 >= listLast = Nothing
+            | otherwise = Just $ "/page/" ++ show (page + 1) ++ "/"
+            where
+                listLast = M.size ps - 1
+
+        getNewerPage _ page
+            | page == 1 = Nothing
+            | otherwise = Just $ "/page/" ++ show (page - 1) ++ "/"
 
         alterDate :: FilePath -> String -> String
         alterDate filePath "" = dateFromFilePath filePath

@@ -22,4 +22,4 @@ indexPage welcome posts = layout $ do
 
     navigation
     subscribe
-    postList posts
+    postList (Just "/page/2/") Nothing posts

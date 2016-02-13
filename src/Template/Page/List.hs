@@ -9,7 +9,7 @@ import           Template.PostList
 import           Types
 
 
-listPage :: [File] -> Html ()
-listPage posts = layout $ do
+listPage :: Maybe String -> Maybe String -> [File] -> Html ()
+listPage olderPage newerPage posts = layout $ do
     navigation
-    postList posts
+    postList olderPage newerPage posts
