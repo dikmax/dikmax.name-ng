@@ -3,10 +3,10 @@
         "postcss-import",
         "postcss-mixins",
         "postcss-cssnext",
-        "postcss-short",
         "lost",
         "postcss-responsive-type",
         "postcss-quantity-queries",
+        "postcss-short",
         "postcss-normalize"
     ],
     "cssnext": {

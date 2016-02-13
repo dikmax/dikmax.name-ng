@@ -10,6 +10,7 @@ layout content = doctypehtml_ $ do
     head_ $ do
         meta_ [charset_ "UTF-8"]
         title_ "Document" -- TODO
+        meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0"]
         link_ [rel_ "stylesheet", href_ "/css/styles.css"]
     body_ $ do
         content

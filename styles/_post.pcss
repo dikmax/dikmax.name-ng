@@ -4,7 +4,7 @@
     z-index: 2;
 
     @nest & > * {
-        width: 100%;
+        width: calc(100% - var(--body-padding)*2);
         lost-center: var(--body-width) var(--body-padding);
 
         margin: calc(var(--body-font-size) * 2.5) *;
@@ -27,7 +27,7 @@
             position: absolute;
             padding-left: var(--body-padding);
             font-size: 160px;
-            color: color(#b3b3b3 a(0.75));
+            color: color(#b3b3b3 a(0.5));
             margin-top: -65px;
             z-index: 1;
         }
