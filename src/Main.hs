@@ -18,7 +18,6 @@ import           System.Directory           (createDirectoryIfMissing)
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
-import Text.Pandoc.Utils
 import           Text.Regex.Posix
 import           Types
 
@@ -75,7 +74,7 @@ blog = do
         ps <- postsList PostsCacheById
         let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
         let (d,m) = M.size ps `divMod` pageSize
-        let listFilePaths = [sitePagesDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 1 else 0)]]
+        let listFilePaths = [sitePagesDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
         need $ postsFilePaths ++ [siteDir </> indexHtml] ++ listFilePaths
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
@@ -140,7 +139,7 @@ blog = do
                 else M.insert key p listRest
 
         getPostsForPage ps page =
-            [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
+            reverse [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
             where
                 listLast = M.size ps - 1
                 rangeStart = (page - 1) * pageSize

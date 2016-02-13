@@ -33,6 +33,7 @@ executable dikmax.name
                      , Text.Pandoc.Binary
                      , Text.Pandoc.Lens
                      , Text.Pandoc.LucidWriter
+                     , Text.Pandoc.Utils
                      , Types
   ghc-options:         -Wall -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base

@@ -15,14 +15,14 @@ import           Types
 
 postList :: Maybe String -> Maybe String -> [File] -> Html ()
 postList olderPage newerPage posts =
-    div_ [class_ "main-container"] $ do
+    div_ [class_ "main-container list-container"] $ do
         mconcat $ map postSingle posts
 
         when (isJust olderPage || isJust newerPage) $
             div_ [class_ "pager"] $ do
-                maybe (mempty) (\link ->
+                maybe (span_ [] mempty) (\link ->
                     a_ [href_ $ pack link, class_ "previous"] "← Старше") olderPage
-                maybe (mempty) (\link ->
+                maybe (span_ [] mempty) (\link ->
                     a_ [href_ $ pack link, class_ "next"] "Моложе →") newerPage
 
 postSingle :: File -> Html ()
@@ -38,7 +38,7 @@ postSingle file =
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
 
-        maybe (mempty) (\(doc, teaser) -> do
+        maybe (div_ [class_ "description"] $ writeLucid def $ file ^. fileContent) (\(doc, teaser) -> do
             div_ [class_ "description"] $ writeLucid def doc
 
             div_ [class_ "read-more"] $
