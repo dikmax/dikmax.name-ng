@@ -2,10 +2,13 @@
 
 module Template.PostList (postList) where
 
+import           Config
 import           Control.Lens
+import           Data.Text hiding (map)
 import           Lucid
 import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
+import           Text.Pandoc.Utils
 import           Types
 
 postList :: [File] -> Html ()
@@ -21,12 +24,21 @@ postSingle :: File -> Html ()
 postSingle file =
     div_ [class_ "list-post"] $ do
         h1_ [class_ "title"] $
-            a_ [href_ "post.html"] "Осень в Минске"
+            a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml (file ^. fileMeta ^. postTitle)
 
-        div_ [class_ "cover"] $
-            img_ [src_ "images/cover.jpg", alt_ ""]
+        maybe (mempty) (\cover ->
+            div_ [class_ "cover"] $
+                a_ [href_ $ url (file ^. fileMeta ^. postId)] $
+                    img_ [src_ $ pack cover, alt_ ""]
+            ) $ file ^. fileMeta ^. postCover ^. coverImg
 
-        div_ [class_ "description"] $ writeLucid def $ file ^. fileContent
 
-        div_ [class_ "read-more"] $
-            a_ [href_ "#"] "Читать далее..."
+        maybe (mempty) (\(doc, teaser) -> do
+            div_ [class_ "description"] $ writeLucid def doc
+
+            div_ [class_ "read-more"] $
+                a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml $ if teaser == "" then defaultReadMoreText else teaser
+            ) $ extractTeaser $ file ^. fileContent
+    where
+        url :: String -> Text
+        url id' = "/post/" `append` pack id' `append` "/"

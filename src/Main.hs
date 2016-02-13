@@ -9,10 +9,8 @@ import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake
-import           Development.Shake.Command
 import           Development.Shake.Config
 import           Development.Shake.FilePath
-import           Development.Shake.Util
 import           Lib
 import           Lucid
 import           Rules
@@ -20,8 +18,7 @@ import           System.Directory           (createDirectoryIfMissing)
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
-import           Text.Pandoc.LucidWriter
-import           Text.Pandoc.Shared
+import Text.Pandoc.Utils
 import           Text.Regex.Posix
 import           Types
 
@@ -42,7 +39,7 @@ main = shakeArgs options $ do
     prerequisites
     build
     styles
-    images
+    imagesRules
     blog
 
     buildImagesCache
@@ -98,6 +95,7 @@ blog = do
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let postsOnPage = getPostsForPage ps 1
+        putNormal $ show $ extractTeaser ((postsOnPage !! 1) ^. fileContent)
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.indexPage welcome postsOnPage
@@ -193,8 +191,8 @@ styles =
 
 
 -- Build images
-images :: Rules ()
-images = do
+imagesRules :: Rules ()
+imagesRules = do
     phony "sync-images" $ do
         putNormal "Syncing images"
         srcImagesDir <- getConfig "IMAGES_DIR"

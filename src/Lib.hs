@@ -17,7 +17,7 @@ import           Development.Shake.FilePath
 import           Text.Pandoc
 import           Text.Pandoc.Lens
 import           Text.Pandoc.Shared
-import           Text.Regex.Posix
+import           Text.Regex.Posix ((=~~))
 import           Types
 
 splitAll :: String    -- ^ Pattern
@@ -39,10 +39,10 @@ dropDirectory3 :: FilePath -> FilePath
 dropDirectory3 = dropDirectory2 . dropDirectory1
 
 buildPost :: FilePath -> Pandoc -> File
-buildPost src pandoc = File (m src) pandoc
+buildPost src pandoc = File m pandoc
     where
-        m :: FilePath -> FileMeta
-        m src
+        m :: FileMeta
+        m
             | "posts/" `isPrefixOf` src = PostMeta
                 { _postId    = ""
                 , _postTitle = getMetaString (unMeta $ pandoc ^. meta) "title"

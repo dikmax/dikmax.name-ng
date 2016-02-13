@@ -50,3 +50,6 @@ options = shakeOptions
     , shakeTimings  = True
     , shakeProgress = progressSimple
     }
+
+defaultReadMoreText :: String
+defaultReadMoreText = "Читать далее..."
