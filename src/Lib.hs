@@ -3,16 +3,14 @@ module Lib
     ( ImageMeta(..)
     , PostCoverType(..)
     , PostCover(..)
+    , buildPost
     , dropDirectory2
     , dropDirectory3
-    , getPostCover
-    , getPostTitle
-    , getMeta
-    , setPostCover
     , splitAll
     ) where
 
 import           Control.Lens
+import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
 import           Development.Shake.FilePath
@@ -21,41 +19,6 @@ import           Text.Pandoc.Lens
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix
 import           Types
-
-getMeta :: Pandoc -> Meta
-getMeta (Pandoc meta _) = meta
-
-getPostCover :: Meta -> PostCover
-getPostCover meta =
-    case lookupMeta "cover" meta of
-        Just (MetaMap m) -> cover m
-        _                -> def
-    where
-        cover m = PostCover
-            { _coverImg     = extractString $ M.lookup "img" m
-            , _coverVCenter = fromMaybe "center" $ extractString $ M.lookup "vcenter" m
-            , _coverHCenter = fromMaybe "center" $ extractString $ M.lookup "hcenter" m
-            , _coverColor   = extractString $ M.lookup "color" m
-            }
-
-        extractString :: Maybe MetaValue -> Maybe String
-        extractString (Just (MetaString str)) = Just str
-        extractString (Just (MetaInlines inlines)) = Just $ concatMap stringify inlines
-        extractString _ = Nothing
-
-setPostCover :: PostCover -> MetaValue
-setPostCover cover =
-    MetaMap $ M.fromList $
-        [("img", MetaString $ fromMaybe "" $ cover ^. coverImg) | isJust $ cover ^. coverImg ] ++
-        [("vcenter", MetaString $ cover ^. coverVCenter), ("hcenter", MetaString $ cover ^. coverHCenter)] ++
-        [("color", MetaString $ fromMaybe "" $ cover ^. coverColor) | isJust $ cover ^. coverColor]
-
-getPostTitle :: Meta -> String
-getPostTitle meta =
-    case lookupMeta "title" meta of
-        Just (MetaString str)      -> str
-        Just (MetaInlines inlines) -> concatMap stringify inlines
-        _                          -> "No proper title found."
 
 splitAll :: String    -- ^ Pattern
          -> String    -- ^ String to split
@@ -74,3 +37,47 @@ dropDirectory2 = dropDirectory1 . dropDirectory1
 
 dropDirectory3 :: FilePath -> FilePath
 dropDirectory3 = dropDirectory2 . dropDirectory1
+
+buildPost :: FilePath -> Pandoc -> File
+buildPost src pandoc = File (m src) pandoc
+    where
+        m :: FilePath -> FileMeta
+        m src
+            | "posts/" `isPrefixOf` src = PostMeta
+                { _postId    = ""
+                , _postTitle = getMetaString (unMeta $ pandoc ^. meta) "title"
+                , _postDate  = getMetaString (unMeta $ pandoc ^. meta) "date"
+                , _postCover = buildPostCover (pandoc ^. meta)
+                , _postTags  = []
+                }
+            | otherwise = PageMeta
+                { _postCover = buildPostCover (pandoc ^. meta)
+                }
+
+getMetaString :: M.Map String MetaValue -> String -> String
+getMetaString m key =
+    maybe (error $ "Key \"" ++ key ++ "\" not found") extractString' $ M.lookup key m
+    where
+        extractString' :: MetaValue -> String
+        extractString' (MetaString str) = str
+        extractString' (MetaInlines inlines) = concatMap stringify inlines
+        extractString' _ = error "String cannot be extracted for key \"" ++ key ++ "\""
+
+
+buildPostCover :: Meta -> PostCover
+buildPostCover m =
+    case lookupMeta "cover" m of
+        Just (MetaMap map') -> cover map'
+        _                -> def
+    where
+        cover m' = PostCover
+            { _coverImg     = extractString $ M.lookup "img" m'
+            , _coverVCenter = fromMaybe "center" $ extractString $ M.lookup "vcenter" m'
+            , _coverHCenter = fromMaybe "center" $ extractString $ M.lookup "hcenter" m'
+            , _coverColor   = extractString $ M.lookup "color" m'
+            }
+
+extractString :: Maybe MetaValue -> Maybe String
+extractString (Just (MetaString str)) = Just str
+extractString (Just (MetaInlines inlines)) = Just $ concatMap stringify inlines
+extractString _ = Nothing

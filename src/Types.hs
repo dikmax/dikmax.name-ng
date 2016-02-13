@@ -10,21 +10,13 @@ import           GHC.Generics               (Generic)
 import           Text.Pandoc
 import           Text.Pandoc.Binary ()
 
-type Posts = M.Map String Pandoc
-
-data PostsCache = PostsCacheById | PostsCacheByDate deriving (Eq)
-instance Hashable PostsCache where
-    hashWithSalt _ PostsCacheById = 0
-    hashWithSalt _ PostsCacheByDate = 1
-
-data PostCoverType = CoverLight | CoverDark deriving (Eq)
-
+-- | Post cover
 data PostCover = PostCover
     { _coverImg     :: Maybe String
     , _coverVCenter :: String
     , _coverHCenter :: String
     , _coverColor   :: Maybe String
-    } deriving (Eq)
+    } deriving (Eq, Show, Generic)
 
 instance Default PostCover where
     def = PostCover
@@ -34,7 +26,45 @@ instance Default PostCover where
         , _coverColor   = Nothing
         }
 
+instance Binary PostCover
+
 makeLenses ''PostCover
+
+-- | Post Meta
+data FileMeta =
+    PostMeta
+    { _postId    :: String
+    , _postTitle :: String
+    , _postDate  :: String -- TODO DateTime
+    , _postCover :: PostCover
+    , _postTags  :: [String]
+    } |
+    PageMeta
+    { _postCover :: PostCover
+    } deriving (Show, Generic)
+
+instance Binary FileMeta
+
+makeLenses ''FileMeta
+
+-- | Post
+data File = File
+    { _fileMeta :: FileMeta
+    , _fileContent :: Pandoc
+    } deriving (Show, Generic)
+
+instance Binary File
+
+makeLenses ''File
+
+type Posts = M.Map String File
+
+data PostsCache = PostsCacheById | PostsCacheByDate deriving (Eq)
+instance Hashable PostsCache where
+    hashWithSalt _ PostsCacheById = 0
+    hashWithSalt _ PostsCacheByDate = 1
+
+data PostCoverType = CoverLight | CoverDark deriving (Eq)
 
 data ImageMeta = ImageMeta
     { imageWidth :: Int
@@ -52,3 +82,5 @@ instance Default ImageMeta where
         , imageColor = ""
         , imageThumbnail = ""
         }
+
+-- TODO own metadata format and lenses for it

@@ -62,7 +62,7 @@ blog = do
     -- Building posts cache
     posts <- newCache $ \file -> do
         need [pandocCacheDir </> file]
-        liftIO $ B.decodeFile $ pandocCacheDir </> file :: Action Pandoc
+        liftIO $ B.decodeFile $ pandocCacheDir </> file :: Action File
 
     -- Building images cache
     images <- newCache $ \file -> do
@@ -85,14 +85,14 @@ blog = do
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.postPage (getMeta post) $ writeLucid def post
+        liftIO $ renderToFile out $ T.postPage post
 
     sitePagesDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         let page = (read $ idFromDestFilePath out) :: Int
         let postsOnPage = getPostsForPage ps page
         putNormal $ "Writing page " ++ out
-        liftIO $  renderToFile out $ T.listPage $ renderList postsOnPage
+        liftIO $  renderToFile out $ T.listPage postsOnPage
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
@@ -100,44 +100,45 @@ blog = do
         let postsOnPage = getPostsForPage ps 1
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.indexPage (getMeta welcome) (writeLucid def welcome) (renderList postsOnPage)
+        liftIO $ renderToFile out $ T.indexPage welcome postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
         putNormal $ "Reading post " ++ src
         need [src]
         file <- liftIO $ readFile src
-        -- Set "date" from fileName if not present + change field type
-        let (Pandoc meta content) = handleError $ readMarkdown readerOptions file
-        color <- if isNothing $ getPostCover meta ^. coverColor
-            then getImageColor images $ getPostCover meta ^. coverImg
-            else return $ getPostCover meta ^. coverColor
-        let updatedMeta = Meta $ M.alter (alterDate src) "date"
-                               $ M.alter (\_ -> MetaString <$> idFromSrcFilePath src) "id"
-                               $ M.insert "cover" (setPostCover $ (getPostCover meta) & coverColor .~ color)
-                               $ unMeta meta
+
+        let pandoc = handleError $ readMarkdown readerOptions file
+        let post = buildPost src pandoc
+        let pCover = post ^. fileMeta ^. postCover
+        color <- if isNothing $ pCover ^. coverColor
+            then getImageColor images $ pCover ^. coverImg
+            else return $ pCover ^. coverColor
+
+        let updatedPost = post & fileMeta %~ (\m -> m
+                & postId    .~ (fromMaybe "" $ idFromSrcFilePath src)
+                & postDate  %~ alterDate src
+                & postCover .~ (pCover & coverColor .~ color)
+                )
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
-        liftIO $ B.encodeFile out (Pandoc updatedMeta content)
+        liftIO $ B.encodeFile out updatedPost -- TODO File
     where
-        buildList :: PostsCache -> [Pandoc] -> Posts
+        buildList :: PostsCache -> [File] -> Posts
         buildList _ [] = M.empty
-        buildList PostsCacheById [p] = M.singleton (idFromPost p) p
+        buildList PostsCacheById [p] = M.singleton (p ^. fileMeta ^. postId) p
         buildList PostsCacheById (p:ps) =
-            let key = idFromPost p;
+            let key = p ^. fileMeta ^. postId;
                 listRest = buildList PostsCacheById ps in
             if key `M.member` listRest
                 then error $ "Duplicate post key " ++ key
                 else M.insert key p listRest
-        buildList PostsCacheByDate [p] = M.singleton (dateFromPost p) p
+        buildList PostsCacheByDate [p] = M.singleton (p ^. fileMeta ^. postDate) p
         buildList PostsCacheByDate (p:ps) =
-            let key = dateFromPost p;
+            let key = p ^. fileMeta ^. postDate;
                 listRest = buildList PostsCacheByDate ps in
             if key `M.member` listRest
                 then error $ "Duplicate post key " ++ key
                 else M.insert key p listRest
-
-        renderList :: [Pandoc] -> [Html ()]
-        renderList = map (writeLucid def)
 
         getPostsForPage ps page =
             [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
@@ -146,10 +147,9 @@ blog = do
                 rangeStart = (page - 1) * pageSize
                 rangeEnd = min (page * pageSize - 1) listLast
 
-        alterDate :: FilePath -> Maybe MetaValue -> Maybe MetaValue
-        alterDate _ r@(Just (MetaString _)) = r
-        alterDate _ (Just (MetaInlines v)) = Just $ MetaString $ concatMap stringify v
-        alterDate filePath _ = Just $ MetaString $ dateFromFilePath filePath
+        alterDate :: FilePath -> String -> String
+        alterDate filePath "" = dateFromFilePath filePath
+        alterDate _ date = date
 
         getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
         getImageColor images (Just filePath)

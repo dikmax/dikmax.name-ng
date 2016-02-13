@@ -2,27 +2,29 @@
 
 module Template.Page.Post (postPage) where
 
+import           Control.Lens
 import           Data.Text.Lazy
-import           Lib
 import           Lucid
 import           Template.Common
 import           Template.Layout
 import           Template.Navigation
 import           Text.Pandoc
+import           Text.Pandoc.LucidWriter
+import           Types
 
-postPage :: Meta -> Html () -> Html ()
-postPage meta content = layout $ do
+postPage :: File -> Html ()
+postPage post = layout $ do
     header_
         [ class_ "header"
-        , coverToStyle $ getPostCover meta ] $
+        , coverToStyle post ] $
         div_ [class_ "title-block"] $ do
-            div_ [class_ "title"] $ toHtml $ pack $ getPostTitle meta
+            div_ [class_ "title"] $ toHtml $ pack $ post ^. fileMeta ^?! postTitle
             div_ [data_ "post-date" "2015-10-02T08:25:00+0000", class_ "date"] "Пятница, 2 октября 2015" -- TODO
 
     navigation
 
     div_ [class_ "main-container"] $ do
-        div_ [class_ "post-body"] content
+        div_ [class_ "post-body"] $ writeLucid def $ post ^. fileContent
         div_ [class_ "post-meta"] $ do
             p_ [class_ "tags"] $ do
                 a_ [href_ "/tag/satrip/"] "satrip"
