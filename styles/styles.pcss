@@ -7,7 +7,7 @@
 @import _sidebar.pcss;
 @import _footer.pcss;
 @import _posts-list.pcss;
-@import _post.pcss;
+@import _main.pcss;
 
 
 html {
@@ -24,16 +24,13 @@ body {
     @mixin body-2;
 }
 
-.subscribe-info {
-    color: var(--light-background-text) var(--primary-light-color);
+pre {
+    overflow-x: scroll;
 }
 
-.main-container {
-    position: relative;
-    color: var(--light-background-text);
-    background-color: var(--white-color);
-    lost-utility: clearfix;
-    @mixin shadow-2dp;
+
+.subscribe-info {
+    color: var(--light-background-text) var(--primary-light-color);
 }
 
 /* @import font-awesome; */

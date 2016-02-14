@@ -29,27 +29,41 @@ postPage post = layout $ do
 
     navigation
 
-    div_ [class_ "main-container"] $ do
-        div_ [class_ "post-body"] $ writeLucid def $ post ^. fileContent
-        div_ [class_ "post-meta"] $ do
-            unless (null (post ^. fileMeta ^. postTags)) $ p_ [class_ "tags"] $ do
-                mapM_ (\tag -> do {a_ [href_ $ toStrict $ pack $ tagToUrl tag] $ toHtml tag; " "}) $
+    div_ [class_ "main"] $ do
+        div_ [class_ "post"] $ writeLucid def $ post ^. fileContent
+        div_ [class_ "post__meta"] $ do
+            unless (null (post ^. fileMeta ^. postTags)) $ p_ [class_ "post__meta-tags"] $ do
+                mapM_ (\tag -> do
+                        a_ [class_ "post__meta-tag", href_ $ toStrict $ pack $ tagToUrl tag] $ toHtml tag
+                        " ") $
                     post ^. fileMeta ^. postTags
 
             -- TODO
             div_ [class_ "share-buttons"] $ do
-                a_ [href_ "#", class_ "facebook"] $ do {i_ [class_ "fa fa-facebook"] mempty; " Поделиться"}
-                a_ [href_ "#", class_ "vk"] $ do {i_ [class_ "fa fa-vk"] mempty; " Расшарить"}
-                a_ [href_ "#", class_ "google-plus"] $ do {i_ [class_ "fa fa-google-plus"] mempty; " Рассказать"}
-                a_ [href_ "#", class_ "twitter"] $ do {i_ [class_ "fa fa-twitter"] mempty; " Твитнуть"}
-                a_ [href_ "#", class_ "pinterest"] $ do {i_ [class_ "fa fa-pinterest"] mempty; " Запинить"}
-                a_ [href_ "mailto:?subject=", class_ "email"] $ do {i_ [class_ "fa fa-envelope"] mempty; " Отправить другу"}
+                a_ [href_ "#", class_ "share-buttons__button share-buttons__button_facebook"] $ do
+                    i_ [class_ "fa fa-facebook"] mempty
+                    " Поделиться"
+                a_ [href_ "#", class_ "share-buttons__button share-buttons__button_vk"] $ do
+                    i_ [class_ "fa fa-vk"] mempty
+                    " Расшарить"
+                a_ [href_ "#", class_ "share-buttons__button share-buttons__button_google-plus"] $ do
+                    i_ [class_ "fa fa-google-plus"] mempty
+                    " Рассказать"
+                a_ [href_ "#", class_ "share-buttons__button share-buttons__button_twitter"] $ do
+                    i_ [class_ "fa fa-twitter"] mempty
+                    " Твитнуть"
+                a_ [href_ "#", class_ "share-buttons__button share-buttons__button_pinterest"] $ do
+                    i_ [class_ "fa fa-pinterest"] mempty
+                    " Запинить"
+                a_ [href_ "mailto:?subject=", class_ "share-buttons__button share-buttons__button_email"] $ do
+                    i_ [class_ "fa fa-envelope"] mempty
+                    " Отправить другу"
 
         div_ [class_ "related-posts"] $ do
-            div_ [class_ "collection-name"] $ do
+            div_ [class_ "related-posts__collection-name"] $ do
                 p_ "Читать ещё"
                 p_ $ i_ [class_ "fa fa-arrow-down fa-2x"] mempty
-            div_ [class_ "collection"] mempty -- TODO
+            div_ [class_ "related-posts__collection"] mempty -- TODO
 
 
         div_ [id_ "disqus_thread", class_ "container"] mempty

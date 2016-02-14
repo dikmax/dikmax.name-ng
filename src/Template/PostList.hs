@@ -15,7 +15,7 @@ import           Types
 
 postList :: Maybe String -> Maybe String -> [File] -> Html ()
 postList olderPage newerPage posts =
-    div_ [class_ "main-container list-container"] $ do
+    div_ [class_ "main list-container"] $ do
         mconcat $ map postSingle posts
 
         when (isJust olderPage || isJust newerPage) $

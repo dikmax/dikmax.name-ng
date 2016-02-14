@@ -80,10 +80,10 @@ writeBlock (Para inline) = withCountBlocksIncrement $ \c -> do
     inlines <- concatInlines inline
     return $ case inline of
         [Image{}] -> inlines
-        _ -> p_ [id_ $ toStrict $ pack $ "p-" ++ show c] inlines
+        _ -> p_ [class_ "post__block post__block_para", id_ $ toStrict $ pack $ "p-" ++ show c] inlines
 
 writeBlock (CodeBlock (identifier, classes, others) code) =
-    return $ pre_ mapAttrs $ code_ mapAttrs $ toHtml code
+    return $ pre_ (class_ "post__block post__block_code" : mapAttrs) $ code_ mapAttrs $ toHtml code
   where
     mapAttrs = writeAttr (identifier, "sourceCode" : classes, others)
 
@@ -93,11 +93,11 @@ writeBlock (RawBlock _ _) = return mempty
 
 writeBlock (BlockQuote blocks) = do
   items <- concatBlocks blocks
-  return $ blockquote_ items
+  return $ blockquote_ [class_ "post__block post__block_blockquote"] items
 
 writeBlock (OrderedList (startNum, numStyle, _) listItems) = withCountBlocksIncrement $ \c -> do
     items <- mapM processListItems listItems
-    return $ ol_ (attributes c) $ mconcat items
+    return $ ol_ (class_ "post__block post__block_ordered-list" : attributes c) $ mconcat items
     where
         char :: T.Text
         char = case numStyle of
@@ -113,29 +113,32 @@ writeBlock (OrderedList (startNum, numStyle, _) listItems) = withCountBlocksIncr
 
 writeBlock (BulletList listItems) = withCountBlocksIncrement $ \c -> do
   items <- mapM processListItems listItems
-  return $ ul_ [id_ $ toStrict $ pack $ "p-" ++ show c] $ mconcat items
+  return $ ul_ [class_ "post__block post__block_unordered-list", id_ $ toStrict $ pack $ "p-" ++ show c] $ mconcat items
 
 writeBlock (Header 1 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h2_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+  return $ h1_ (class_ "post__block post__block_header-1" : id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
 writeBlock (Header 2 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h3_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+  return $ h2_ (class_ "post__block post__block_header-2" : id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
 writeBlock (Header 3 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h4_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+  return $ h3_ (class_ "post__block post__block_header-3" : id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
 writeBlock (Header 4 attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h5_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+  return $ h4_ (class_ "post__block post__block_header-4" : id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+writeBlock (Header 5 attr inline) = withCountBlocksIncrement $ \c -> do
+  inlines <- concatInlines inline
+  return $ h5_ (class_ "post__block post__block_header-5" : id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
 writeBlock (Header _ attr inline) = withCountBlocksIncrement $ \c -> do
   inlines <- concatInlines inline
-  return $ h6_ (id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
+  return $ h6_ (class_ "post__block post__block_header-6" : id_ (toStrict $ pack $ "p-" ++ show c) : writeAttr attr) inlines
 
-writeBlock HorizontalRule = return $ hr_ []
+writeBlock HorizontalRule = return $ hr_ [class_ "post__block post__block_rule"]
 
 writeBlock (Div attr blocks) = do
   items <- concatBlocks blocks
-  return $ div_ (writeAttr attr) items
+  return $ div_ (class_ "post__block post__block_div" : writeAttr attr) items
 
 writeBlock Null = return mempty
 
@@ -239,15 +242,16 @@ writeInline (Image attr inline target) = do
                     ] mempty
                 unless (P.null inline) $
                     p_ [class_ "figure-description"] inlines
-        else figure_ ([id_ $ toStrict (extractId $ pack $ fst target), class_ "figure"] ++ writeAttr attr) $
-            div_ [class_ "outer-container"] $
-                div_ [class_ "inner-container"] $ do
-                    img_ [ src_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target)
+        else figure_ ([id_ $ toStrict (extractId $ pack $ fst target), class_ "post__figure"] ++ writeAttr attr) $
+            div_ [class_ "post__figure-outer"] $
+                div_ [class_ "post__figure-inner"] $ do
+                    img_ [ class_ "post__figure-img"
+                        , src_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target)
                             (siteDomain (writerOptions writerState))
                         , alt_ $ toStrict $ pack $ fixImageTitle $ snd target
                         ]
                     unless (P.null inline) $
-                        p_ [class_ "figure-description"] inlines
+                        p_ [class_ "post__figure-description"] inlines
     where
         videoId url = takeWhile (/= '&') $ replace "http://www.youtube.com/watch?v=" "" $
             replace "https://www.youtube.com/watch?v=" "" url
@@ -283,7 +287,7 @@ getFooter = do
     writerState <- get
     return $
         if not $ P.null $ notesList writerState
-            then div_ [class_ "footnotes"] $ do
+            then div_ [class_ "post__footnotes"] $ do
                 hr_ []
                 ol_ $ transformNotes (notesList writerState) 1 ("note-" `append` idPrefix (writerOptions writerState))
             else mempty
