@@ -8,6 +8,7 @@ import qualified Data.Binary                as B
 import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
+import           Data.Time
 import           Development.Shake
 import           Development.Shake.Config
 import           Development.Shake.FilePath
@@ -130,13 +131,18 @@ blog = do
             if key `M.member` listRest
                 then error $ "Duplicate post key " ++ key
                 else M.insert key p listRest
-        buildList PostsCacheByDate [p] = M.singleton (p ^. fileMeta ^. postDate) p
+        buildList PostsCacheByDate [p] = M.singleton (dateKey $ p ^. fileMeta ^?! postDate) p
         buildList PostsCacheByDate (p:ps) =
-            let key = p ^. fileMeta ^. postDate;
+            let key = dateKey $ p ^. fileMeta ^?! postDate;
                 listRest = buildList PostsCacheByDate ps in
             if key `M.member` listRest
                 then error $ "Duplicate post key " ++ key
                 else M.insert key p listRest
+
+
+        dateKey :: Maybe UTCTime -> String
+        dateKey (Just time)= formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S")) time
+        dateKey Nothing = error "No date defined"
 
         getPostsForPage ps page =
             reverse [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
@@ -155,8 +161,8 @@ blog = do
             | page == 1 = Nothing
             | otherwise = Just $ "/page/" ++ show (page - 1) ++ "/"
 
-        alterDate :: FilePath -> String -> String
-        alterDate filePath "" = dateFromFilePath filePath
+        alterDate :: FilePath -> Maybe UTCTime -> Maybe UTCTime
+        alterDate filePath Nothing = dateFromFilePath filePath
         alterDate _ date = date
 
         getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
@@ -167,7 +173,8 @@ blog = do
             | otherwise = return Nothing
         getImageColor _ Nothing = return Nothing
 
-        dateFromFilePath filePath = intercalate "-" $ take 3 $ splitAll "-" $ takeFileName filePath
+        dateFromFilePath :: FilePath -> Maybe UTCTime
+        dateFromFilePath = parseDate . intercalate "-" . take 3 . splitAll "-" . takeFileName
 
 
 buildImagesCache :: Rules ()
@@ -241,7 +248,7 @@ buildStatic :: FilePath -> Rules ()
 buildStatic filePath =
     siteDir </> filePath %> \out -> do
         let src = dropDirectory2 out
-        putNormal $ "Copying file " ++ out
+        -- putNormal $ "Copying file " ++ out
         copyFileChanged src out
 
 

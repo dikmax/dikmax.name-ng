@@ -1,4 +1,6 @@
 {-# LANGUAGE DeriveGeneric, TemplateHaskell #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Types where
 
 import           Control.Lens
@@ -6,6 +8,7 @@ import           Data.Binary
 import           Data.Default
 import           Data.Hashable
 import qualified Data.Map.Lazy              as M
+import           Data.Time
 import           GHC.Generics               (Generic)
 import           Text.Pandoc
 import           Text.Pandoc.Binary ()
@@ -35,7 +38,7 @@ data FileMeta =
     PostMeta
     { _postId    :: String
     , _postTitle :: String
-    , _postDate  :: String -- TODO DateTime
+    , _postDate  :: Maybe UTCTime
     , _postCover :: PostCover
     , _postTags  :: [String]
     } |
@@ -82,5 +85,18 @@ instance Default ImageMeta where
         , imageColor = ""
         , imageThumbnail = ""
         }
+
+instance Binary UTCTime where
+    put (UTCTime a b) = put a >> put b
+    get = UTCTime <$> get <*> get
+
+instance Binary Day where
+    put (ModifiedJulianDay d) = put d
+    get = ModifiedJulianDay <$> get
+
+instance Binary DiffTime where
+    put = put . fromEnum
+    get = toEnum <$> get
+
 
 -- TODO own metadata format and lenses for it

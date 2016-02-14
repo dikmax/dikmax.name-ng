@@ -2,8 +2,12 @@
 
 module Template.Page.Post (postPage) where
 
+import           Config
 import           Control.Lens
-import           Data.Text.Lazy
+import           Control.Monad
+import           Data.Text.Lazy hiding (null)
+import           Data.Time
+import           Lib
 import           Lucid
 import           Template.Common
 import           Template.Layout
@@ -19,25 +23,18 @@ postPage post = layout $ do
         , coverToStyle post ] $
         div_ [class_ "title-block"] $ do
             div_ [class_ "title"] $ toHtml $ pack $ post ^. fileMeta ^?! postTitle
-            div_ [data_ "post-date" "2015-10-02T08:25:00+0000", class_ "date"] "Пятница, 2 октября 2015" -- TODO
+            maybe mempty (\time ->
+                div_ [data_ "post-date" $ toStrict $ pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
+                    , class_ "date"] $ toHtml $ formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
 
     navigation
 
     div_ [class_ "main-container"] $ do
         div_ [class_ "post-body"] $ writeLucid def $ post ^. fileContent
         div_ [class_ "post-meta"] $ do
-            p_ [class_ "tags"] $ do
-                a_ [href_ "/tag/satrip/"] "satrip"
-                " "
-                a_ [href_ "/tag/satrip-2015/"] "satrip-2015"
-                " "
-                a_ [href_ "/tag/бразилия/"] "бразилия"
-                " "
-                a_ [href_ "/tag/отпуск/"] "отпуск"
-                " "
-                a_ [href_ "/tag/путешествие/"] "путешествие"
-                " "
-                a_ [href_ "/tag/фотки/"] "фотки"
+            unless (null (post ^. fileMeta ^. postTags)) $ p_ [class_ "tags"] $ do
+                mapM_ (\tag -> do {a_ [href_ $ toStrict $ pack $ tagToUrl tag] $ toHtml tag; " "}) $
+                    post ^. fileMeta ^. postTags
 
             div_ [class_ "share-buttons"] $ do
                 a_ [href_ "#", class_ "facebook"] $ do {i_ [class_ "fa fa-facebook"] mempty; " Поделиться"}

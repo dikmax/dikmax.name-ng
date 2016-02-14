@@ -1,5 +1,6 @@
 module Config where
 
+import           Data.Time
 import           Development.Shake
 import           Development.Shake.FilePath
 
@@ -53,3 +54,30 @@ options = shakeOptions
 
 defaultReadMoreText :: String
 defaultReadMoreText = "Читать далее..."
+
+timeLocale :: TimeLocale
+timeLocale = defaultTimeLocale
+  { wDays =
+    [ ("Воскресенье", "вс")
+    , ("Понедельник", "пн")
+    , ("Вторник", "вт")
+    , ("Среда", "ср")
+    , ("Четверг", "чт")
+    , ("Пятница", "пт")
+    , ("Суббота", "сб")
+    ]
+  , months =
+    [ ("января", "янв")
+    , ("февраля", "фев")
+    , ("марта", "мар")
+    , ("апреля", "апр")
+    , ("мая", "май")
+    , ("июня", "июн")
+    , ("июля", "июл")
+    , ("августа", "авг")
+    , ("сентября", "сен")
+    , ("октября", "окт")
+    , ("ноября", "ноя")
+    , ("декабря", "дек")
+    ]
+  }
