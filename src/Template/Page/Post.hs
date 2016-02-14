@@ -36,6 +36,7 @@ postPage post = layout $ do
                 mapM_ (\tag -> do {a_ [href_ $ toStrict $ pack $ tagToUrl tag] $ toHtml tag; " "}) $
                     post ^. fileMeta ^. postTags
 
+            -- TODO
             div_ [class_ "share-buttons"] $ do
                 a_ [href_ "#", class_ "facebook"] $ do {i_ [class_ "fa fa-facebook"] mempty; " Поделиться"}
                 a_ [href_ "#", class_ "vk"] $ do {i_ [class_ "fa fa-vk"] mempty; " Расшарить"}

@@ -22,7 +22,6 @@ import           Text.Pandoc.Error          (handleError)
 import           Text.Regex.Posix
 import           Types
 
-
 readerOptions :: ReaderOptions
 readerOptions = def
     { readerSmart = True
@@ -71,27 +70,25 @@ blog = do
         postCacheContent <- mapM posts postFiles
         return $ buildList t postCacheContent
 
+    tagsList <- newCache $ \_ -> do
+        postFiles <- getDirectoryFiles "." ["posts//*.md"]
+        postCacheContent <- mapM posts postFiles
+        return $ buildTags postCacheContent
+
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
         let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
-        let (d,m) = M.size ps `divMod` pageSize
-        let listFilePaths = [sitePagesDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
-        need $ postsFilePaths ++ [siteDir </> indexHtml] ++ listFilePaths
+        tags <- tagsList Anything
+        putNormal $ show $ M.size tags
+        putNormal $ show $ M.map (M.size) tags
+        let tagsPaths = concatMap (\(t, fs) -> pathsFromList (siteDir </> tagDir </> t) fs) $ M.assocs tags
+        need $ postsFilePaths ++ pathsFromList siteDir ps ++ tagsPaths
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.postPage post
-
-    sitePagesDir </> "*" </> indexHtml %> \out -> do
-        ps <- postsList PostsCacheByDate
-        let page = (read $ idFromDestFilePath out) :: Int
-        let postsOnPage = getPostsForPage ps page
-        let olderPage = getOlderPage ps page
-        let newerPage = getNewerPage ps page
-        putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage olderPage newerPage postsOnPage
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
@@ -100,6 +97,37 @@ blog = do
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.indexPage welcome postsOnPage
+
+    -- Older page
+    siteDir </> pageDir </> "*" </> indexHtml %> \out -> do
+        ps <- postsList PostsCacheByDate
+        let page = (read $ idFromDestFilePath out) :: Int
+        let postsOnPage = getPostsForPage ps page
+        let olderPage = getOlderPage "/" ps page
+        let newerPage = getNewerPage "/" ps page
+        putNormal $ "Writing page " ++ out
+        liftIO $ renderToFile out $ T.listPage olderPage newerPage postsOnPage
+
+    -- Tags main page
+    siteDir </> tagDir </> "*" </> indexHtml %> \out -> do
+        tags <- tagsList Anything
+        let tag = idFromDestFilePath out
+        let ps = tags M.! tag
+        let postsOnPage = getPostsForPage ps 1
+        let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
+        putNormal $ "Writing page " ++ out
+        liftIO $ renderToFile out $ T.listPage olderPage (Nothing) postsOnPage
+
+    -- Tags older pages
+    siteDir </> tagDir </> "*" </> pageDir </> "*" </> indexHtml %> \out -> do
+        tags <- tagsList Anything
+        let (tag, page) = tagAndPageFromDestFilePath out
+        let ps = tags M.! tag
+        let postsOnPage = getPostsForPage ps page
+        let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps page
+        let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
+        putNormal $ "Writing page " ++ out
+        liftIO $ renderToFile out $ T.listPage olderPage newerPage postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
@@ -139,6 +167,13 @@ blog = do
                 then error $ "Duplicate post key " ++ key
                 else M.insert key p listRest
 
+        buildTags :: [File] -> PostsTags
+        buildTags [] = M.empty
+        buildTags (f:fs) =
+            M.unionWith M.union
+                (M.fromList $ map (\t ->
+                    (t, M.singleton (dateKey $ f ^. fileMeta ^?! postDate) f)) $ f ^. fileMeta ^. postTags)
+                (buildTags fs)
 
         dateKey :: Maybe UTCTime -> String
         dateKey (Just time)= formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S")) time
@@ -151,15 +186,15 @@ blog = do
                 rangeStart = (page - 1) * pageSize
                 rangeEnd = min (page * pageSize - 1) listLast
 
-        getOlderPage ps page
+        getOlderPage prefix ps page
             | page * pageSize - 1 >= listLast = Nothing
-            | otherwise = Just $ "/page/" ++ show (page + 1) ++ "/"
+            | otherwise = Just $ prefix ++ "page/" ++ show (page + 1) ++ "/"
             where
                 listLast = M.size ps - 1
 
-        getNewerPage _ page
+        getNewerPage prefix _ page
             | page == 1 = Nothing
-            | otherwise = Just $ "/page/" ++ show (page - 1) ++ "/"
+            | otherwise = Just $ prefix ++ "page/" ++ show (page - 1) ++ "/"
 
         alterDate :: FilePath -> Maybe UTCTime -> Maybe UTCTime
         alterDate filePath Nothing = dateFromFilePath filePath
@@ -175,6 +210,14 @@ blog = do
 
         dateFromFilePath :: FilePath -> Maybe UTCTime
         dateFromFilePath = parseDate . intercalate "-" . take 3 . splitAll "-" . takeFileName
+
+        pathsFromList :: FilePath -> Posts -> [String]
+        pathsFromList prefix ps =
+            (prefix </> indexHtml) : listFilePaths
+            where
+                (d,m) = M.size ps `divMod` pageSize
+                listFilePaths = [prefix </> pageDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
+
 
 
 buildImagesCache :: Rules ()
@@ -279,3 +322,11 @@ idFromDestFilePath filePath =
         _              -> error $ "Can't extract id from " ++ filePath
     where
         pat = "/([^/]*)/index.html$"
+
+tagAndPageFromDestFilePath :: FilePath -> (String, Int)
+tagAndPageFromDestFilePath filePath =
+    case filePath =~ pat :: (String, String, String, [String]) of
+        (_, _, _, [tag, page]) -> (tag, read page)
+        _              -> error $ "Can't extract id from " ++ filePath
+    where
+        pat = tagDir ++ "/([^/]*)/" ++ pageDir ++ "/([^/]*)/index.html$"

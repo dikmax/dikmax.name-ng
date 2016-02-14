@@ -23,8 +23,11 @@ siteDir = buildDir </> "site"
 sitePostsDir :: String
 sitePostsDir = siteDir </> "post"
 
-sitePagesDir :: String
-sitePagesDir = siteDir </> "page"
+pageDir :: String
+pageDir = "page"
+
+tagDir :: String
+tagDir = "tag"
 
 indexHtml :: String
 indexHtml = "index.html"

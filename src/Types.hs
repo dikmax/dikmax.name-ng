@@ -62,6 +62,8 @@ makeLenses ''File
 
 type Posts = M.Map String File
 
+type PostsTags = M.Map String (M.Map String File)
+
 data PostsCache = PostsCacheById | PostsCacheByDate deriving (Eq)
 instance Hashable PostsCache where
     hashWithSalt _ PostsCacheById = 0
@@ -97,6 +99,11 @@ instance Binary Day where
 instance Binary DiffTime where
     put = put . fromEnum
     get = toEnum <$> get
+
+data Anything = Anything deriving (Eq)
+instance Hashable Anything where
+    hashWithSalt _ _ = 0
+
 
 
 -- TODO own metadata format and lenses for it
