@@ -2,7 +2,7 @@
 title: "Подарок от InterRail"
 date: "2014-01-11T13:25:00+03:00"
 published: true
-tags: "eurotrip, interrail, отпуск, путешествие, фотки"
+tags: [eurotrip, interrail, отпуск, путешествие, фотки]
 ---
 
 Почти неожиданное продолжение истории с\ [поездкой по\ Европе][eurotrip].

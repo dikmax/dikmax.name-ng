@@ -2,7 +2,7 @@
 title: "Google Chrome 20"
 date: "2012-06-27T10:50:31+03:00"
 published: true
-tags: "google chrome, linux"
+tags: [google chrome, linux]
 thread: 742042740
 ---
 

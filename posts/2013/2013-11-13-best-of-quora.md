@@ -2,7 +2,7 @@
 title: "Best of Quora"
 date: "2013-11-13T12:00:00+03:00"
 published: true
-tags: "quora, лытдыбр"
+tags: [quora, лытдыбр]
 ---
 
 Выковырял я\ недавно из\ закромов документ [Best of\ Quora][quora]. Давно собирался его посмотреть, но\ все как-то

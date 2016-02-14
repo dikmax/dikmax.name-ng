@@ -2,7 +2,7 @@
 title: "Twitter Bootstrap 2.1"
 date: "2012-08-21T22:52:00+03:00"
 published: true
-tags: "блог"
+tags: [блог]
 thread: 813644775
 ---
 

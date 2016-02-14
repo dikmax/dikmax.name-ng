@@ -2,7 +2,7 @@
 title: "Sencha Architect"
 date: "2014-01-03T21:25:00+03:00"
 published: true
-tags: "extjs, ide, sencha architect, sencha touch, программирование"
+tags: [extjs, ide, sencha architect, sencha touch, программирование]
 thread: 2089959669
 ---
 

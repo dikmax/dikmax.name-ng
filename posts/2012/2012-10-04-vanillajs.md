@@ -2,7 +2,7 @@
 title: "Самый быстрый JavaScript-фреймворк"
 date: "2012-10-04T22:52:01+03:00"
 published: true
-tags: "javascript, vanillajs, программирование"
+tags: [javascript, vanillajs, программирование]
 thread: 871565349
 ---
 

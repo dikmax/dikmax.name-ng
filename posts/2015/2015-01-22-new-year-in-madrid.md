@@ -3,7 +3,7 @@ title: "Новый год в Мадриде"
 date: "2015-01-22T12:40:00+03:00"
 collection: "latest-travel"
 published: true
-tags: "испания, путешествие, фотки"
+tags: [испания, путешествие, фотки]
 ---
 
 ![Храм Дебод](/images/travel/2015-01-spain/madrid-cover.jpg "Храм Дебод")

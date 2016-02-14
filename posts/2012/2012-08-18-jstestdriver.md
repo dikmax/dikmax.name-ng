@@ -2,7 +2,7 @@
 title: "JsTestDriver"
 date: "2012-08-18T14:03:45+03:00"
 published: true
-tags: "javascript, jstestdriver, unit-тестирование, программирование"
+tags: [javascript, jstestdriver, unit-тестирование, программирование]
 ---
 
 Ну что я могу сказать? [JsTestDriver](http://code.google.com/p/js-test-driver/)\ --- та еще поделка. Всё работает

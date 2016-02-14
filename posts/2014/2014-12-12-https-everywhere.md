@@ -2,7 +2,7 @@
 title: "HTTPS Everywhere"
 date: "2014-12-12T18:30:00+03:00"
 published: true
-tags: "https, блог"
+tags: [https, блог]
 ---
 
 ![](/images/3rd-party/https-everywhere-logo.png)

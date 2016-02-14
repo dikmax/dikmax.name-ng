@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Любляна"
 date: "2014-07-03T19:30:00+02:00"
 collection: "eurotrip-2014"
 published: true
-tags: "eurotrip, eurotrip-2014, отпуск, путешествие, словения, фотки"
+tags: [eurotrip, eurotrip-2014, отпуск, путешествие, словения, фотки]
 ---
 
 ![](/images/travel/2014-06-eurotrip/ljubljana-cover.jpg)

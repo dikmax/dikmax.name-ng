@@ -2,7 +2,7 @@
 title: "Inherited.js design solutions"
 date: "2012-08-16T14:18:48+03:00"
 published: true
-tags: "inheritedjs, javascript, вопрос, программирование"
+tags: [inheritedjs, javascript, вопрос, программирование]
 thread: 807730910
 ---
 

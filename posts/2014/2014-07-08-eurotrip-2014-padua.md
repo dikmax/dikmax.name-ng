@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Падуя"
 date: "2014-07-08T00:15:00+03:00"
 collection: "eurotrip-2014"
 published: true
-tags: "eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки"
+tags: [eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки]
 ---
 
 ![](/images/travel/2014-06-eurotrip/padua-cover.jpg)

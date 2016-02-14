@@ -2,7 +2,7 @@
 title: "inherited.js v0.1"
 date: "2012-08-14T22:50:37+03:00"
 published: true
-tags: "inheritedjs, javascript, программирование"
+tags: [inheritedjs, javascript, программирование]
 thread: 805349803
 ---
 

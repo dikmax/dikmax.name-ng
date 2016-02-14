@@ -2,7 +2,7 @@
 title: "Выполнение пользовательского кода в nodejs"
 date: "2012-10-29T15:47:08+03:00"
 published: true
-tags: "javascript, nodejs, безопасность, программирование, работа"
+tags: [javascript, nodejs, безопасность, программирование, работа]
 thread: 905583565
 ---
 

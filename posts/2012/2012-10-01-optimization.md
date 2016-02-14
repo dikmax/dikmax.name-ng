@@ -2,7 +2,7 @@
 title: "Оптимизация"
 date: "2012-10-01T23:00:59+03:00"
 published: true
-tags: "css, google closure, javascript, блог"
+tags: [css, google closure, javascript, блог]
 thread: 867043713
 ---
 

@@ -2,7 +2,7 @@
 title: "Haskell IDE 3"
 date: "2014-11-19T10:00:00+03:00"
 published: true
-tags: "haskell, ide, jetbrains, webstorm, программирование"
+tags: [haskell, ide, jetbrains, webstorm, программирование]
 thread: 3239023010
 ---
 

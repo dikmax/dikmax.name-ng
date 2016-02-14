@@ -2,7 +2,7 @@
 title: "XMLHttpRequest, Content-Type и Content-Length: 0"
 date: "2013-02-15T10:43:05+03:00"
 published: true
-tags: "firefox, google chrome, javascript, rest, программирование, работа"
+tags: [firefox, google chrome, javascript, rest, программирование, работа]
 ---
 
 Когда в из JavaScript отправляешься AJAX запрос[^1], ставишь ему заголовок `Content-Type: application/json`, но при

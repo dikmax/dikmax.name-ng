@@ -2,7 +2,7 @@
 title: "lowmemorykiller"
 date: "2014-02-06T22:30:00+03:00"
 published: true
-tags: "android, digitalocean, lowmemorykiller, server, ubuntu, блог"
+tags: [android, digitalocean, lowmemorykiller, server, ubuntu, блог]
 thread: 2230547425
 ---
 

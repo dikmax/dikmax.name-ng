@@ -2,7 +2,7 @@
 title: "Наследование в JavaScript: скандалы, интриги, расследования"
 date: "2012-10-09T22:13:13+03:00"
 published: true
-tags: "javascript, программирование"
+tags: [javascript, программирование]
 thread: 878533166
 ---
 

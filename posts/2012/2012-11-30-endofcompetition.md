@@ -2,7 +2,7 @@
 title: "Конкурс окончен"
 date: "2012-11-30T17:39:22+03:00"
 published: true
-tags: "instagram, блог, конкурс, фотки"
+tags: [instagram, блог, конкурс, фотки]
 ---
 
 И у нас есть [победитель](/post/sixmonths/), которому я сегодня [отнесу приз](/post/endofcompetition2/).

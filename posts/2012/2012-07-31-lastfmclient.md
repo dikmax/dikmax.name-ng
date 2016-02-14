@@ -2,7 +2,7 @@
 title: "«Настройка» официального клиента Last.fm под Linux"
 date: "2012-07-31T10:02:58+03:00"
 published: true
-tags: "last.fm, linux, инструкция, музыка"
+tags: [last.fm, linux, инструкция, музыка]
 thread: 786601793
 ---
 

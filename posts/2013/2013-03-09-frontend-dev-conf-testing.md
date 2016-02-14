@@ -2,7 +2,7 @@
 title: "Тестирование"
 date: "2013-03-09T12:28:23+03:00"
 published: true
-tags: "frontend dev conf, javascript, конференция, производительность, просьба"
+tags: [frontend dev conf, javascript, конференция, производительность, просьба]
 thread: 1126534594
 ---
 

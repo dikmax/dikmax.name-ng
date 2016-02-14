@@ -2,7 +2,7 @@
 title: "The Lord of The Rings"
 date: "2012-11-21T10:03:23+03:00"
 published: true
-tags: "youtube, видео, музыка"
+tags: [youtube, видео, музыка]
 ---
 
 [The Piano Guys](http://thepianoguys.com/) выпустили, наверное, один из лучших своих каверов. Как обычно красивые

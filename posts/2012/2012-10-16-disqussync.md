@@ -2,7 +2,7 @@
 title: "Скоро!"
 date: "2012-10-16T23:13:05+03:00"
 published: true
-tags: "haskell, блог, программирование"
+tags: [haskell, блог, программирование]
 thread: 888091145
 ---
 

@@ -2,7 +2,7 @@
 title: "Как я браслет покупал"
 date: "2014-02-26T22:10:00+03:00"
 published: true
-tags: "jawbone up, лытдыбр"
+tags: [jawbone up, лытдыбр]
 thread: 2326071288
 ---
 

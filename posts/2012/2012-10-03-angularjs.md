@@ -2,7 +2,7 @@
 title: "AngularJS"
 date: "2012-10-03T16:02:41+03:00"
 published: true
-tags: "angularjs, javascript, программирование, работа"
+tags: [angularjs, javascript, программирование, работа]
 thread: 869572547
 ---
 

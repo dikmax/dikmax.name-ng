@@ -2,7 +2,7 @@
 title: "Subversion и хранение ревизий"
 date: "2013-01-19T23:02:01+03:00"
 published: true
-tags: "subversion, svn, работа"
+tags: [subversion, svn, работа]
 ---
 
 ![](/images/3rd-party/subversion-logo.png "Subversion logo")

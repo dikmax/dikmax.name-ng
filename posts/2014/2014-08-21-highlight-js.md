@@ -2,7 +2,7 @@
 title: "Dart и highlight.js"
 date: "2014-08-21T21:20:00+03:00"
 published: true
-tags: "dart, highlight.js, javascript, блог, программирование"
+tags: [dart, highlight.js, javascript, блог, программирование]
 ---
 
 ![](/images/3rd-party/highlight-js.png "highlight.js: Syntax highlighting for the Web")

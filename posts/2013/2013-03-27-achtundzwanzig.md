@@ -2,7 +2,7 @@
 title: "Achtundzwanzig"
 date: "2013-03-27T10:07:32+03:00"
 published: true
-tags: "лытдыбр"
+tags: [лытдыбр]
 thread: 1167700814
 ---
 

@@ -2,7 +2,7 @@
 title: "Store as Global Variable"
 date: "2014-06-06T15:05:00+03:00"
 published: true
-tags: "debug, google chrome, javascript, программирование"
+tags: [debug, google chrome, javascript, программирование]
 ---
 
 Совершенно случайно обнаружил в\ свежей версии Google Chrome полезную функцию: Store as\ Global Variable. Она позволяет 

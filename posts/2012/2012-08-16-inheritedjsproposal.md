@@ -2,7 +2,7 @@
 title: "Предложение по inherited.js"
 date: "2012-08-16T14:14:54+03:00"
 published: true
-tags: "inheritedjs, javascript, программирование"
+tags: [inheritedjs, javascript, программирование]
 ---
 
 Поступило предложение переименовать главную функцию в inherited.js cо слишком длинного `createClass` на более короткое

@@ -2,7 +2,7 @@
 title: "Haskell IDE 2"
 date: "2012-12-27T18:31:45+03:00"
 published: true
-tags: "haskell, ide, jetbrains, phpstorm, программирование"
+tags: [haskell, ide, jetbrains, phpstorm, программирование]
 thread: 993713949
 ---
 

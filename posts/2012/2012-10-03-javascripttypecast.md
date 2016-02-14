@@ -2,7 +2,7 @@
 title: "JavaScript и приведение типов"
 date: "2012-10-03T12:34:46+03:00"
 published: true
-tags: "javascript, программирование"
+tags: [javascript, программирование]
 thread: 869336556
 ---
 

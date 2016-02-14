@@ -2,7 +2,7 @@
 title: "Brainbench CSS3"
 date: "2012-08-21T00:12:12+03:00"
 published: true
-tags: "brainbench, css, тест"
+tags: [brainbench, css, тест]
 ---
 
 В данный момент [Brainbench](http://www.brainbench.com) предлагает бесплатный тест по CSS3. И все неравнодушные

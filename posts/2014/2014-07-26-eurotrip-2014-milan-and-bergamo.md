@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Милан и Бергамо"
 date: "2014-07-26T16:00:00+03:00"
 collection: "eurotrip-2014"
 published: true
-tags: "eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки"
+tags: [eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки]
 ---
 
 ![Piazza del Duomo](/images/travel/2014-06-eurotrip/milan-girl.jpg "Piazza del Duomo")

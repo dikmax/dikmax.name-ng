@@ -2,7 +2,7 @@
 title: "Умер Дэйв Брубек"
 date: "2012-12-06T14:42:43+03:00"
 published: true
-tags: "youtube, видео, джаз, музыка"
+tags: [youtube, видео, джаз, музыка]
 ---
 
 Вчера, пятого декабря, умер [Дэйв Брубек](http://en.wikipedia.org/wiki/Dave_Brubeck). Трудно сейчас найти человека,

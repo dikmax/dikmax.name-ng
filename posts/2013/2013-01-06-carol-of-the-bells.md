@@ -2,7 +2,7 @@
 title: "Carol of the Bells"
 date: "2013-01-06T21:50:14+03:00"
 published: true
-tags: "youtube, видео, музыка, открытие дня"
+tags: [youtube, видео, музыка, открытие дня]
 ---
 
 И еще немного музыки.

@@ -2,7 +2,7 @@
 title: "Source map"
 date: "2012-09-24T22:52:42+03:00"
 published: true
-tags: "closure compiler, css, google chrome, javascript, программирование"
+tags: [closure compiler, css, google chrome, javascript, программирование]
 thread: 857726543
 ---
 

@@ -2,7 +2,7 @@
 title: "Когда же Google займется Google Play Store?"
 date: "2012-06-22T22:37:48+03:00"
 published: true
-tags: "google, google play, мысли"
+tags: [google, google play, мысли]
 ---
 
 Порция лучей ненависти в сторону Google Play Store. Если кто-то не знает, это магазин приложений для Android.

@@ -2,7 +2,7 @@
 title: "jQuery.Deferred"
 date: "2012-10-19T15:26:46+03:00"
 published: true
-tags: "javascript, jquery, программирование"
+tags: [javascript, jquery, программирование]
 thread: 891540404
 ---
 

@@ -2,7 +2,7 @@
 title: "Обновление ViewModel в ExtJs 5"
 date: "2015-02-02T21:55:00+03:00"
 published: true
-tags: "extjs, javascript, программирование, работа"
+tags: [extjs, javascript, программирование, работа]
 ---
 
 ![](/images/3rd-party/extjs-logo.png)

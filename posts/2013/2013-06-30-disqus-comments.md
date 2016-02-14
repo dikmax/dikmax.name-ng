@@ -2,7 +2,7 @@
 title: "Комментарии Disqus"
 date: "2013-06-30T00:03:34+03:00"
 published: true
-tags: "disqus, блог"
+tags: [disqus, блог]
 thread: 1449154056
 ---
 

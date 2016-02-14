@@ -3,7 +3,7 @@ title: "Парсер для CommonMark"
 date: "2014-10-02T23:15:00+03:00"
 published: true
 collection: "md_proc"
-tags: "commonmark, dart, markdown, md_proc, программирование"
+tags: [commonmark, dart, markdown, md_proc, программирование]
 ---
 
 ![](/images/3rd-party/markdown-logo.png "Markdown logo")

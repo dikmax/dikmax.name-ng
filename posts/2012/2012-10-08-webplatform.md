@@ -2,7 +2,7 @@
 title: "webplatform.org"
 date: "2012-10-08T22:48:26+03:00"
 published: true
-tags: "новости, программирование"
+tags: [новости, программирование]
 ---
 
 Google [представил](http://googledevelopers.blogspot.com/2012/10/teaming-up-on-web-platform-docs.html)

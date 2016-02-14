@@ -2,7 +2,7 @@
 title: "Haskell IDE"
 date: "2012-06-21T23:40:11+03:00"
 published: true
-tags: "eclipse, haskell, ide, intellij idea, leksah, sublime text, программирование"
+tags: [eclipse, haskell, ide, intellij idea, leksah, sublime text, программирование]
 thread: 735830243
 ---
 

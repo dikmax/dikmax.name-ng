@@ -2,7 +2,7 @@
 title: "Branch prediction"
 date: "2012-10-13T12:29:51+03:00"
 published: true
-tags: "javascript, программирование, производительность"
+tags: [javascript, программирование, производительность]
 thread: 883303452
 ---
 

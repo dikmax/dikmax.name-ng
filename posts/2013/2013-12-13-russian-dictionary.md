@@ -2,7 +2,7 @@
 title: "Словарь словоформ русского языка"
 date: "2013-12-13T00:40:28+03:00"
 published: true
-tags: "hunspell, spellcheck, морфология, словарь, словоформы"
+tags: [hunspell, spellcheck, морфология, словарь, словоформы]
 thread: 2046697289
 ---
 

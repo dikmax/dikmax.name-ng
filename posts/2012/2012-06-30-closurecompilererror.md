@@ -2,7 +2,7 @@
 title: "Ошибка в Google Closure Compiler"
 date: "2012-06-30T15:28:56+03:00"
 published: true
-tags: "closure compiler, javascript, программирование, работа"
+tags: [closure compiler, javascript, программирование, работа]
 ---
 
 Обнаружил досадную ошибку в последнем [Google Closure Compiler](https://developers.google.com/closure/compiler/)

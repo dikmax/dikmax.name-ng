@@ -2,7 +2,7 @@
 title: "Frontend DEV Conf '13"
 date: "2013-02-22T16:31:42+03:00"
 published: true
-tags: "frontend dev conf, javascript, конференция"
+tags: [frontend dev conf, javascript, конференция]
 ---
 
 ![](/images/3rd-party/frontend-dev-conf.png "Frontend DEV Conf '13")

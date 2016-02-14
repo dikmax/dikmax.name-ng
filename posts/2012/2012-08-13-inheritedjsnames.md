@@ -2,7 +2,7 @@
 title: "Именование объектов в JavaScript"
 date: "2012-08-13T11:44:41+03:00"
 published: true
-tags: "closure compiler, inheritedjs, javascript, программирование"
+tags: [closure compiler, inheritedjs, javascript, программирование]
 ---
 
 Вы же помните предыдущий пост про [библиотеку для создания объектов](/post/jsclass/) на JavaScript?

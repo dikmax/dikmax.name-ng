@@ -2,7 +2,7 @@
 title: "Google Closure Compiler JsDoc в продуктах JetBrains"
 date: "2012-08-02T11:56:54+03:00"
 published: true
-tags: "closure compiler, intellij idea, javascript, программирование, работа"
+tags: [closure compiler, intellij idea, javascript, программирование, работа]
 ---
 
 Свершилось чудо! JetBrains услышали мои молитвы и

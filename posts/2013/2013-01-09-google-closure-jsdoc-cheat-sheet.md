@@ -2,7 +2,7 @@
 title: "Google Closure JSDoc cheat sheet"
 date: "2013-01-09T16:54:44+03:00"
 published: true
-tags: "cheat sheet, closure compiler, javascript, jsdoc, программирование, шпаргалка"
+tags: [cheat sheet, closure compiler, javascript, jsdoc, программирование, шпаргалка]
 ---
 
 Если кто вдруг не знает, Google Closure сильно полагается на JSDoc-комментарии при компиляции и статическом анализе

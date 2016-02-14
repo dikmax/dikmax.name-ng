@@ -3,7 +3,7 @@ title: "Нью-Йорк: Часть 4 — ещё парки"
 date: "2014-11-05T10:35:00+03:00"
 published: true
 collection: "usa-2014"
-tags: "сша, путешествие, фотки"
+tags: [сша, путешествие, фотки]
 ---
 
 ![](/images/travel/2014-10-usa/new-york-4-cover.jpg)
