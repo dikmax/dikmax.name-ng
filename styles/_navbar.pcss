@@ -1,4 +1,4 @@
-.navbar {
+@b navbar {
     position: fixed 0 0 * 0;
 
     color: var(--dark-background-text);
@@ -8,7 +8,22 @@
 
     @mixin shadow-2dp;
 
-    @nest & a {
+    @e container {
+        lost-center: calc(var(--body-width)+var(--navbar-link-padding-side)*2) calc(var(--body-padding)-var(--navbar-link-padding-side)) flex;
+        flex-wrap: no-wrap;
+        align-items: center;
+        height: 100%;
+    }
+
+    @e navigation {
+        display: none;
+
+        @media (--sm-screen) {
+            display: inline;
+        }
+    }
+
+    @e item {
         color: var(--dark-background-text);
         text-decoration: none;
         padding: 0 var(--navbar-link-padding-side)
@@ -16,90 +31,16 @@
         box-sizing: border-box;
         border-bottom: var(--navbar-underline-width) solid transparent;
         transition: color,border-color 0.3s;
+    }
 
-        @nest &:not(.no-underline):hover {
-            color: #ffffff;
-            border-color: #ffffff;
+    @e side-menu-button {
+        @media (--sm-screen) {
+            display: none;
         }
     }
-}
 
-.navbar-container {
-    lost-center: calc(var(--body-width)+var(--navbar-link-padding-side)*2) calc(var(--body-padding)-var(--navbar-link-padding-side)) flex;
-    flex-wrap: no-wrap;
-    align-items: center;
-    height: 100%;
-}
-
-.navbar-nav {
-    display: none;
-
-    @media (--sm-screen) {
-        display: inline;
-    }
-}
-
-.side-menu-button {
-    /*@nest & a {
-        padding-left: var(--body-padding);
-    } */
-
-
-    @media (--sm-screen) {
-        display: none;
-    }
-}
-
-.sidebar {
-    position: fixed 0 0 0 0;
-    z-index: 11;
-    background: color(var(--black-color) a(.5));
-
-    @nest &:not(.active) {
-        display: none;
-    }
-
-    @media (--sm-screen) {
-        display: none;
-    }
-}
-
-.sidebar-panel {
-    position: absolute 0 * 0 -var(--sidebar-width);
-    width: var(--sidebar-width);
-    background: var(--white-color);
-    transition: left 0.3s;
-
-    @nest & a {
-        text-decoration: none;
-        color: var(--light-background-text);
-
-        @nest &:hover {
-            text-decoration: underline;
-        }
-    }
-}
-
-.sidebar.active .sidebar-panel {
-    left: 0;
-}
-
-.sidebar-brand {
-    display: flex;
-    align-items: center;
-    height: var(--navbar-height);
-    color: var(--light-background-text);
-    padding: 0 var(--body-padding);
-    @mixin bottom-divider;
-}
-
-
-.sidebar-links {
-    padding: var(--body-padding) *;
-
-    @nest & a {
-        display: block;
-        padding: var(--body-padding);
-        font-weight: bold;
+    @m link:hover {
+        color: #ffffff;
+        border-color: #ffffff;
     }
 }

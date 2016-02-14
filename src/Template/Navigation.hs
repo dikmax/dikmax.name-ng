@@ -2,26 +2,29 @@
 
 module Template.Navigation (navigation) where
 
+import           Data.Text
 import           Lucid
 
-navLinks :: Html ()
-navLinks = do
-    a_ [href_ "/map/"] "Путешествия"
-    a_ [href_ "/projects/"] "Проекты"
-    a_ [href_ "/archive/"] "Архив"
-    a_ [href_ "/about/"] "Обо мне"
+navLinks :: [(Text, Text)]
+navLinks =
+    [ ("/map/", "Путешествия")
+    , ("/projects/", "Проекты")
+    , ("/archive/", "Архив")
+    , ("/about/", "Обо мне")
+    ]
 
 navigation :: Html ()
 navigation = do
     nav_ [class_ "navbar"] $
-        div_ [class_ "navbar-container"] $ do
-            span_ [class_ "navbar-brand"] $
-                a_ [href_ "/"] "[dikmax's name]"
-            span_ [class_ "nav-title hidden"] ":: Осень в Минске"
-            span_ [class_ "navbar-nav"] navLinks
-
+        div_ [class_ "navbar__container"] $ do
+            span_ [class_ "navbar__brand"] $
+                a_ [class_ "navbar__item navbar_link", href_ "/"] "[dikmax's name]"
+            span_ [class_ "navbar__item navbar_title hidden"] ":: Осень в Минске"
+            span_ [class_ "navbar__navigation"] $
+                mapM_ (\(l, t) -> a_ [class_ "navbar__item navbar_link", href_ l] $ toHtml t) navLinks
 
     nav_ [class_ "sidebar"] $
-        div_ [class_ "sidebar-panel"] $ do
-            div_ [class_ "sidebar-brand"] "[dikmax's name]"
-            nav_ [class_ "sidebar-links"] navLinks
+        div_ [class_ "sidebar__panel"] $ do
+            div_ [class_ "sidebar__brand"] "[dikmax's name]"
+            nav_ [class_ "sidebar__links"] $
+                mapM_ (\(l, t) -> a_ [class_ "sidebar__link", href_ l] $ toHtml t) navLinks

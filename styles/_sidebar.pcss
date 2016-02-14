@@ -1,0 +1,51 @@
+@b sidebar {
+    position: fixed 0 0 0 0;
+    z-index: 11;
+    background: color(var(--black-color) a(.5));
+    display: none;
+
+    @media (--sm-screen) {
+        display: none;
+    }
+
+    @m active {
+        display: block;
+    }
+
+    @e panel {
+        position: absolute 0 * 0 -var(--sidebar-width);
+        width: var(--sidebar-width);
+        background: var(--white-color);
+        transition: left 0.3s;
+
+        @m active {
+            left: 0;
+        }
+    }
+
+    @e link {
+        text-decoration: none;
+        color: var(--light-background-text);
+
+        display: block;
+        padding: var(--body-padding);
+        font-weight: bold;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    @e brand {
+        display: flex;
+        align-items: center;
+        height: var(--navbar-height);
+        color: var(--light-background-text);
+        padding: 0 var(--body-padding);
+        @mixin bottom-divider;
+    }
+
+    @e links {
+        padding: var(--body-padding) *;
+    }
+}
