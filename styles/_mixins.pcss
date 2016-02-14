@@ -13,3 +13,12 @@
 @define-mixin bottom-divider {
     border-bottom: 1px solid color(var(--black-color) a(0.12));
 }
+
+@define-mixin center {
+    width: calc(100% - var(--body-padding)*2);
+    lost-center: var(--body-width) var(--body-padding);
+
+    @media (--sm-screen) {
+        width: var(--body-width);
+    }
+}

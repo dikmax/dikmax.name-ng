@@ -10,12 +10,7 @@
     }
 
     @e centered {
-        width: calc(100% - var(--body-padding)*2);
-        lost-center: var(--body-width) var(--body-padding);
-
-        @media (--sm-screen) {
-            width: var(--body-width);
-        }
+        @mixin center;
     }
 
     @e full-width {

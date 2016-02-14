@@ -1,15 +1,12 @@
+/* TODO @utility */
 .hidden {
     display: none;
-}
-
-.container {
-    lost-center: var(--body-width) var(--body-padding) 0;
 }
 
 .dark-background {
     color: var(--dark-background-text);
 
-    @nest & a {
+    & a {
         color: var(--dark-background-text);
     }
 }
@@ -17,7 +14,7 @@
 .light-background {
     color: var(--light-background-text);
 
-    @nest & a {
+    & a {
         color: var(--light-background-text);
     }
 }

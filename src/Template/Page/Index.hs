@@ -17,8 +17,7 @@ indexPage :: File -> [File] -> Html ()
 indexPage welcome posts = layout $ do
     div_
         [ class_ "header_for-index dark-background"
-        , coverToStyle welcome ] $
-        div_ [class_ "container"] $ writeLucid def $ welcome ^. fileContent
+        , coverToStyle welcome ] $ writeLucid def $ welcome ^. fileContent
 
     navigation
     subscribe

@@ -21,29 +21,30 @@ postList olderPage newerPage posts =
         when (isJust olderPage || isJust newerPage) $
             div_ [class_ "main__centered pager"] $ do
                 maybe (span_ [] mempty) (\link ->
-                    a_ [href_ $ pack link, class_ "previous"] "← Старше") olderPage
+                    a_ [href_ $ pack link, class_ "pager__previous"] "← Старше") olderPage
                 maybe (span_ [] mempty) (\link ->
-                    a_ [href_ $ pack link, class_ "next"] "Моложе →") newerPage
+                    a_ [href_ $ pack link, class_ "pager__next"] "Моложе →") newerPage
 
 postSingle :: File -> Html ()
 postSingle file =
-    div_ [class_ "main__centered post post_list"] $ do
-        div_ [class_ "post__block post__title"] $
+    div_ [class_ "post post_list"] $ do
+        div_ [class_ "main__centered post__block post__title"] $
             a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml (file ^. fileMeta ^. postTitle)
 
         maybe (mempty) (\cover ->
-            div_ [class_ "post__cover"] $
+            div_ [class_ "main__centered post__block post__cover"] $
                 a_ [href_ $ url (file ^. fileMeta ^. postId)] $
                     img_ [class_ "post__cover-image", src_ $ pack cover, alt_ ""]
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
 
-        maybe (div_ [class_ "post__description"] $ writeLucid def $ file ^. fileContent) (\(doc, teaser) -> do
-            div_ [class_ "post__description"] $ writeLucid def doc
-
-            div_ [class_ "post__read-more"] $
-                a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml $ if teaser == "" then defaultReadMoreText else teaser
+        maybe (writeLucid def $ file ^. fileContent)
+            (\(doc, teaser) -> do
+                writeLucid def doc
+                div_ [class_ "main__centered post__block post__read-more"] $
+                    a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml $
+                        if teaser == "" then defaultReadMoreText else teaser
             ) $ extractTeaser $ file ^. fileContent
     where
-        url :: String -> Text
+        url :: String -> Text --TODO
         url id' = "/post/" `append` pack id' `append` "/"

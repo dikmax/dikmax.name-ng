@@ -1,37 +1,14 @@
 @import _variables.pcss;
 @import _medias.pcss;
 @import _mixins.pcss;
-@import _utils.pcss;
+@import _global.pcss;
 @import _header.pcss;
 @import _navbar.pcss;
 @import _sidebar.pcss;
 @import _footer.pcss;
 @import _main.pcss;
 @import _post.pcss;
-
-
-html {
-    font-family: 'Roboto', sans-serif;
-    font-size: responsive 14px 20px;
-    font-range: 320px 768px;
-    font-weight: 500;
-    line-height: 1.625;
-    letter-spacing: 0;
-}
-
-body {
-    margin: 0;
-    padding: 0 0 var(--footer-height) 0;
-    box-sizing: border-box;
-}
-
-pre {
-    overflow-x: scroll;
-}
-
-
-.subscribe-info {
-    color: var(--light-background-text) var(--primary-light-color);
-}
+@import _subscribe.pcss;
+@import _utils.pcss;
 
 /* @import font-awesome; */

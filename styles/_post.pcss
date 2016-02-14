@@ -103,13 +103,14 @@
     }
 
     /* List elements */
-    @e description {
-        width: 100%;
+    @e title {
+        font-size: 300%;
+        font-weight: 400;
+        margin-bottom: var(--static-font-size);
+        line-height: 1.3;
     }
 
     @e cover {
-        width: 100%;
-        margin: 0;
     }
 
     @e cover-image {
@@ -118,7 +119,6 @@
 
 
     @e read-more {
-        width: 100%;
         text-align: right;
     }
 
@@ -250,8 +250,16 @@
 }
 
 @b pager {
-    lost-center: var(--body-width) var(--body-padding) flex;
     display: flex;
     justify-content: space-between;
     margin: var(--body-padding) *;
+
+    @e previous {
+        width: 100%;
+    }
+
+    @e next {
+        width: 100%;
+        text-align: right;
+    }
 }
