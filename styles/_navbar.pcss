@@ -6,6 +6,9 @@
     height: var(--navbar-height);
     z-index: 10;
 
+    font-size: var(--static-font-size);
+    font-weight: 400;
+
     @mixin shadow-2dp;
 
     @e container {
@@ -27,7 +30,7 @@
         color: var(--dark-background-text);
         text-decoration: none;
         padding: 0 var(--navbar-link-padding-side)
-                calc((var(--navbar-height)-var(--body-font-size)-var(--navbar-underline-width)*4)/2);
+                calc((var(--navbar-height)-var(--static-font-size)-var(--navbar-underline-width)*4)/2);
         box-sizing: border-box;
         border-bottom: var(--navbar-underline-width) solid transparent;
         transition: color,border-color 0.3s;

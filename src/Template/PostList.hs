@@ -15,11 +15,11 @@ import           Types
 
 postList :: Maybe String -> Maybe String -> [File] -> Html ()
 postList olderPage newerPage posts =
-    div_ [class_ "main list-container"] $ do
+    div_ [class_ "main main_list"] $ do
         mconcat $ map postSingle posts
 
         when (isJust olderPage || isJust newerPage) $
-            div_ [class_ "pager"] $ do
+            div_ [class_ "main__centered pager"] $ do
                 maybe (span_ [] mempty) (\link ->
                     a_ [href_ $ pack link, class_ "previous"] "← Старше") olderPage
                 maybe (span_ [] mempty) (\link ->
@@ -27,21 +27,21 @@ postList olderPage newerPage posts =
 
 postSingle :: File -> Html ()
 postSingle file =
-    div_ [class_ "list-post"] $ do
-        h1_ [class_ "title"] $
+    div_ [class_ "main__centered post post_list"] $ do
+        div_ [class_ "post__block post__title"] $
             a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml (file ^. fileMeta ^. postTitle)
 
         maybe (mempty) (\cover ->
-            div_ [class_ "cover"] $
+            div_ [class_ "post__cover"] $
                 a_ [href_ $ url (file ^. fileMeta ^. postId)] $
-                    img_ [src_ $ pack cover, alt_ ""]
+                    img_ [class_ "post__cover-image", src_ $ pack cover, alt_ ""]
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
 
-        maybe (div_ [class_ "description"] $ writeLucid def $ file ^. fileContent) (\(doc, teaser) -> do
-            div_ [class_ "description"] $ writeLucid def doc
+        maybe (div_ [class_ "post__description"] $ writeLucid def $ file ^. fileContent) (\(doc, teaser) -> do
+            div_ [class_ "post__description"] $ writeLucid def doc
 
-            div_ [class_ "read-more"] $
+            div_ [class_ "post__read-more"] $
                 a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml $ if teaser == "" then defaultReadMoreText else teaser
             ) $ extractTeaser $ file ^. fileContent
     where

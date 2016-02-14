@@ -11,7 +11,11 @@ layout content = doctypehtml_ $ do
         meta_ [charset_ "UTF-8"]
         title_ "Document" -- TODO
         meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0"]
-        link_ [rel_ "stylesheet", href_ "/css/styles.css"]
+        link_ [rel_ "stylesheet", type_ "text/css", href_ "/css/styles.css"]
+        link_
+            [ rel_ "stylesheet"
+            , type_ "text/css"
+            , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
     body_ $ do
         content
 
