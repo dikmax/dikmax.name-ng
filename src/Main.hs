@@ -79,8 +79,6 @@ blog = do
         ps <- postsList PostsCacheById
         let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
         tags <- tagsList Anything
-        putNormal $ show $ M.size tags
-        putNormal $ show $ M.map (M.size) tags
         let tagsPaths = concatMap (\(t, fs) -> pathsFromList (siteDir </> tagDir </> t) fs) $ M.assocs tags
         need $ postsFilePaths ++ pathsFromList siteDir ps ++ tagsPaths
 
@@ -194,6 +192,7 @@ blog = do
 
         getNewerPage prefix _ page
             | page == 1 = Nothing
+            | page == 2 = Just $ prefix
             | otherwise = Just $ prefix ++ "page/" ++ show (page - 1) ++ "/"
 
         alterDate :: FilePath -> Maybe UTCTime -> Maybe UTCTime
