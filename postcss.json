@@ -3,14 +3,26 @@
         "postcss-import",
         "postcss-mixins",
         "postcss-cssnext",
+        "postcss-quantity-queries",
+        "postcss-bem",
+        "postcss-nested",
         "lost",
         "postcss-responsive-type",
-        "postcss-quantity-queries",
-        "postcss-short",
-        "postcss-normalize"
+        "postcss-short"
     ],
     "cssnext": {
         "browsers": "> 5%",
         "compress": false
+    },
+    "postcss-bem-linter": {
+        "preset": "bem"
+    },
+    "postcss-bem": {
+        "style": "bem",
+        "shortcuts": {
+            "component": "b",
+            "descendent": "e",
+            "modifier": "m"
+        }
     }
 }

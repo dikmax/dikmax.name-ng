@@ -16,7 +16,7 @@ import           Types
 indexPage :: File -> [File] -> Html ()
 indexPage welcome posts = layout $ do
     div_
-        [ class_ "main-page-header dark-background"
+        [ class_ "header_for-index dark-background"
         , coverToStyle welcome ] $
         div_ [class_ "container"] $ writeLucid def $ welcome ^. fileContent
 

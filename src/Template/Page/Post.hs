@@ -19,13 +19,13 @@ import           Types
 postPage :: File -> Html ()
 postPage post = layout $ do
     header_
-        [ class_ "header"
+        [ class_ "header_for-post"
         , coverToStyle post ] $
-        div_ [class_ "title-block"] $ do
-            div_ [class_ "title"] $ toHtml $ pack $ post ^. fileMeta ^?! postTitle
+        div_ [class_ "header__title-block"] $ do
+            div_ [class_ "header__title"] $ toHtml $ pack $ post ^. fileMeta ^?! postTitle
             maybe mempty (\time ->
                 div_ [data_ "post-date" $ toStrict $ pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
-                    , class_ "date"] $ toHtml $ formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
+                    , class_ "header__date"] $ toHtml $ formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
 
     navigation
 

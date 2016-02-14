@@ -25,6 +25,10 @@ var zIndex = require('postcss-zindex');
 
 var cssnano = require('cssnano');
 
+var bem = require('postcss-bem');
+var bemLinter = require('postcss-bem-linter');
+var nested = require('postcss-nested');
+
 var paths = {
     styles: 'styles/*.pcss'
 };
@@ -38,11 +42,23 @@ gulp.task('styles', function () {
             "compress": false
         }),
         short(),
-        lost(),
         responsiveType(),
         quantitiesQueries(),
+        bem({
+            "style": "bem",
+            "shortcuts": {
+                "component": "b",
+                "descendent": "e",
+                "modifier": "m"
+            }
+        }),
+        nested(),
+        lost(),
+        /*bemLinter({
+            preset: 'suit'
+        }),*/
         //colorguard(),
-        normalize(),
+        //normalize(),
 
         /*discardEmpty(),
         discardDuplicates(),

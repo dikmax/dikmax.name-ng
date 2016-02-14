@@ -1,21 +1,21 @@
+@b header {
+    @m for-index {
+        background-size: cover;
 
-.main-page-header {
-    background-size: cover;
+        padding-top: var(--navbar-height);
 
-    padding-top: var(--navbar-height);
+        lost-utility: clearfix;
+    }
 
-    lost-utility: clearfix;
-}
+    @m for-post {
+        @mixin cover-background;
+        background-attachment: fixed;
+        size: 100vw 100vh;
+        position: relative;
+        transform: translateZ(0);
+    }
 
-.header {
-    @mixin cover-background;
-    background-attachment: fixed;
-    size: 100vw 100vh;
-    position: relative;
-    transform: translateZ(0);
-
-    @nest & .title-block {
-        /* TODO */
+    @e title-block {
         position: absolute * * 0 *;
         box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
         color: var(--dark-background-text);
@@ -30,11 +30,11 @@
         }
     }
 
-    @nest & .title {
+    @e title {
         @mixin display-3;
     }
 
-    @nest & .date {
+    @e date {
         font-style: italic;
     }
 }
