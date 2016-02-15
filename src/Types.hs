@@ -52,7 +52,7 @@ makeLenses ''FileMeta
 
 -- | Post
 data File = File
-    { _fileMeta :: FileMeta
+    { _fileMeta    :: FileMeta
     , _fileContent :: Pandoc
     } deriving (Show, Generic)
 
@@ -71,23 +71,34 @@ instance Hashable PostsCache where
 
 data PostCoverType = CoverLight | CoverDark deriving (Eq)
 
+--
 data ImageMeta = ImageMeta
-    { imageWidth :: Int
-    , imageHeight :: Int
-    , imageColor :: String
-    , imageThumbnail :: String
+    { _imageWidth     :: Int
+    , _imageHeight    :: Int
+    , _imageColor     :: String
+    , _imageThumbnail :: String
     } deriving (Eq, Show, Generic)
 
 instance Binary ImageMeta
 
+makeLenses ''ImageMeta
+
 instance Default ImageMeta where
     def = ImageMeta
-        { imageWidth = 0
-        , imageHeight = 0
-        , imageColor = ""
-        , imageThumbnail = ""
+        { _imageWidth = 0
+        , _imageHeight = 0
+        , _imageColor = ""
+        , _imageThumbnail = ""
         }
 
+-- CommonData
+data CommonData = CommonData
+    { _dataCss :: String
+    }
+
+makeLenses ''CommonData
+
+--
 instance Binary UTCTime where
     put (UTCTime a b) = put a >> put b
     get = UTCTime <$> get <*> get

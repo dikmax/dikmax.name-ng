@@ -53,7 +53,7 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["images", "blogposts", siteDir </> "css/styles.css"]
+        need ["images", "blogposts"]
 
 blog :: Rules ()
 blog = do
@@ -77,6 +77,16 @@ blog = do
         postCacheContent <- mapM posts postFiles
         return $ buildTags postCacheContent
 
+    css <- newCache $ \_ -> do
+        need [siteDir </> "css/styles.css"]
+        liftIO $ readFile $ siteDir </> "css/styles.css"
+
+    commonData <- newCache $ \_ -> do
+        cssContent <- css Anything
+        return $ CommonData
+            { _dataCss = cssContent
+            }
+
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
         let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
@@ -85,49 +95,54 @@ blog = do
         need $ postsFilePaths ++ pathsFromList siteDir ps ++ tagsPaths
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
+        cd <- commonData Anything
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.postPage post
+        liftIO $ renderToFile out $ T.postPage cd post
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
+        cd <- commonData Anything
         let postsOnPage = getPostsForPage ps 1
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.indexPage welcome postsOnPage
+        liftIO $ renderToFile out $ T.indexPage cd welcome postsOnPage
 
     -- Older page
     siteDir </> pageDir </> "*" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
+        cd <- commonData Anything
         let page = (read $ idFromDestFilePath out) :: Int
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage "/" ps page
         let newerPage = getNewerPage "/" ps page
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd olderPage newerPage postsOnPage
 
     -- Tags main page
     siteDir </> tagDir </> "*" </> indexHtml %> \out -> do
         tags <- tagsList Anything
+        cd <- commonData Anything
         let tag = idFromDestFilePath out
         let ps = tags M.! tag
         let postsOnPage = getPostsForPage ps 1
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage olderPage (Nothing) postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd olderPage (Nothing) postsOnPage
 
     -- Tags older pages
     siteDir </> tagDir </> "*" </> pageDir </> "*" </> indexHtml %> \out -> do
         tags <- tagsList Anything
+        cd <- commonData Anything
         let (tag, page) = tagAndPageFromDestFilePath out
         let ps = tags M.! tag
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps page
         let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd olderPage newerPage postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
@@ -205,7 +220,7 @@ blog = do
         getImageColor images (Just filePath)
             | "/images/" `isPrefixOf` filePath = do
                 meta <- images $ buildDir ++ filePath ++ ".meta"
-                return $ Just $ imageColor meta
+                return $ Just $ meta ^. imageColor
             | otherwise = return Nothing
         getImageColor _ Nothing = return Nothing
 
@@ -238,8 +253,8 @@ buildImagesCache =
 
                 liftIO $ createDirectoryIfMissing True (takeDirectory out)
                 liftIO $ B.encodeFile out $ def
-                    { imageColor = extractColor pixel
-                    , imageThumbnail = "data:image/png;base64," ++
+                    { _imageColor = extractColor pixel
+                    , _imageThumbnail = "data:image/png;base64," ++
                         (map (toEnum . fromEnum) $ BS.unpack $ BS.encode file)
                     }
     where

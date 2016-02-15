@@ -2,16 +2,18 @@
 
 module Template.Layout (layout) where
 
+import           Control.Lens
 import           Data.Text.Lazy
 import           Lucid
+import           Types
 
-layout :: Html () -> Html ()
-layout content = doctypehtml_ $ do
+layout :: CommonData -> Html () -> Html ()
+layout cd content = doctypehtml_ $ do
     head_ $ do
         meta_ [charset_ "UTF-8"]
         title_ "Document" -- TODO
         meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0"]
-        link_ [rel_ "stylesheet", type_ "text/css", href_ "/css/styles.css"]
+        style_ [type_ "text/css"] (cd ^. dataCss)
         link_
             [ rel_ "stylesheet"
             , type_ "text/css"
