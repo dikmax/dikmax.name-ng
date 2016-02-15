@@ -55,10 +55,20 @@
             display: block;
             position: absolute;
             padding-left: var(--body-padding);
-            font-size: 160px;
+            font-size: responsive 56px 160px;
+            font-range: 320px 768px;
             color: color(#b3b3b3 a(0.5));
-            margin-top: -65px;
+            margin-top: calc(-20px - 45 * ((100vw - 320px) / 448));
             z-index: 1;
+
+            @media screen and (max-width: 320px) {
+                margin-top: -20px
+            }
+
+            @media screen and (min-width: 768px) {
+                margin-top: -65px
+            }
+
         }
     }
 
