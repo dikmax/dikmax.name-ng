@@ -5,6 +5,8 @@ import           Config
 import           Control.Monad
 import           Control.Lens
 import qualified Data.Binary                as B
+import qualified Data.ByteString            as BS
+import qualified Data.ByteString.Base64     as BS
 import           Data.List
 import qualified Data.Map.Lazy              as M
 import           Data.Maybe
@@ -227,9 +229,20 @@ buildImagesCache =
         need [src]
         putNormal $ "Reading image " ++ src
         Stdout pixel <- cmd "convert" src "-resize" "1x1!" "txt:-"
-        liftIO $ createDirectoryIfMissing True (takeDirectory out)
-        liftIO $ B.encodeFile out $ def
-            { imageColor = extractColor pixel}
+        withTempFile $ \origPng -> do
+            () <- cmd "convert" src "-resize" "16x16!" ("png:" ++ origPng)
+            withTempFile $ \packedPng -> do
+                () <- cmd "zopflipng" "--iterations=500" "--splitting=3"
+                    "--filters=01234mepb" "--lossy_8bit" "--lossy_transparent"
+                    origPng packedPng
+                file <- liftIO $ BS.readFile packedPng
+
+                liftIO $ createDirectoryIfMissing True (takeDirectory out)
+                liftIO $ B.encodeFile out $ def
+                    { imageColor = extractColor pixel
+                    , imageThumbnail = "data:image/png;base64," ++
+                        (map (toEnum . fromEnum) $ BS.unpack $ BS.encode file)
+                    }
     where
         extractColor p =
             case p =~ pat :: (String, String, String, [String]) of

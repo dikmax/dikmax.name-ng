@@ -37,6 +37,7 @@ executable dikmax.name
                      , Types
   ghc-options:         -Wall -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base
+                     , base64-bytestring >= 1 && < 2
                      , binary >= 0.7 && < 0.9
                      , bytestring >= 0.10 && < 0.11
                      , containers >= 0.5 && < 0.6
