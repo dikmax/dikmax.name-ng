@@ -8,7 +8,11 @@
         "postcss-nested",
         "lost",
         "postcss-responsive-type",
-        "postcss-short"
+        "postcss-short",
+
+        "postcss-discard-comments",
+        "css-mqpacker",
+        "cssnano"
     ],
     "cssnext": {
         "browsers": "> 5%",

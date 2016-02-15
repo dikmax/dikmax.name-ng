@@ -232,8 +232,7 @@ buildImagesCache =
         withTempFile $ \origPng -> do
             () <- cmd "convert" src "-resize" "16x16!" ("png:" ++ origPng)
             withTempFile $ \packedPng -> do
-                () <- cmd "zopflipng" "--iterations=500" "--splitting=3"
-                    "--filters=01234mepb" "--lossy_8bit" "--lossy_transparent"
+                () <- cmd "zopflipng" "-m" "--lossy_8bit" "--lossy_transparent"
                     origPng packedPng
                 file <- liftIO $ BS.readFile packedPng
 
