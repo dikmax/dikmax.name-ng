@@ -244,6 +244,8 @@ buildImagesCache =
         need [src]
         putNormal $ "Reading image " ++ src
         Stdout pixel <- cmd "convert" src "-resize" "1x1!" "txt:-"
+        Stdout size <- cmd "identify" "-format" "%[w]x%[h]" src
+        let (w, h) = extractSize size
         withTempFile $ \origPng -> do
             () <- cmd "convert" src "-resize" "16x16!" ("png:" ++ origPng)
             withTempFile $ \packedPng -> do
@@ -252,10 +254,12 @@ buildImagesCache =
                 file <- liftIO $ BS.readFile packedPng
 
                 liftIO $ createDirectoryIfMissing True (takeDirectory out)
-                liftIO $ B.encodeFile out $ def
+                liftIO $ B.encodeFile out $ ImageMeta
                     { _imageColor = extractColor pixel
                     , _imageThumbnail = "data:image/png;base64," ++
                         (map (toEnum . fromEnum) $ BS.unpack $ BS.encode file)
+                    , _imageWidth = w
+                    , _imageHeight = h
                     }
     where
         extractColor p =
@@ -264,6 +268,12 @@ buildImagesCache =
                 _              -> error $ "Can't extract color from " ++ p
             where
                 pat = " (#[0-9A-F]{6})[0-9A-F]{0,2} " -- Could be with opacity, drop it
+        extractSize p =
+            case p =~ pat :: (String, String, String, [String]) of
+                (_, _, _, [w, h]) -> (read w, read h)
+                _              -> error $ "Can't extract color from " ++ p
+            where
+                pat = "^([0-9]*)x([0-9]*)$"
 
 
 -- Build styles
