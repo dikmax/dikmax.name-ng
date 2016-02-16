@@ -260,24 +260,25 @@ buildImagesCache =
         let src = take (length src' - 5) src'
         need [src]
         putNormal $ "Reading image " ++ src
-        Stdout pixel <- cmd "convert" src "-resize" "1x1!" "txt:-"
-        Stdout size <- cmd "identify" "-format" "%[w]x%[h]" src
+        Stdout pixel <- cmd "convert" [src] "-resize" "1x1!" "txt:-"
+        Stdout size <- cmd "identify" "-format" "%[w]x%[h]" [src]
         let (w, h) = extractSize size
         withTempFile $ \origPng -> do
-            () <- cmd "convert" src "-resize" "16x16!" ("png:" ++ origPng)
-            withTempFile $ \packedPng -> do
+            () <- cmd "convert" [src] "-resize" "16x16!" ["png:" ++ origPng]
+            {-withTempFile $ \packedPng -> do
                 () <- cmd (EchoStdout False) "zopflipng" "-m" "--lossy_8bit"
                     "--lossy_transparent" origPng packedPng
-                file <- liftIO $ BS.readFile packedPng
+                file <- liftIO $ BS.readFile packedPng-}
 
-                liftIO $ createDirectoryIfMissing True (takeDirectory out)
-                liftIO $ B.encodeFile out $ ImageMeta
-                    { _imageColor = extractColor pixel
-                    , _imageThumbnail = "data:image/png;base64," ++
-                        (map (toEnum . fromEnum) $ BS.unpack $ BS.encode file)
-                    , _imageWidth = w
-                    , _imageHeight = h
-                    }
+            file <- liftIO $ BS.readFile origPng
+            liftIO $ createDirectoryIfMissing True (takeDirectory out)
+            liftIO $ B.encodeFile out $ ImageMeta
+                { _imageColor = extractColor pixel
+                , _imageThumbnail = "data:image/png;base64," ++
+                    (map (toEnum . fromEnum) $ BS.unpack $ BS.encode file)
+                , _imageWidth = w
+                , _imageHeight = h
+                }
     where
         extractColor p =
             case p =~ pat :: (String, String, String, [String]) of
