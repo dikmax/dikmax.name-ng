@@ -63,17 +63,27 @@ blog = do
         liftIO $ B.decodeFile $ pandocCacheDir </> file :: Action File
 
     -- Building images cache
-    images <- newCache $ \file -> do
+    image <- newCache $ \file -> do
         need [file]
         liftIO $ B.decodeFile file :: Action ImageMeta
 
+    images <- newCache $ \_ -> do
+        imageFiles <- getDirectoryFiles "." imagesPatterns
+        need imageFiles
+        imageCacheContent <- mapM (\i -> do
+            meta <- image $ buildDir </> i ++ ".meta"
+            return (i, meta)) imageFiles
+        return $ M.fromList imageCacheContent
+
     postsList <- newCache $ \t -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
+        -- TODO make parallel
         postCacheContent <- mapM posts postFiles
         return $ buildList t postCacheContent
 
     tagsList <- newCache $ \_ -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
+        -- TODO make parallel
         postCacheContent <- mapM posts postFiles
         return $ buildTags postCacheContent
 
@@ -83,8 +93,15 @@ blog = do
 
     commonData <- newCache $ \_ -> do
         cssContent <- css Anything
+        imagesContent <- images Anything
+        let imageGetter filePath =
+                if "/images/" `isPrefixOf` filePath
+                    then M.lookup (tail filePath) imagesContent
+                    else Nothing
+
         return $ CommonData
             { _dataCss = cssContent
+            , _imageMeta = imageGetter
             }
 
     phony "blogposts" $ do
@@ -154,7 +171,7 @@ blog = do
         let post = buildPost src pandoc
         let pCover = post ^. fileMeta ^. postCover
         color <- if isNothing $ pCover ^. coverColor
-            then getImageColor images $ pCover ^. coverImg
+            then getImageColor image $ pCover ^. coverImg
             else return $ pCover ^. coverColor
 
         let updatedPost = post & fileMeta %~ (\m -> m
@@ -217,9 +234,9 @@ blog = do
         alterDate _ date = date
 
         getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
-        getImageColor images (Just filePath)
+        getImageColor image (Just filePath)
             | "/images/" `isPrefixOf` filePath = do
-                meta <- images $ buildDir ++ filePath ++ ".meta"
+                meta <- image $ buildDir ++ filePath ++ ".meta"
                 return $ Just $ meta ^. imageColor
             | otherwise = return Nothing
         getImageColor _ Nothing = return Nothing
@@ -309,11 +326,6 @@ imagesRules = do
         need [siteDir </> x | x <- imageFiles]
 
     forM_ imagesPatterns buildStatic
-
-    where
-        imagesPatterns :: [FilePath]
-        imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
-
 
 -- npm packages
 npmPackages :: Rules ()

@@ -1,8 +1,9 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, TemplateHaskell, ScopedTypeVariables #-}
 
 module Text.Pandoc.LucidWriter (writeLucid, writeLucidString) where
 
 import           Control.Monad.State
+import           Control.Lens
 import           Data.Data
 import           Data.Default
 import qualified Data.Text           as T
@@ -16,32 +17,36 @@ import           Text.Pandoc
 
 
 data LucidWriterOptions = LucidWriterOptions
-    { idPrefix     :: Text
-    , siteDomain   :: Text
-    , debugOutput  :: Bool
-    , renderForRSS :: Bool
+    { _idPrefix     :: Text
+    , _siteDomain   :: Text
+    , _debugOutput  :: Bool
+    , _renderForRSS :: Bool
     }
 
 instance Default LucidWriterOptions where
     def = LucidWriterOptions
-        { idPrefix     = ""
-        , siteDomain   = ""
-        , debugOutput  = False
-        , renderForRSS = False
+        { _idPrefix     = ""
+        , _siteDomain   = ""
+        , _debugOutput  = False
+        , _renderForRSS = False
         }
 
+makeLenses ''LucidWriterOptions
+
 data WriterStateData = WriterStateData
-    { notesList     :: [Html ()]
-    , writerOptions :: LucidWriterOptions
-    , countBlocks   :: Int
+    { _notesList     :: [Html ()]
+    , _writerOptions :: LucidWriterOptions
+    , _countBlocks   :: Int
     }
 
-emptyState :: WriterStateData
-emptyState = WriterStateData
-    { notesList     = []
-    , writerOptions = def
-    , countBlocks   = 0
-    }
+instance Default WriterStateData where
+    def = WriterStateData
+        { _notesList     = []
+        , _writerOptions = def
+        , _countBlocks   = 0
+        }
+
+makeLenses ''WriterStateData
 
 type WriterState = State WriterStateData
 
@@ -50,13 +55,10 @@ writeLucidString options pandoc = unpack $ renderText $ writeLucid options pando
 
 writeLucid :: LucidWriterOptions -> Pandoc -> Html ()
 writeLucid options pandoc
-    | debugOutput options =
+    | options ^. debugOutput =
         pre_ [] (toHtml $ writeNative def pandoc)
-    | otherwise = evalState (writeLucid' pandoc) emptyState { writerOptions = updateOptions }
-    where
-        updateOptions = options
-            { idPrefix = if idPrefix options == "" then "new" else idPrefix options
-            }
+    | otherwise = evalState (writeLucid' pandoc)
+                    (def & writerOptions %~ idPrefix %~ (\p -> if p == "" then "new" else p))
 
 writeLucid' :: Pandoc -> WriterState (Html ())
 writeLucid' (Pandoc _ blocks) = do
@@ -237,18 +239,18 @@ writeInline (RawInline _ _) = return mempty
 
 writeInline (Link attr inline target) = do
     inlines <- concatInlines inline
-    writerState <- get
+    options <- use writerOptions
     return $ a_
         (writeAttr attr ++
-            [ href_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState))
-                (pack $ fst target) (siteDomain (writerOptions writerState))
+            [ href_ $ toStrict $ linkToAbsolute (options ^. renderForRSS)
+                (pack $ fst target) (options ^. siteDomain)
             , title_ $ toStrict $ pack $ snd target
             ]
         ) inlines
 
 writeInline (Image attr inline target) = do
     inlines <- concatInlines inline
-    writerState <- get
+    options <- use writerOptions
 
     return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target) ||
             "https://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target)
@@ -269,8 +271,8 @@ writeInline (Image attr inline target) = do
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
                     img_ [ class_ "post__figure-img"
-                        , src_ $ toStrict $ linkToAbsolute (renderForRSS (writerOptions writerState)) (pack $ fst target)
-                            (siteDomain (writerOptions writerState))
+                        , src_ $ toStrict $ linkToAbsolute (options ^. renderForRSS) (pack $ fst target)
+                            (options ^. siteDomain)
                         , alt_ $ toStrict $ pack $ fixImageTitle $ snd target
                         ]
                     unless (P.null inline) $
@@ -289,13 +291,12 @@ writeInline (Image attr inline target) = do
 
 writeInline (Note block) = do   -- TODO there should be a link to footer
     blocks <- concatBlocks block
-    writerState <- get
-    put writerState {
-        notesList = notesList writerState ++ [blocks]
-    }
-    let noteId = P.length (notesList writerState) + 1
+    n <- use notesList
+    options <- use writerOptions
+    notesList %= (++ [blocks])
+    let noteId = P.length n + 1
     return $ sup_
-        [ id_ $ toStrict $ "note-" `append` idPrefix (writerOptions writerState) `append` pack (show noteId)
+        [ id_ $ toStrict $ "note-" `append` (options ^. idPrefix) `append` pack (show noteId)
         , class_ "note-link"
         ] $ toHtml $ show noteId
 
@@ -307,12 +308,13 @@ writeInline i = return $ toHtml (show (toConstr i) ++ " not implemented")
 
 getFooter :: WriterState (Html ())
 getFooter = do
-    writerState <- get
+    n <- use notesList
+    options <- use writerOptions
     return $
-        if not $ P.null $ notesList writerState
+        if not $ P.null n
             then div_ [class_ "main__centered post__footnotes"] $ do
                 hr_ []
-                ol_ $ transformNotes (notesList writerState) 1 ("note-" `append` idPrefix (writerOptions writerState))
+                ol_ $ transformNotes n 1 ("note-" `append` (options ^. idPrefix))
             else mempty
             {- | not $ null $ notesList writerState -}
     where
@@ -331,6 +333,6 @@ linkToAbsolute True link domain
 
 withCountBlocksIncrement :: (Int -> WriterState a) -> WriterState a
 withCountBlocksIncrement process = do
-    s <- get
-    put s { countBlocks = countBlocks s + 1 }
-    process (countBlocks s + 1)
+    countBlocks += 1
+    cb <- use countBlocks
+    process cb

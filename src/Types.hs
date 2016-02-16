@@ -94,6 +94,7 @@ instance Default ImageMeta where
 -- CommonData
 data CommonData = CommonData
     { _dataCss :: String
+    , _imageMeta :: String -> Maybe ImageMeta
     }
 
 makeLenses ''CommonData

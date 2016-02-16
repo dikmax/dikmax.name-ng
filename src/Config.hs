@@ -55,6 +55,9 @@ options = shakeOptions
     , shakeProgress = progressSimple
     }
 
+imagesPatterns :: [FilePath]
+imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
+
 defaultReadMoreText :: String
 defaultReadMoreText = "Читать далее..."
 
