@@ -76,7 +76,6 @@ data ImageMeta = ImageMeta
     { _imageWidth     :: Int
     , _imageHeight    :: Int
     , _imageColor     :: String
-    , _imageThumbnail :: String
     } deriving (Eq, Show, Generic)
 
 instance Binary ImageMeta
@@ -88,7 +87,6 @@ instance Default ImageMeta where
         { _imageWidth = 0
         , _imageHeight = 0
         , _imageColor = ""
-        , _imageThumbnail = ""
         }
 
 -- CommonData
@@ -96,6 +94,12 @@ data CommonData = CommonData
     { _dataCss :: String
     , _imageMeta :: String -> Maybe ImageMeta
     }
+
+instance Default CommonData where
+    def = CommonData
+        { _dataCss = ""
+        , _imageMeta = const Nothing
+        }
 
 makeLenses ''CommonData
 

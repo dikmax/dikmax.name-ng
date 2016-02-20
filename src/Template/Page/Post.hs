@@ -30,7 +30,7 @@ postPage cd post = layout cd $ do
     navigation
 
     div_ [class_ "main"] $ do
-        div_ [class_ "post"] $ writeLucid def $ post ^. fileContent
+        div_ [class_ "post"] $ writeLucid ((def :: LucidWriterOptions) & commonData .~ cd) $ post ^. fileContent
         unless (null (post ^. fileMeta ^. postTags)) $ div_ [class_ "main__centered post__meta"] $
             p_ [class_ "post__meta-tags"] $
                 mapM_ (\tag -> do

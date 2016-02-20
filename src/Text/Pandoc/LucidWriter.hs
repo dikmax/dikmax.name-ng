@@ -1,6 +1,16 @@
 {-# LANGUAGE OverloadedStrings, TemplateHaskell, ScopedTypeVariables #-}
 
-module Text.Pandoc.LucidWriter (writeLucid, writeLucidString) where
+module Text.Pandoc.LucidWriter (
+    LucidWriterOptions(..),
+    idPrefix,
+    siteDomain,
+    commonData,
+    debugOutput,
+    renderForRSS,
+
+    writeLucid,
+    writeLucidString
+) where
 
 import           Control.Monad.State
 import           Control.Lens
@@ -14,11 +24,13 @@ import           Prelude             hiding (drop, head, init, length, null,
                                       tail, take, takeWhile, unwords)
 import qualified Prelude             as P
 import           Text.Pandoc
+import           Types
 
 
 data LucidWriterOptions = LucidWriterOptions
     { _idPrefix     :: Text
     , _siteDomain   :: Text
+    , _commonData   :: CommonData
     , _debugOutput  :: Bool
     , _renderForRSS :: Bool
     }
@@ -27,6 +39,7 @@ instance Default LucidWriterOptions where
     def = LucidWriterOptions
         { _idPrefix     = ""
         , _siteDomain   = ""
+        , _commonData   = def
         , _debugOutput  = False
         , _renderForRSS = False
         }
@@ -58,7 +71,7 @@ writeLucid options pandoc
     | options ^. debugOutput =
         pre_ [] (toHtml $ writeNative def pandoc)
     | otherwise = evalState (writeLucid' pandoc)
-                    (def & writerOptions %~ idPrefix %~ (\p -> if p == "" then "new" else p))
+                    (def & writerOptions .~ (options & idPrefix %~ (\p -> if p == "" then "new" else p)))
 
 writeLucid' :: Pandoc -> WriterState (Html ())
 writeLucid' (Pandoc _ blocks) = do
@@ -251,6 +264,14 @@ writeInline (Link attr inline target) = do
 writeInline (Image attr inline target) = do
     inlines <- concatInlines inline
     options <- use writerOptions
+    let thumb = case (options ^. commonData ^. imageMeta) $ fst target of
+            Just meta ->
+                [ width_ $ toStrict $ pack $ show $ meta ^. imageWidth
+                , height_ $ toStrict $ pack $ show $ meta ^. imageHeight
+                , term "srcset" $ toStrict (linkToAbsolute (options ^. renderForRSS) (pack $ fst target)
+                    (options ^. siteDomain) `append` " " `append` (pack $ show (meta ^. imageWidth)) `append` "w")
+                , sizes_ "100vw" ] :: [Attribute]
+            Nothing -> []
 
     return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target) ||
             "https://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target)
@@ -270,11 +291,11 @@ writeInline (Image attr inline target) = do
              , class_ "main__full-width post__block post__figure"] ++ writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
-                    img_ [ class_ "post__figure-img"
+                    img_ ([ class_ "post__figure-img"
                         , src_ $ toStrict $ linkToAbsolute (options ^. renderForRSS) (pack $ fst target)
                             (options ^. siteDomain)
                         , alt_ $ toStrict $ pack $ fixImageTitle $ snd target
-                        ]
+                        ] ++ thumb)
                     unless (P.null inline) $
                         p_ [class_ "post__figure-description"] inlines
     where
@@ -287,7 +308,6 @@ writeInline (Image attr inline target) = do
         fixImageTitle title
             | P.take 4 title == "fig:" = P.drop 4 title
             | otherwise = title
-
 
 writeInline (Note block) = do   -- TODO there should be a link to footer
     blocks <- concatBlocks block

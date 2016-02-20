@@ -69,7 +69,7 @@ blog = do
     images <- newCache $ \_ -> do
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need imageFiles
-        imageCacheContent <- mapM (\i -> do
+        imageCacheContent <- mapM (\i -> do -- TODO parallel
             meta <- image $ buildDir </> i ++ ".meta"
             return (i, meta)) imageFiles
         return $ M.fromList imageCacheContent
@@ -114,6 +114,8 @@ blog = do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
+        -- let o = (def :: LucidWriterOptions) & Text.Pandoc.LucidWriter.commonData .~ cd
+        -- putNormal $ show $ (o ^. Text.Pandoc.LucidWriter.commonData ^. imageMeta) "/images/travel/2015-09-satrip/rio-4-marius-wc-1.jpg"
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.postPage cd post
 
