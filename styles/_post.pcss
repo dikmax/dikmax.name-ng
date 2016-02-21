@@ -24,8 +24,8 @@
         @m header-1 {
             font-size: 300%;
             font-weight: 400;
-            margin-bottom: var(--static-font-size);
             line-height: 1.3;
+            margin-bottom: var(--static-font-size);
         }
         @m header-2 {
             font-size: 200%;
@@ -49,16 +49,16 @@
     @e figure {
         lost-utility: clearfix;
 
-        &:before {
-            counter-increment: imgs;
-            content: counter(imgs);
-            display: block;
-            position: absolute;
-            padding-left: var(--body-padding);
-            font-size: responsive 56px 160px;
-            font-range: 320px 768px;
+        &::before {
             color: color(#b3b3b3 a(0.5));
+            content: counter(imgs);
+            counter-increment: imgs;
+            display: block;
+            font-range: 320px 768px;
+            font-size: responsive 56px 160px;
             margin-top: calc(-20px - 45 * ((100vw - 320px) / 448));
+            padding-left: var(--body-padding);
+            position: absolute;
             z-index: 1;
 
             @media screen and (max-width: 320px) {
@@ -83,35 +83,33 @@
     }
 
     @e figure-img {
-        max-width: calc(100vw - var(--body-padding) * 2);
-        max-height: calc(100vh - var(--navbar-height));
-        width: auto;
-        height: auto;
         display: block;
+        max-size: calc(100vw - var(--body-padding) * 2) calc(100vh - var(--navbar-height));
+        size: auto auto;
 
-        @media (width >= 1056px) { /* 1024px + var(--body-padding)*/
+        @media (width >= 1056px) { /* 1024px + var(--body-padding) */
             max-width: 1024px
         }
     }
 
     @e figure-description {
+        background-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
+        color: var(--dark-background-text);
+        font-weight: 400;
+        margin: 0;
+        padding: var(--body-padding);
         position: absolute * 0 0 0;
         text-align: center;
-        font-weight: 400;
-        color: var(--dark-background-text);
-        box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
-        background-color: rgba(0, 0, 0, 0.2);
-        padding: var(--body-padding);
-        margin: 0;
-        transition: opacity .3s;
+        transition: opacity 0.3s;
     }
 
     /* List elements */
     @e title {
         font-size: 300%;
         font-weight: 400;
-        margin-bottom: var(--static-font-size);
         line-height: 1.3;
+        margin-bottom: var(--static-font-size);
     }
 
     @e cover {
@@ -134,11 +132,11 @@
     @e meta-tags {}
 
     @e meta-tag {
-        font-style: italic;
         color: var(--light-background-text);
+        font-style: italic;
 
-        &:before {
-            content: '#';
+        &::before {
+            content: "#";
             display: inline;
         }
     }
@@ -146,37 +144,38 @@
 
 /** @define share-buttons */
 @b share-buttons {
+    align-items: center;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
     text-align: center;
 
     @e button {
-        flex-basis: 33%;
-        box-sizing: border-box;
-
+        background-color: var(--accent-color);
         border: none;
         border-radius: 2px;
+        box-shadow: 0 2px 2px 0    rgba(0, 0, 0, 0.14),
+                    0 3px 1px -2px rgba(0, 0, 0, 0.2),
+                    0 1px 5px 0    rgba(0, 0, 0, 0.12);
+        box-sizing: border-box;
         color: var(--dark-background-text);
-        background-color: var(--accent-color);
-        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+        flex-basis: 33%;
+        margin: 5px *;
+        min-size: 64px *;
+        padding: 0 16px;
+        size: * 36px;
         text-decoration: none;
 
-        margin: 5px *;
-        height: 36px;
-        min-width: 64px;
-        padding: 0 16px;
 
         @m facebook {
             background-color: #324b8a;
         }
         @m vk {
-            background-color: #5B7DA5;
+            background-color: #5b7da5;
         }
         @m google-plus {
-            background-color: #BC3D29;
+            background-color: #bc3d29;
         }
         @m twitter {
             background-color: #0191ce;
@@ -185,8 +184,8 @@
             background-color: #cc002b;
         }
         @m email {
-            color: var(--light-background-text);
             background-color: var(--primary-light-color);
+            color: var(--light-background-text);
         }
 
     }
@@ -197,59 +196,53 @@
     padding-top: 30px;
 
     @e collection-name {
-        text-align: center;
         font-weight: bold;
+        text-align: center;
     }
 
     @e collection {
-        padding: * var(--body-padding) var(--body-padding);
-
+        align-items: center;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        align-items: center;
+        padding: * var(--body-padding) var(--body-padding);
     }
 
     @e cover {
+        box-sizing: border-box;
+        display: inline-block;
         flex-basis: 320px;
         height: 180px;
-
-        display: inline-block;
+        margin: 6px;
         padding: 0;
         position: relative;
-        box-sizing: border-box;
-        margin: 6px;
     }
 
     @e cover-image {
+        border-color: #dddddd;
         border-radius: 4px;
-        border-color: #ddd;
     }
 
+    /* TODO mix like image description */
     @e title-background {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
         background-color: var(--primary-dark-color);
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
-
         color: var(--dark-background-text);
-        opacity: .5;
-        white-space: normal;
+        opacity: 0.5;
         padding: 5px 10px;
+        position: absolute * 0 0 0;
         text-decoration: none;
-
         transition: opacity 0.3s;
+        white-space: normal;
     }
 
     &__cover-image:hover + &__title-background,
     &__cover-image:focus + &__title-background,
     &__title-background:hover,
     &__title-background:focus {
-        opacity: .9;
+        opacity: 0.9;
         text-decoration: underline;
     }
 }
@@ -265,7 +258,7 @@
     }
 
     @e next {
-        width: 100%;
         text-align: right;
+        width: 100%;
     }
 }

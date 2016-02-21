@@ -1,11 +1,11 @@
 /** @define sidebar */
 @b sidebar {
-    position: fixed 0 0 0 0;
-    z-index: 11;
-    background: color(var(--black-color) a(.5));
+    background: color(var(--black-color) a(0.5));
     display: none;
     font-size: var(--static-font-size);
     font-weight: 400;
+    position: fixed 0 0 0 0;
+    z-index: 11;
 
     @media (--sm-screen) {
         display: none;
@@ -16,10 +16,10 @@
     }
 
     @e panel {
-        position: absolute 0 * 0 -var(--sidebar-width);
-        width: var(--sidebar-width);
         background: var(--white-color);
+        position: absolute 0 * 0 -var(--sidebar-width);
         transition: left 0.3s;
+        width: var(--sidebar-width);
 
         @m active {
             left: 0;
@@ -27,12 +27,11 @@
     }
 
     @e link {
-        text-decoration: none;
         color: var(--light-background-text);
-
         display: block;
-        padding: var(--body-padding);
         font-weight: bold;
+        padding: var(--body-padding);
+        text-decoration: none;
 
         &:hover {
             text-decoration: underline;
@@ -40,10 +39,10 @@
     }
 
     @e brand {
-        display: flex;
         align-items: center;
-        height: var(--navbar-height);
         color: var(--light-background-text);
+        display: flex;
+        height: var(--navbar-height);
         padding: 0 var(--body-padding);
         @mixin bottom-divider;
     }

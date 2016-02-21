@@ -1,8 +1,10 @@
 {
     "use": [
         "postcss-import",
+        "stylelint",
         "postcss-mixins",
         "postcss-cssnext",
+        "colorguard",
         "postcss-quantity-queries",
         "postcss-bem",
         "postcss-nested",
@@ -28,5 +30,13 @@
             "descendent": "e",
             "modifier": "m"
         }
+    },
+    "postcss-short": {
+        "font-size": {
+            "disable": true
+        }
+    },
+    "colorguard": {
+        "ignore": ["#000000", "#ffffff", "#212121", "#b3b3b3"]
     }
 }

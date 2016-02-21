@@ -1,39 +1,40 @@
+
 /** @define header */
 @b header {
     @m for-index {
         background-size: cover;
-        padding-top: var(--navbar-height);
         lost-utility: clearfix;
+        padding-top: var(--navbar-height);
     }
 
     @m for-post {
         @mixin cover-background;
         background-attachment: fixed;
-        size: 100vw 100vh;
         position: relative;
+        size: 100vw 100vh;
         transform: translateZ(0);
     }
 
     @e title-block {
-        position: absolute * * 0 *;
-        box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
-        color: var(--dark-background-text);
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 10px 10px 0 0;
+        box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
+        color: var(--dark-background-text);
         padding: 0 var(--body-padding) 57px var(--body-padding);
+        position: absolute * * 0 *;
 
         @media (--sm-screen) {
+            left: calc(50% - var(--body-width) / 2);
             padding: 0 0 57px 0;
             width: var(--body-width);
-            left: calc(50% - var(--body-width) / 2);
         }
     }
 
     @e title {
         font-size: 400%;
         font-weight: 400;
-        line-height: 1.35;
         letter-spacing: -0.02em;
+        line-height: 1.35;
     }
 
     @e date {

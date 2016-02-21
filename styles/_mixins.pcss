@@ -1,7 +1,7 @@
 @define-mixin cover-background {
-    background-size: cover;
-    background-position: center;
     background-color: color(var(--primary-color));
+    background-position: center;
+    background-size: cover;
 }
 
 @define-mixin shadow-2dp {
@@ -15,8 +15,8 @@
 }
 
 @define-mixin center {
-    width: calc(100% - var(--body-padding)*2);
     lost-center: var(--body-width) var(--body-padding);
+    width: calc(100% - var(--body-padding) * 2);
 
     @media (--sm-screen) {
         width: var(--body-width);
