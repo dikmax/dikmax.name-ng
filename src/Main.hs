@@ -67,7 +67,8 @@ blog = do
     images <- newCache $ \_ -> do
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need imageFiles
-        imageCacheContent <- mapM (\i -> do -- TODO parallel
+        -- Can't be parallel because ImageMagick isn't thread safe
+        imageCacheContent <- mapM (\i -> do
             meta <- image $ buildDir </> i ++ ".meta"
             return (i, meta)) imageFiles
         return $ M.fromList imageCacheContent
@@ -259,6 +260,14 @@ styles =
 -- Build images
 imagesRules :: Rules ()
 imagesRules = do
+    imagesBuildDir <//> "*.meta" %> \out -> do
+        let src' = imagesDir </> dropDirectory2 out
+        let src = take (length src' - 5) src'
+        need [src]
+        putNormal $ "Reading image " ++ src
+        meta <- getImageMeta src
+        liftIO $ B.encodeFile out meta
+
     phony "sync-images" $ do
         putNormal "Syncing images"
         srcImagesDir <- getConfig "IMAGES_DIR"
