@@ -34,6 +34,7 @@ layout cd content = doctypehtml_ $ do
         meta_ [name_ "msapplication-TileImage", content_ "/mstile-144x144.png?v=NmYO8WoKWA"]
         meta_ [name_ "theme-color", content_ "#474747"]
 
+        link_ [rel_ "yandex-tableau-widget", href_ "/yandex-widget-manifest.json"]
         style_ [type_ "text/css"] (cd ^. dataCss)
         link_
             [ rel_ "stylesheet"
