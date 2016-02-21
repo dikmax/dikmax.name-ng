@@ -97,20 +97,13 @@
     @e figure-description {
         position: absolute * 0 0 0;
         text-align: center;
+        font-weight: 400;
         color: var(--dark-background-text);
-        background-color: var(--primary-dark-color);
+        box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.2);
         padding: var(--body-padding);
         margin: 0;
-        opacity: .55;
         transition: opacity .3s;
-
-        &:hover {
-            opacity: .9;
-        }
-
-        @m active {
-            opacity: .9;
-        }
     }
 
     /* List elements */
