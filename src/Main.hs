@@ -114,8 +114,6 @@ blog = do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
-        -- let o = (def :: LucidWriterOptions) & Text.Pandoc.LucidWriter.commonData .~ cd
-        -- putNormal $ show $ (o ^. Text.Pandoc.LucidWriter.commonData ^. imageMeta) "/images/travel/2015-09-satrip/rio-4-marius-wc-1.jpg"
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $ T.postPage cd post
 
@@ -171,9 +169,13 @@ blog = do
         let pandoc = handleError $ readMarkdown readerOptions file
         let post = buildPost src pandoc
         let pCover = post ^. fileMeta ^. postCover
-        color <- if isNothing $ pCover ^. coverColor
-            then getImageColor image $ pCover ^. coverImg
-            else return $ pCover ^. coverColor
+        cd <- commonData Anything
+        let color = mplus
+                (pCover ^. coverColor)
+                (maybe
+                    Nothing
+                    (\img -> (^. imageColor) <$> (cd ^. imageMeta) img)
+                    (pCover ^. coverImg))
 
         let updatedPost = post & fileMeta %~ (\m -> m
                 & postId    .~ (fromMaybe "" $ idFromSrcFilePath src)
@@ -233,14 +235,6 @@ blog = do
         alterDate :: FilePath -> Maybe UTCTime -> Maybe UTCTime
         alterDate filePath Nothing = dateFromFilePath filePath
         alterDate _ date = date
-
-        getImageColor :: (FilePath -> Action ImageMeta) -> Maybe String -> Action (Maybe String)
-        getImageColor image (Just filePath)
-            | "/images/" `isPrefixOf` filePath = do
-                meta <- image $ buildDir ++ filePath ++ ".meta"
-                return $ Just $ meta ^. imageColor
-            | otherwise = return Nothing
-        getImageColor _ Nothing = return Nothing
 
         dateFromFilePath :: FilePath -> Maybe UTCTime
         dateFromFilePath = parseDate . intercalate "-" . take 3 . splitAll "-" . takeFileName
