@@ -42,8 +42,6 @@ main = shakeArgs options $ do
     imagesRules
     blog
 
-    buildImagesCache
-
     npmPackages
 
 
@@ -246,17 +244,6 @@ blog = do
                 (d,m) = M.size ps `divMod` pageSize
                 listFilePaths = [prefix </> pageDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
 
-
-
-buildImagesCache :: Rules ()
-buildImagesCache =
-    imagesBuildDir <//> "*.meta" %> \out -> do
-        let src' = imagesDir </> dropDirectory2 out
-        let src = take (length src' - 5) src'
-        need [src]
-        putNormal $ "Reading image " ++ src
-        meta <- getImageMeta src
-        liftIO $ B.encodeFile out meta
 
 
 -- Build styles
