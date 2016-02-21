@@ -42,6 +42,7 @@ main = shakeArgs options $ do
     imagesRules
     blog
     fonts
+    favicons
 
     npmPackages
 
@@ -51,8 +52,7 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["images", "blogposts"]
-        need ["fonts"]
+        need ["images", "blogposts", "fonts", "favicons"]
 
 blog :: Rules ()
 blog = do
@@ -298,6 +298,14 @@ fonts = do
         need [siteDir </> x | x <- fontFiles]
 
     buildStatic "fonts/*"
+
+favicons :: Rules ()
+favicons = do
+    phony "favicons" $ do
+        faviconsFiles <- getDirectoryFiles "." ["favicons/*"]
+        forM_ faviconsFiles (\src -> do
+            let out = siteDir </> dropDirectory1 src
+            copyFileChanged src out)
 
 -- npm packages
 npmPackages :: Rules ()
