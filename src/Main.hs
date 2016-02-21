@@ -41,6 +41,7 @@ main = shakeArgs options $ do
     styles
     imagesRules
     blog
+    fonts
 
     npmPackages
 
@@ -51,6 +52,7 @@ build =
         need ["prerequisites"]
         need ["sync-images"]
         need ["images", "blogposts"]
+        need ["fonts"]
 
 blog :: Rules ()
 blog = do
@@ -288,6 +290,14 @@ imagesRules = do
         need [siteDir </> x | x <- imageFiles]
 
     forM_ imagesPatterns buildStatic
+
+fonts :: Rules ()
+fonts = do
+    phony "fonts" $ do
+        fontFiles <- getDirectoryFiles "." ["fonts/*"]
+        need [siteDir </> x | x <- fontFiles]
+
+    buildStatic "fonts/*"
 
 -- npm packages
 npmPackages :: Rules ()
