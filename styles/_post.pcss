@@ -68,7 +68,6 @@
             @media screen and (min-width: 768px) {
                 margin-top: -65px
             }
-
         }
     }
 
@@ -110,6 +109,21 @@
         font-weight: 400;
         line-height: 1.3;
         margin-bottom: var(--static-font-size);
+    }
+
+    @e embed {
+        display: block;
+        margin: * auto;
+        size: calc(100vw - var(--body-padding) * 2) calc(56vw - var(--body-padding) * 1.12);
+
+        @media (width >= 1056px) { /* 1024px + var(--body-padding) */
+            size: 1024px 576px;
+        }
+
+        & iframe {
+            border: 0;
+            size: 100%;
+        }
     }
 
     @e cover {

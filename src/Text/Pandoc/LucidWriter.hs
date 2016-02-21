@@ -276,16 +276,16 @@ writeInline (Image attr inline target) = do
     return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target) ||
             "https://www.youtube.com/watch?v=" `isPrefixOf` pack (fst target)
         -- Youtube video
-        then div_ (class_ "main__full-width post__block post__figure post__figure_youtube" : writeAttr attr) $
-            div_ [class_ "embed-responsive embed-responsive-16by9"] $ do
-                iframe_
-                    [ src_ $ toStrict $ "https://www.youtube.com/embed/" `append`
-                        videoId (pack $ fst target) `append` "?wmode=transparent"
-                    , makeAttribute "allowfullscreen" "allowfullscreen"
-                    , class_ "img-polaroid embed-responsive-item"
-                    ] mempty
-                unless (P.null inline) $
-                    p_ [class_ "figure-description"] inlines
+        then div_ (class_ "main__full-width post__block" : writeAttr attr) $
+            div_ [class_ "post__figure-outer"] $
+                div_ [class_ "post__figure-inner post__embed"] $ do
+                    iframe_
+                        [ src_ $ toStrict $ "https://www.youtube.com/embed/" `append`
+                            videoId (pack $ fst target) `append` "?wmode=transparent"
+                        , makeAttribute "allowfullscreen" "allowfullscreen"
+                        ] mempty
+                    unless (P.null inline) $
+                        p_ [class_ "figure-description"] inlines
         else figure_
             ([ id_ $ toStrict (extractId $ pack $ fst target)
              , class_ "main__full-width post__block post__figure"] ++ writeAttr attr) $
