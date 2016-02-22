@@ -10,7 +10,7 @@ import           Types
 layout :: CommonData -> FileMeta -> Html () -> Html ()
 layout cd meta content = doctypehtml_ $ do
     head_ $ do
-        title_ $ toHtml $ title (meta ^. postTitle)
+        title_ $ toHtml title
         meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
         meta_ [httpEquiv_ "X-UA-Compatible", content_ "IE=edge"]
         meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0, ya-title=fade, ya-dock=fade"]
@@ -64,12 +64,15 @@ layout cd meta content = doctypehtml_ $ do
             \<script src=\"/js/respond.min.js\"></script>\
             \<![endif]-->" :: Text)
 
-        let ks = intercalate ", " $ keywords meta
-        meta_ [name_ "keywords", content_ $ toStrict ks]
-        meta_ [itemprop_ "keywords", content_ $ toStrict ks]
+        meta_ [name_ "keywords", content_ $ toStrict keywordsString]
+        meta_ [itemprop_ "keywords", content_ $ toStrict keywordsString]
         meta_ [name_ "author", content_ "Maxim Dikun"]
         meta_ [term "property" "author", content_ "1201794820"]
         meta_ [term "property" "og:site_name", content_ "[dikmax's blog]"]
+        meta_ [term "property" "og:title", content_ $ toStrict title]
+        meta_ [name_ "title", content_ $ toStrict title]
+        meta_ [itemprop_ "title", content_ $ toStrict title]
+
     body_ $ do
         content
 
@@ -78,9 +81,14 @@ layout cd meta content = doctypehtml_ $ do
                 toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
                     \Любимый корректор: Анастасия Барбосова" :: Text)
 
-title :: String -> String
-title [] = "[dikmax's blog]"
-title a = a ++ " :: [dikmax's blog]"
+    where
+        title :: Text
+        title = case meta ^. postTitle of
+            [] -> "[dikmax's blog]"
+            a  -> pack a `append` " :: [dikmax's blog]"
 
-keywords :: FileMeta -> [Text]
-keywords meta = maybe [] (Prelude.map pack) (meta ^? postTags)
+        keywords :: [Text]
+        keywords = maybe [] (Prelude.map pack) (meta ^? postTags)
+
+        keywordsString :: Text
+        keywordsString = intercalate ", " keywords

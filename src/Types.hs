@@ -45,6 +45,7 @@ data FileMeta =
     PageMeta
     { _postCover :: PostCover
     , _postTitle :: String
+    , _postTags  :: [String]
     } deriving (Show, Generic)
 
 instance Binary FileMeta
@@ -53,6 +54,7 @@ instance Default FileMeta where
     def = PageMeta
         { _postCover = def
         , _postTitle = ""
+        , _postTags = ["Blog", "блог"]
         }
 
 makeLenses ''FileMeta

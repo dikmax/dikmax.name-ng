@@ -54,7 +54,7 @@ buildPost src pandoc = File m pandoc
                 , _postCover = buildPostCover (pandoc ^. meta)
                 , _postTags  = getStringsList (unMeta $ pandoc ^. meta) "tags"
                 }
-            | otherwise = PageMeta
+            | otherwise = def
                 { _postCover = buildPostCover (pandoc ^. meta)
                 , _postTitle = getMetaString' "" (unMeta $ pandoc ^. meta) "title"
                 }
