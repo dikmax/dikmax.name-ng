@@ -49,11 +49,27 @@ layout cd meta content = doctypehtml_ $ do
         link_ [rel_ "dns-prefetch", href_ "//translate.googleapis.com/"]
         -}
 
-        style_ [type_ "text/css"] (cd ^. dataCss)
         link_
             [ rel_ "stylesheet"
             , type_ "text/css"
             , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
+        style_ [type_ "text/css"] (cd ^. dataCss)
+        {-
+        <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
+        <link rel="alternate" type="application/rss+xml" title="Лента" href="/feed.rss" />
+        -}
+
+        toHtmlRaw ("<!--[if lt IE 9]>\
+            \<script src=\"/js/html5shiv.js\"></script>\
+            \<script src=\"/js/respond.min.js\"></script>\
+            \<![endif]-->" :: Text)
+
+        let ks = intercalate ", " $ keywords meta
+        meta_ [name_ "keywords", content_ $ toStrict ks]
+        meta_ [itemprop_ "keywords", content_ $ toStrict ks]
+        meta_ [name_ "author", content_ "Maxim Dikun"]
+        meta_ [term "property" "author", content_ "1201794820"]
+        meta_ [term "property" "og:site_name", content_ "[dikmax's blog]"]
     body_ $ do
         content
 
@@ -65,3 +81,6 @@ layout cd meta content = doctypehtml_ $ do
 title :: String -> String
 title [] = "[dikmax's blog]"
 title a = a ++ " :: [dikmax's blog]"
+
+keywords :: FileMeta -> [Text]
+keywords meta = maybe [] (Prelude.map pack) (meta ^? postTags)
