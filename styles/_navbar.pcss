@@ -1,14 +1,14 @@
 /** @define navbar */
 @b navbar {
     background-color: color(var(--primary-dark-color) a(0.9));
+    box-shadow: 0 0   4px rgba(0, 0, 0, 0.14),
+                0 4px 8px rgba(0, 0, 0, 0.28);
     color: var(--dark-background-text);
     font-size: var(--static-font-size);
     font-weight: 400;
     height: var(--navbar-height);
     position: fixed 0 0 * 0;
     z-index: 10;
-
-    @mixin shadow-2dp;
 
     @e container {
         align-items: center;
