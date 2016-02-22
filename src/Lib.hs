@@ -56,6 +56,7 @@ buildPost src pandoc = File m pandoc
                 }
             | otherwise = PageMeta
                 { _postCover = buildPostCover (pandoc ^. meta)
+                , _postTitle = getMetaString' "" (unMeta $ pandoc ^. meta) "title"
                 }
 
 parseDate :: String -> Maybe UTCTime
@@ -81,12 +82,20 @@ formats    =
     , "%B %e, %Y"
     , "%b %d, %Y"
     ]
+
 getMetaString :: M.Map String MetaValue -> String -> String
 getMetaString m key =
     maybe (error $ "Key \"" ++ key ++ "\" not found") extractString' $ M.lookup key m
     where
         extractString' :: MetaValue -> String
         extractString' = fromMaybe (error "String cannot be extracted for key \"" ++ key ++ "\"") . extractString
+
+getMetaString' :: String -> M.Map String MetaValue -> String -> String
+getMetaString' d m key =
+    maybe d extractString' $ M.lookup key m
+    where
+        extractString' :: MetaValue -> String
+        extractString' = fromMaybe d . extractString
 
 
 getStringsList :: M.Map String MetaValue -> String -> [String]

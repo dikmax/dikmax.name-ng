@@ -7,10 +7,10 @@ import           Data.Text.Lazy
 import           Lucid
 import           Types
 
-layout :: CommonData -> Html () -> Html ()
-layout cd content = doctypehtml_ $ do
+layout :: CommonData -> FileMeta -> Html () -> Html ()
+layout cd meta content = doctypehtml_ $ do
     head_ $ do
-        title_ "Document" -- TODO
+        title_ $ toHtml $ title (meta ^. postTitle)
         meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
         meta_ [httpEquiv_ "X-UA-Compatible", content_ "IE=edge"]
         meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0, ya-title=fade, ya-dock=fade"]
@@ -61,3 +61,7 @@ layout cd content = doctypehtml_ $ do
             div_ [class_ "footer__container"] $
                 toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
                     \Любимый корректор: Анастасия Барбосова" :: Text)
+
+title :: String -> String
+title [] = "[dikmax's blog]"
+title a = a ++ " :: [dikmax's blog]"

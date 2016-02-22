@@ -17,7 +17,7 @@ import           Text.Pandoc.LucidWriter
 import           Types
 
 postPage :: CommonData -> File -> Html ()
-postPage cd post = layout cd $ do
+postPage cd post = layout cd (post ^. fileMeta) $ do
     header_
         [ class_ "header_for-post"
         , coverToStyle post ] $

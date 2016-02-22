@@ -130,8 +130,9 @@ blog = do
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage "/" ps page
         let newerPage = getNewerPage "/" ps page
+        let pageMeta = def {_postTitle = show page ++ "-я страница"}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd pageMeta olderPage newerPage postsOnPage
 
     -- Tags main page
     siteDir </> tagDir </> "*" </> indexHtml %> \out -> do
@@ -141,8 +142,9 @@ blog = do
         let ps = tags M.! tag
         let postsOnPage = getPostsForPage ps 1
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
+        let pageMeta = def {_postTitle = "\"" ++ tag ++ "\""}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd olderPage (Nothing) postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd pageMeta olderPage (Nothing) postsOnPage
 
     -- Tags older pages
     siteDir </> tagDir </> "*" </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -153,8 +155,9 @@ blog = do
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps page
         let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
+        let pageMeta = def {_postTitle = "\"" ++ tag ++ "\", " ++ show page ++ "-я страница"}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd pageMeta olderPage newerPage postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out

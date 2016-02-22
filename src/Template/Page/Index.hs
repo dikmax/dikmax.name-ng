@@ -14,7 +14,7 @@ import           Text.Pandoc.LucidWriter
 import           Types
 
 indexPage :: CommonData -> File -> [File] -> Html ()
-indexPage cd welcome posts = layout cd $ do
+indexPage cd welcome posts = layout cd (welcome ^. fileMeta) $ do
     div_
         [ class_ "header_for-index dark-background"
         , coverToStyle welcome ] $ writeLucid def $ welcome ^. fileContent
