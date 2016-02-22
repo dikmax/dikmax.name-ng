@@ -68,7 +68,6 @@ blog = do
 
     images <- newCache $ \_ -> do
         imageFiles <- getDirectoryFiles "." imagesPatterns
-        need imageFiles
         -- Can't be parallel because ImageMagick isn't thread safe
         imageCacheContent <- mapM (\i -> do
             meta <- image $ buildDir </> i ++ ".meta"
@@ -94,14 +93,10 @@ blog = do
     commonData <- newCache $ \_ -> do
         cssContent <- css Anything
         imagesContent <- images Anything
-        let imageGetter filePath =
-                if "/images/" `isPrefixOf` filePath
-                    then M.lookup (tail filePath) imagesContent
-                    else Nothing
 
         return $ CommonData
             { _dataCss = cssContent
-            , _imageMeta = imageGetter
+            , _imageMeta = imageGetter imagesContent
             }
 
     phony "blogposts" $ do
@@ -170,12 +165,12 @@ blog = do
         let pandoc = handleError $ readMarkdown readerOptions file
         let post = buildPost src pandoc
         let pCover = post ^. fileMeta ^. postCover
-        cd <- commonData Anything
+        imagesContent <- images Anything
         let color = mplus
                 (pCover ^. coverColor)
                 (maybe
                     Nothing
-                    (\img -> (^. imageColor) <$> (cd ^. imageMeta) img)
+                    (\img -> (^. imageColor) <$> imageGetter imagesContent img)
                     (pCover ^. coverImg))
 
         let updatedPost = post & fileMeta %~ (\m -> m
@@ -246,6 +241,11 @@ blog = do
             where
                 (d,m) = M.size ps `divMod` pageSize
                 listFilePaths = [prefix </> pageDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
+
+        imageGetter imagesContent filePath =
+            if "/images/" `isPrefixOf` filePath
+                then M.lookup (tail filePath) imagesContent
+                else Nothing
 
 
 
