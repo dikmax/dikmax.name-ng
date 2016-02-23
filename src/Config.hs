@@ -16,7 +16,6 @@ imagesBuildDir = buildDir </> "images"
 shakeBuildDir :: FilePath
 shakeBuildDir = buildDir </> "shake"
 
-
 siteDir :: FilePath
 siteDir = buildDir </> "site"
 
@@ -57,6 +56,9 @@ options = shakeOptions
 
 imagesPatterns :: [FilePath]
 imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
+
+domain :: Text
+domain = "https://dikmax.name"
 
 defaultReadMoreText :: Text
 defaultReadMoreText = "Читать далее..."

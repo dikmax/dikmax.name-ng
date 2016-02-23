@@ -53,6 +53,7 @@ buildPost src pandoc = File m pandoc
                 , _postDate  = parseDate $ getMetaString (unMeta $ pandoc ^. meta) "date"
                 , _postCover = buildPostCover (pandoc ^. meta)
                 , _postTags  = map T.pack $ getStringsList (unMeta $ pandoc ^. meta) "tags"
+                , _postUrl   = ""
                 }
             | otherwise = def
                 { _postCover = buildPostCover (pandoc ^. meta)

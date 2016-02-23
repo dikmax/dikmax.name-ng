@@ -118,7 +118,8 @@ blog = do
         let postsOnPage = getPostsForPage ps 1
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.indexPage cd welcome postsOnPage
+        liftIO $ renderToFile out $ T.indexPage cd
+            (welcome & fileMeta %~ postUrl .~ domain ++ "/") postsOnPage
 
     -- Older page
     siteDir </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -130,7 +131,9 @@ blog = do
         let newerPage = getNewerPage "/" ps page
         let pageMeta = def {_postTitle = show page ++ "-я страница"}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd pageMeta olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd
+            (pageMeta & postUrl .~ domain ++ "/page/" ++ show page ++ "/")
+            olderPage newerPage postsOnPage
 
     -- Tags main page
     siteDir </> tagDir </> "*" </> indexHtml %> \out -> do
@@ -142,7 +145,9 @@ blog = do
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
         let pageMeta = def {_postTitle = "\"" ++ tag ++ "\""}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd pageMeta olderPage (Nothing) postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd
+            (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/")
+            olderPage Nothing postsOnPage
 
     -- Tags older pages
     siteDir </> tagDir </> "*" </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -155,7 +160,9 @@ blog = do
         let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
         let pageMeta = def {_postTitle = "\"" ++ tag ++ "\", " ++ show page ++ "-я страница"}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd pageMeta olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $ T.listPage cd
+            (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/")
+            olderPage newerPage postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
@@ -178,6 +185,8 @@ blog = do
                 & postId    .~ (fromMaybe "" $ idFromSrcFilePath src)
                 & postDate  %~ alterDate src
                 & postCover .~ (pCover & coverColor .~ color)
+                & postUrl   .~ (maybe "" (\i -> domain ++ "/post/" ++ i
+                                    ++ "/") $ idFromSrcFilePath src)
                 )
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out updatedPost -- TODO File

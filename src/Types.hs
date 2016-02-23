@@ -41,11 +41,13 @@ data FileMeta =
     , _postDate  :: Maybe UTCTime
     , _postCover :: PostCover
     , _postTags  :: [Text]
+    , _postUrl   :: Text
     } |
     PageMeta
     { _postCover :: PostCover
     , _postTitle :: Text
     , _postTags  :: [Text]
+    , _postUrl   :: Text
     } deriving (Show, Generic)
 
 instance Binary FileMeta
@@ -54,7 +56,8 @@ instance Default FileMeta where
     def = PageMeta
         { _postCover = def
         , _postTitle = ""
-        , _postTags = ["Blog", "блог"]
+        , _postTags  = ["Blog", "блог"]
+        , _postUrl   = ""
         }
 
 makeLenses ''FileMeta

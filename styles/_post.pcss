@@ -167,7 +167,6 @@
     text-align: center;
 
     @e button {
-        background-color: var(--accent-color);
         border: none;
         border-radius: 2px;
         box-shadow: 0 2px 2px 0    rgba(0, 0, 0, 0.14),
@@ -175,18 +174,21 @@
                     0 1px 5px 0    rgba(0, 0, 0, 0.12);
         box-sizing: border-box;
         color: var(--dark-background-text);
-        flex-basis: 33%;
+        flex-basis: 50%;
         margin: 5px *;
         min-size: 64px *;
         padding: 0 16px;
-        size: * 36px;
         text-decoration: none;
+
+        @media (--sm-screen) {
+            flex-basis: 33%;
+        }
 
         & svg {
             fill: var(--dark-background-text);
             position: relative;
-            top: 1px;
             size: 1.2em;
+            top: 1px;
         }
 
         @m facebook {

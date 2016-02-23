@@ -71,6 +71,16 @@ layout cd meta content = doctypehtml_ $ do
         meta_ [name_ "title", content_ title]
         meta_ [itemprop_ "title", content_ title]
 
+        meta_ [term "property" "og:url", content_ $ meta ^. postUrl]
+
+        {- TODO
+        <meta property="og:description" content="$meta.description$" />
+        <meta name="description" content="$meta.description$" />
+        <meta itemprop="description" content="$meta.description$" />
+        -}
+        meta_ [term "property" "og:locale", content_ "ru_BY"]
+        meta_ [term "property" "fb:profile_id", content_ "1201794820"]
+        
     body_ $ do
         content
 
