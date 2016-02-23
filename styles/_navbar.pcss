@@ -18,6 +18,18 @@
                      calc(var(--body-padding) - var(--navbar-link-padding-side)) flex;
     }
 
+    @e menu {
+        @media (--sm-screen) {
+            display: none;
+        }
+
+        & svg {
+            fill: var(--dark-background-text);
+            position: relative 12px * * *;
+            size: 30px;
+        }
+    }
+
     @e navigation {
         display: none;
 

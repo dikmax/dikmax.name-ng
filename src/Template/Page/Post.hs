@@ -10,6 +10,7 @@ import           Lucid
 import           Template.Common
 import           Template.Layout
 import           Template.Navigation
+import           Template.SvgIcons
 import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
 import           Types
@@ -40,31 +41,32 @@ postPage cd post = layout cd (post ^. fileMeta) $ do
         -- TODO
         div_ [class_ "main__centered share-buttons"] $ do
             a_ [href_ "#", class_ "share-buttons__button share-buttons__button_facebook"] $ do
-                i_ [class_ "fa fa-facebook"] mempty
+                iconFacebook
                 " Поделиться"
             a_ [href_ "#", class_ "share-buttons__button share-buttons__button_vk"] $ do
-                i_ [class_ "fa fa-vk"] mempty
+                iconVk
                 " Расшарить"
             a_ [href_ "#", class_ "share-buttons__button share-buttons__button_google-plus"] $ do
-                i_ [class_ "fa fa-google-plus"] mempty
+                iconGooglePlus
                 " Рассказать"
             a_ [href_ "#", class_ "share-buttons__button share-buttons__button_twitter"] $ do
-                i_ [class_ "fa fa-twitter"] mempty
+                iconTwitter
                 " Твитнуть"
             a_ [href_ "#", class_ "share-buttons__button share-buttons__button_pinterest"] $ do
-                i_ [class_ "fa fa-pinterest"] mempty
+                iconPinterest
                 " Запинить"
             a_ [href_ "mailto:?subject=", class_ "share-buttons__button share-buttons__button_email"] $ do
-                i_ [class_ "fa fa-envelope"] mempty
+                iconEmail
                 " Отправить другу"
 
         div_ [class_ "main__centered related-posts"] $ do
             div_ [class_ "related-posts__collection-name"] $ do
                 p_ "Читать ещё"
-                p_ $ i_ [class_ "fa fa-arrow-down fa-2x"] mempty
+                p_ [class_ "related-posts__arrow-down"] $ iconArrowDown
             div_ [class_ "related-posts__collection"] mempty -- TODO
 
 
+        -- TODO
         div_ [id_ "disqus_thread", class_ "main__centered"] mempty
         div_ [class_ "main__centered disqus-post"] $ do
             script_ "var disqus_config = function () {\

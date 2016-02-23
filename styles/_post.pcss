@@ -78,8 +78,8 @@
 
     @e figure-inner {
         display: inline-block;
-        position: relative;
         overflow: hidden;
+        position: relative;
     }
 
     @e figure-img {
@@ -182,12 +182,22 @@
         size: * 36px;
         text-decoration: none;
 
+        & svg {
+            fill: var(--dark-background-text);
+            position: relative;
+            top: 1px;
+            size: 1.2em;
+        }
 
         @m facebook {
             background-color: #324b8a;
         }
         @m vk {
             background-color: #5b7da5;
+
+            & svg {
+                top: 0;
+            }
         }
         @m google-plus {
             background-color: #bc3d29;
@@ -201,6 +211,11 @@
         @m email {
             background-color: var(--primary-light-color);
             color: var(--light-background-text);
+
+            & svg {
+                fill: var(--light-background-text);
+                top: 4px;
+            }
         }
 
     }
@@ -213,6 +228,15 @@
     @e collection-name {
         font-weight: bold;
         text-align: center;
+    }
+
+    @e arrow-down {
+        margin: * auto;
+
+        & svg {
+            fill: var(--light-background-text);
+            size: 4em;
+        }
     }
 
     @e collection {

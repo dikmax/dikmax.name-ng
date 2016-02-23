@@ -2,6 +2,7 @@ module Template.Navigation (navigation) where
 
 import           BasicPrelude
 import           Lucid
+import           Template.SvgIcons
 
 navLinks :: [(Text, Text)]
 navLinks =
@@ -15,6 +16,7 @@ navigation :: Html ()
 navigation = do
     nav_ [class_ "navbar"] $
         div_ [class_ "navbar__container"] $ do
+            span_ [class_ "navbar__menu navbar__item"] $ iconMenu
             span_ [class_ "navbar__brand"] $
                 a_ [class_ "navbar__item navbar_link", href_ "/"] "[dikmax's name]"
             span_ [class_ "navbar__item navbar_title hidden"] ":: Осень в Минске"

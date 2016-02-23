@@ -31,6 +31,7 @@ executable dikmax.name
                      , Template.Page.List
                      , Template.Page.Post
                      , Template.PostList
+                     , Template.SvgIcons
                      , Template.Subscribe
                      , Text.Pandoc.Binary
                      , Text.Pandoc.Lens
@@ -51,6 +52,7 @@ executable dikmax.name
                      , imagemagick >= 0.0.4.1
                      , lens >= 4.13 && < 4.14
                      , lucid >= 2.9 && < 2.10
+                     , lucid-svg >= 0.6 && < 0.7
                      , mtl >= 2.2 && < 2.3
                      , pandoc >= 1.16 && < 1.17
                      , pandoc-types >= 1.16 && < 1.17
