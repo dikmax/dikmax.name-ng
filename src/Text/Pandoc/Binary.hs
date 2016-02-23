@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Text.Pandoc.Binary where
 
 import           Data.Binary (Binary (..))

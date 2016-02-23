@@ -1,8 +1,6 @@
-{-# LANGUAGE CPP               #-}
-{-# LANGUAGE OverloadedStrings #-}
 module Server (server) where
 
-import           Control.Applicative
+import           BasicPrelude
 import           FileServe
 import           Snap.Core
 import           Snap.Http.Server

@@ -1,7 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Images where
 
+import           BasicPrelude
 import           Control.Monad.Trans.Resource    (release)
 import qualified Data.Text                       as T
 import           Data.Vector.Storable            ((!))
@@ -30,7 +29,7 @@ getImageMeta path =
         release iterator_key
 
         return $ ImageMeta
-            { _imageColor = (showChar '#' . hex (truncate $ red / 256 :: Integer)
+            { _imageColor = fromShow $ (showChar '#' . hex (truncate $ red / 256 :: Integer)
                 . hex (truncate $ green / 256 :: Integer)
                 . hex (truncate $ blue / 256 :: Integer)) ""
             , _imageWidth = width

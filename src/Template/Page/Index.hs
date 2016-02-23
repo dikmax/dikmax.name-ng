@@ -1,7 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Template.Page.Index (indexPage) where
 
+import           BasicPrelude
 import           Control.Lens
 import           Lucid
 import           Template.Common

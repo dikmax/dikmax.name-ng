@@ -1,19 +1,15 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Template.PostList (postList) where
 
+import           BasicPrelude
 import           Config
 import           Control.Lens
-import           Control.Monad
-import           Data.Maybe
-import           Data.Text hiding (map)
 import           Lucid
 import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
 import           Text.Pandoc.Utils
 import           Types
 
-postList :: Maybe String -> Maybe String -> [File] -> Html ()
+postList :: Maybe Text -> Maybe Text -> [File] -> Html ()
 postList olderPage newerPage posts =
     div_ [class_ "main main_list"] $ do
         mconcat $ map postSingle posts
@@ -21,9 +17,9 @@ postList olderPage newerPage posts =
         when (isJust olderPage || isJust newerPage) $
             div_ [class_ "main__centered pager"] $ do
                 maybe (span_ [] mempty) (\link ->
-                    a_ [href_ $ pack link, class_ "pager__previous"] "← Старше") olderPage
+                    a_ [href_ link, class_ "pager__previous"] "← Старше") olderPage
                 maybe (span_ [] mempty) (\link ->
-                    a_ [href_ $ pack link, class_ "pager__next"] "Моложе →") newerPage
+                    a_ [href_ link, class_ "pager__next"] "Моложе →") newerPage
 
 postSingle :: File -> Html ()
 postSingle file =
@@ -34,7 +30,7 @@ postSingle file =
         maybe (mempty) (\cover ->
             div_ [class_ "main__centered post__block post__cover"] $
                 a_ [href_ $ url (file ^. fileMeta ^. postId)] $
-                    img_ [class_ "post__cover-image", src_ $ pack cover, alt_ ""]
+                    img_ [class_ "post__cover-image", src_ cover, alt_ ""]
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
 
@@ -46,5 +42,5 @@ postSingle file =
                         if teaser == "" then defaultReadMoreText else teaser
             ) $ extractTeaser $ file ^. fileContent
     where
-        url :: String -> Text --TODO
-        url id' = "/post/" `append` pack id' `append` "/"
+        url :: Text -> Text -- TODO extract to Config
+        url id' = "/post/" ++ id' ++ "/"

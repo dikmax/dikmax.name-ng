@@ -1,13 +1,11 @@
-
 module Main where
 
+import           BasicPrelude
 import           Config
-import           Control.Monad
 import           Control.Lens
 import qualified Data.Binary                as B
-import           Data.List
 import qualified Data.Map.Lazy              as M
-import           Data.Maybe
+import qualified Data.Text                  as T
 import           Data.Time
 import           Development.Shake
 import           Development.Shake.Config
@@ -71,7 +69,7 @@ blog = do
         -- Can't be parallel because ImageMagick isn't thread safe
         imageCacheContent <- mapM (\i -> do
             meta <- image $ buildDir </> i ++ ".meta"
-            return (i, meta)) imageFiles
+            return (T.pack i, meta)) imageFiles
         return $ M.fromList imageCacheContent
 
     postsList <- newCache $ \t -> do
@@ -101,9 +99,9 @@ blog = do
 
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
-        let postsFilePaths = map (\i -> sitePostsDir </> i </> indexHtml) $ M.keys ps
+        let postsFilePaths = map (\i -> sitePostsDir </> T.unpack i </> indexHtml) $ M.keys ps
         tags <- tagsList Anything
-        let tagsPaths = concatMap (\(t, fs) -> pathsFromList (siteDir </> tagDir </> t) fs) $ M.assocs tags
+        let tagsPaths = concatMap (\(t, fs) -> pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $ M.assocs tags
         need $ postsFilePaths ++ pathsFromList siteDir ps ++ tagsPaths
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
@@ -165,7 +163,7 @@ blog = do
         need [src]
         file <- liftIO $ readFile src
 
-        let pandoc = handleError $ readMarkdown readerOptions file
+        let pandoc = handleError $ readMarkdown readerOptions (T.unpack file)
         let post = buildPost src pandoc
         let pCover = post ^. fileMeta ^. postCover
         imagesContent <- images Anything
@@ -191,14 +189,14 @@ blog = do
             let key = p ^. fileMeta ^. postId;
                 listRest = buildList PostsCacheById ps in
             if key `M.member` listRest
-                then error $ "Duplicate post key " ++ key
+                then terror $ "Duplicate post key " ++ key
                 else M.insert key p listRest
         buildList PostsCacheByDate [p] = M.singleton (dateKey $ p ^. fileMeta ^?! postDate) p
         buildList PostsCacheByDate (p:ps) =
             let key = dateKey $ p ^. fileMeta ^?! postDate;
                 listRest = buildList PostsCacheByDate ps in
             if key `M.member` listRest
-                then error $ "Duplicate post key " ++ key
+                then terror $ "Duplicate post key " ++ key
                 else M.insert key p listRest
 
         buildTags :: [File] -> PostsTags
@@ -209,9 +207,9 @@ blog = do
                     (t, M.singleton (dateKey $ f ^. fileMeta ^?! postDate) f)) $ f ^. fileMeta ^. postTags)
                 (buildTags fs)
 
-        dateKey :: Maybe UTCTime -> String
-        dateKey (Just time)= formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S")) time
-        dateKey Nothing = error "No date defined"
+        dateKey :: Maybe UTCTime -> Text
+        dateKey (Just time)= T.pack $ formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S")) time
+        dateKey Nothing = terror "No date defined"
 
         getPostsForPage ps page =
             reverse [snd $ M.elemAt i ps | i <- [listLast - rangeEnd .. listLast - rangeStart]]
@@ -238,16 +236,17 @@ blog = do
         dateFromFilePath :: FilePath -> Maybe UTCTime
         dateFromFilePath = parseDate . intercalate "-" . take 3 . splitAll "-" . takeFileName
 
-        pathsFromList :: FilePath -> Posts -> [String]
+        pathsFromList :: FilePath -> Posts -> [FilePath]
         pathsFromList prefix ps =
             (prefix </> indexHtml) : listFilePaths
             where
                 (d,m) = M.size ps `divMod` pageSize
-                listFilePaths = [prefix </> pageDir </> show p </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
+                listFilePaths = [prefix </> pageDir </> T.unpack (show p) </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
 
+        imageGetter :: Images -> Text -> Maybe ImageMeta
         imageGetter imagesContent filePath =
-            if "/images/" `isPrefixOf` filePath
-                then M.lookup (tail filePath) imagesContent
+            if "/images/" `T.isPrefixOf` filePath
+                then M.lookup (T.tail filePath) imagesContent
                 else Nothing
 
 
@@ -259,7 +258,7 @@ styles =
         let src = "styles" </> dropDirectory3 out -<.> "pcss"
         files <- getDirectoryFiles "." ["styles//*"]
         need (postcss : "postcss.json" : files)
-        cmd (FileStdout out) postcss "-c" "postcss.json" src
+        cmd (FileStdout out) postcss ("-c" :: FilePath) ("postcss.json" :: FilePath) src
 
 
 -- Build images
@@ -315,7 +314,7 @@ npmPackages :: Rules ()
 npmPackages =
     [postcss] &%> \_ -> do
         need ["package.json"]
-        cmd "npm" "install"
+        cmd ("npm" :: FilePath) ("install" :: FilePath)
 
 -- Static files, that just should be copied to `siteDir`
 buildStatic :: FilePath -> Rules ()
@@ -326,38 +325,40 @@ buildStatic filePath =
         copyFileChanged src out
 
 
-idFromPost :: Pandoc -> String
-idFromPost (Pandoc meta _) = maybe (error "Post have no id") getId $ lookupMeta "id" meta
+idFromPost :: Pandoc -> Text
+idFromPost (Pandoc meta _) = maybe (terror "Post have no id") getId $ lookupMeta "id" meta
     where
-        getId (MetaString s) = s
-        getId s = error $ "Post id field have wrong value: " ++ show s
+        getId (MetaString s) = T.pack s
+        getId s = terror $ "Post id field have wrong value: " ++ show s
 
-dateFromPost :: Pandoc -> String
-dateFromPost (Pandoc meta _) = maybe (error "Post have no date") getDate $ lookupMeta "date" meta
+dateFromPost :: Pandoc -> Text
+dateFromPost (Pandoc meta _) = maybe (terror "Post have no date") getDate $ lookupMeta "date" meta
     where
-        getDate (MetaString s) = s
-        getDate s = error $ "Post date field have wrong value: " ++ show s
+        getDate (MetaString s) = T.pack s
+        getDate s = terror $ "Post date field have wrong value: " ++ show s
 
-idFromSrcFilePath :: FilePath -> Maybe String
+idFromSrcFilePath :: FilePath -> Maybe Text
 idFromSrcFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [v]) -> Just v
+        (_, _, _, [v]) -> Just $ T.pack v
         _              -> Nothing
     where
+        pat :: String
         pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
 
-idFromDestFilePath :: FilePath -> String
+idFromDestFilePath :: FilePath -> Text
 idFromDestFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [v]) -> v
+        (_, _, _, [v]) -> T.pack v
         _              -> error $ "Can't extract id from " ++ filePath
     where
+        pat :: String
         pat = "/([^/]*)/index.html$"
 
-tagAndPageFromDestFilePath :: FilePath -> (String, Int)
+tagAndPageFromDestFilePath :: FilePath -> (Text, Int)
 tagAndPageFromDestFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [tag, page]) -> (tag, read page)
+        (_, _, _, [tag, page]) -> (T.pack tag, read $ T.pack page)
         _              -> error $ "Can't extract id from " ++ filePath
     where
         pat = tagDir ++ "/([^/]*)/" ++ pageDir ++ "/([^/]*)/index.html$"

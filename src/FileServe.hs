@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings   #-}
-
 -- | Contains web handlers to serve files from a directory.
 module FileServe
 (
@@ -19,6 +17,7 @@ import           Data.List
 import           Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as Map
 import           Data.Maybe (fromMaybe)
+import           Prelude
 import           System.Directory
 import           System.FilePath
 ------------------------------------------------------------------------------
@@ -227,4 +226,3 @@ serveDirectoryWith cfg base = do
         let qss = queryStringSuffix rq
         let u = S.concat [uri, "/", qss]
         redirect u
-

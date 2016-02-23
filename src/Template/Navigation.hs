@@ -1,8 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Template.Navigation (navigation) where
 
-import           Data.Text
+import           BasicPrelude
 import           Lucid
 
 navLinks :: [(Text, Text)]

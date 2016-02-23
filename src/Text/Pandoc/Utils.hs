@@ -1,21 +1,20 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Text.Pandoc.Utils where
 
-import           Control.Arrow
+import           BasicPrelude
+import qualified Data.Text        as T
 import           Text.Pandoc
 import           Text.Regex.Posix
 
-extractTeaser :: Pandoc -> Maybe (Pandoc, String)
+extractTeaser :: Pandoc -> Maybe (Pandoc, Text)
 extractTeaser (Pandoc m blocks) =
     first (Pandoc m) <$> extractTeaser' blocks
 
     where
-        extractTeaser' :: [Block] -> Maybe ([Block], String)
+        extractTeaser' :: [Block] -> Maybe ([Block], Text)
         extractTeaser' [] = Nothing
         extractTeaser' (b : bs) =
             case getTeaser b of
-                Just str -> Just ([], str)
+                Just str -> Just ([], T.pack str)
                 Nothing -> first (b :) <$> extractTeaser' bs
 
         getTeaser :: Block -> Maybe String

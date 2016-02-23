@@ -1,7 +1,7 @@
 module Rules where
 
+import           BasicPrelude
 import           Config
-import           Control.Monad
 import           Development.Shake
 import           Server
 import           System.Directory           (createDirectoryIfMissing)
@@ -35,5 +35,5 @@ prerequisites =
         mapM_ check ["node", "npm", "rsync", "zopflipng"]
     where
         check executable = do
-            Exit code <- cmd (EchoStdout False) "which" executable
+            Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable
             when (code /= ExitSuccess) $ error $ "PREREQUISITE: '" ++ executable ++ "' is not available"

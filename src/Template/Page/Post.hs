@@ -1,11 +1,9 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Template.Page.Post (postPage) where
 
+import           BasicPrelude
 import           Config
 import           Control.Lens
-import           Control.Monad
-import           Data.Text.Lazy hiding (null)
+import qualified Data.Text                as T
 import           Data.Time
 import           Lib
 import           Lucid
@@ -22,9 +20,9 @@ postPage cd post = layout cd (post ^. fileMeta) $ do
         [ class_ "header_for-post"
         , coverToStyle post ] $
         div_ [class_ "header__title-block"] $ do
-            div_ [class_ "header__title"] $ toHtml $ pack $ post ^. fileMeta ^?! postTitle
+            div_ [class_ "header__title"] $ toHtml $ post ^. fileMeta ^?! postTitle
             maybe mempty (\time ->
-                div_ [data_ "post-date" $ toStrict $ pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
+                div_ [data_ "post-date" $ T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
                     , class_ "header__date"] $ toHtml $ formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
 
     navigation
@@ -34,7 +32,7 @@ postPage cd post = layout cd (post ^. fileMeta) $ do
         unless (null (post ^. fileMeta ^. postTags)) $ div_ [class_ "main__centered post__meta"] $
             p_ [class_ "post__meta-tags"] $
                 mapM_ (\tag -> do
-                        a_ [class_ "post__meta-tag", href_ $ toStrict $ pack $ tagToUrl tag] $ toHtml tag
+                        a_ [class_ "post__meta-tag", href_ $ tagToUrl tag] $ toHtml tag
                         " ") $
                     post ^. fileMeta ^. postTags
 

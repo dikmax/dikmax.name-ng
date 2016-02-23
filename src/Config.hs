@@ -1,44 +1,44 @@
 module Config where
 
+import           BasicPrelude
 import           Data.Time
 import           Development.Shake
-import           Development.Shake.FilePath
 
-buildDir :: String
+buildDir :: FilePath
 buildDir = "_build"
 
-pandocCacheDir :: String
+pandocCacheDir :: FilePath
 pandocCacheDir = buildDir </> "pandoc"
 
-imagesBuildDir :: String
+imagesBuildDir :: FilePath
 imagesBuildDir = buildDir </> "images"
 
-shakeBuildDir :: String
+shakeBuildDir :: FilePath
 shakeBuildDir = buildDir </> "shake"
 
 
-siteDir :: String
+siteDir :: FilePath
 siteDir = buildDir </> "site"
 
-sitePostsDir :: String
+sitePostsDir :: FilePath
 sitePostsDir = siteDir </> "post"
 
-pageDir :: String
+pageDir :: FilePath
 pageDir = "page"
 
-tagDir :: String
+tagDir :: FilePath
 tagDir = "tag"
 
-indexHtml :: String
+indexHtml :: FilePath
 indexHtml = "index.html"
 
-nodeModulesDir :: String
+nodeModulesDir :: FilePath
 nodeModulesDir = "node_modules"
 
-nodeModulesBinDir :: String
+nodeModulesBinDir :: FilePath
 nodeModulesBinDir = nodeModulesDir </> ".bin"
 
-imagesDir :: String
+imagesDir :: FilePath
 imagesDir = "images"
 
 postcss :: FilePath
@@ -58,7 +58,7 @@ options = shakeOptions
 imagesPatterns :: [FilePath]
 imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
 
-defaultReadMoreText :: String
+defaultReadMoreText :: Text
 defaultReadMoreText = "Читать далее..."
 
 timeLocale :: TimeLocale

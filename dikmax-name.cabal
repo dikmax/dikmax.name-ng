@@ -14,6 +14,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 executable dikmax.name
+  default-extensions:  NoImplicitPrelude, OverloadedStrings
   hs-source-dirs:      src
   main-is:             Main.hs
   other-modules:       Config
@@ -39,6 +40,7 @@ executable dikmax.name
   ghc-options:         -Wall -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base
                      , base64-bytestring >= 1 && < 2
+                     , basic-prelude >= 0.5 && < 0.6
                      , binary >= 0.7 && < 0.9
                      , bytestring >= 0.10 && < 0.11
                      , containers >= 0.5 && < 0.6

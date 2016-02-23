@@ -1,7 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Template.Subscribe (subscribe) where
 
+import           BasicPrelude
 import           Lucid
 
 subscribe :: Html ()

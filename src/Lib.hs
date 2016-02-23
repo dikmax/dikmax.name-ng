@@ -11,11 +11,11 @@ module Lib
     , tagToUrl
     ) where
 
+import           BasicPrelude
 import           Config
 import           Control.Lens
-import           Data.List
 import qualified Data.Map.Lazy              as M
-import           Data.Maybe
+import qualified Data.Text                  as T
 import           Data.Time
 import           Development.Shake.FilePath
 import           Text.Pandoc
@@ -49,14 +49,14 @@ buildPost src pandoc = File m pandoc
         m
             | "posts/" `isPrefixOf` src = PostMeta
                 { _postId    = ""
-                , _postTitle = getMetaString (unMeta $ pandoc ^. meta) "title"
+                , _postTitle = T.pack $ getMetaString (unMeta $ pandoc ^. meta) "title"
                 , _postDate  = parseDate $ getMetaString (unMeta $ pandoc ^. meta) "date"
                 , _postCover = buildPostCover (pandoc ^. meta)
-                , _postTags  = getStringsList (unMeta $ pandoc ^. meta) "tags"
+                , _postTags  = map T.pack $ getStringsList (unMeta $ pandoc ^. meta) "tags"
                 }
             | otherwise = def
                 { _postCover = buildPostCover (pandoc ^. meta)
-                , _postTitle = getMetaString' "" (unMeta $ pandoc ^. meta) "title"
+                , _postTitle = T.pack $ getMetaString' "" (unMeta $ pandoc ^. meta) "title"
                 }
 
 parseDate :: String -> Maybe UTCTime
@@ -114,10 +114,10 @@ buildPostCover m =
         _                -> def
     where
         cover m' = PostCover
-            { _coverImg     = extractString' $ M.lookup "img" m'
-            , _coverVCenter = fromMaybe "center" $ extractString' $ M.lookup "vcenter" m'
-            , _coverHCenter = fromMaybe "center" $ extractString' $ M.lookup "hcenter" m'
-            , _coverColor   = extractString' $ M.lookup "color" m'
+            { _coverImg     = fmap T.pack $ extractString' $ M.lookup "img" m'
+            , _coverVCenter = T.pack $ fromMaybe "center" $ extractString' $ M.lookup "vcenter" m'
+            , _coverHCenter = T.pack $ fromMaybe "center" $ extractString' $ M.lookup "hcenter" m'
+            , _coverColor   = fmap T.pack $ extractString' $ M.lookup "color" m'
             }
         extractString' :: Maybe MetaValue -> Maybe String
         extractString' (Just v) = extractString v
@@ -130,5 +130,5 @@ extractString _ = Nothing
 
 -- Conversions
 
-tagToUrl :: String -> String
+tagToUrl :: Text -> Text
 tagToUrl tag = "/tag/" ++ tag ++ "/"

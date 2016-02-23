@@ -1,9 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Template.Layout (layout) where
 
+import           BasicPrelude
 import           Control.Lens
-import           Data.Text.Lazy
 import           Lucid
 import           Types
 
@@ -64,14 +62,14 @@ layout cd meta content = doctypehtml_ $ do
             \<script src=\"/js/respond.min.js\"></script>\
             \<![endif]-->" :: Text)
 
-        meta_ [name_ "keywords", content_ $ toStrict keywordsString]
-        meta_ [itemprop_ "keywords", content_ $ toStrict keywordsString]
+        meta_ [name_ "keywords", content_ keywordsString]
+        meta_ [itemprop_ "keywords", content_ keywordsString]
         meta_ [name_ "author", content_ "Maxim Dikun"]
         meta_ [term "property" "author", content_ "1201794820"]
         meta_ [term "property" "og:site_name", content_ "[dikmax's blog]"]
-        meta_ [term "property" "og:title", content_ $ toStrict title]
-        meta_ [name_ "title", content_ $ toStrict title]
-        meta_ [itemprop_ "title", content_ $ toStrict title]
+        meta_ [term "property" "og:title", content_ title]
+        meta_ [name_ "title", content_ title]
+        meta_ [itemprop_ "title", content_ title]
 
     body_ $ do
         content
@@ -84,11 +82,11 @@ layout cd meta content = doctypehtml_ $ do
     where
         title :: Text
         title = case meta ^. postTitle of
-            [] -> "[dikmax's blog]"
-            a  -> pack a `append` " :: [dikmax's blog]"
+            "" -> "[dikmax's blog]"
+            a  -> a ++ " :: [dikmax's blog]"
 
         keywords :: [Text]
-        keywords = maybe [] (Prelude.map pack) (meta ^? postTags)
+        keywords = meta ^. postTags
 
         keywordsString :: Text
         keywordsString = intercalate ", " keywords

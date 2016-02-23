@@ -3,22 +3,22 @@
 
 module Types where
 
+import           BasicPrelude
 import           Control.Lens
 import           Data.Binary
 import           Data.Default
-import           Data.Hashable
 import qualified Data.Map.Lazy              as M
 import           Data.Time
 import           GHC.Generics               (Generic)
 import           Text.Pandoc
-import           Text.Pandoc.Binary ()
+import           Text.Pandoc.Binary         ()
 
 -- | Post cover
 data PostCover = PostCover
-    { _coverImg     :: Maybe String
-    , _coverVCenter :: String
-    , _coverHCenter :: String
-    , _coverColor   :: Maybe String
+    { _coverImg     :: Maybe Text
+    , _coverVCenter :: Text
+    , _coverHCenter :: Text
+    , _coverColor   :: Maybe Text
     } deriving (Eq, Show, Generic)
 
 instance Default PostCover where
@@ -36,16 +36,16 @@ makeLenses ''PostCover
 -- | Post Meta
 data FileMeta =
     PostMeta
-    { _postId    :: String
-    , _postTitle :: String
+    { _postId    :: Text
+    , _postTitle :: Text
     , _postDate  :: Maybe UTCTime
     , _postCover :: PostCover
-    , _postTags  :: [String]
+    , _postTags  :: [Text]
     } |
     PageMeta
     { _postCover :: PostCover
-    , _postTitle :: String
-    , _postTags  :: [String]
+    , _postTitle :: Text
+    , _postTags  :: [Text]
     } deriving (Show, Generic)
 
 instance Binary FileMeta
@@ -69,9 +69,9 @@ instance Binary File
 
 makeLenses ''File
 
-type Posts = M.Map String File
+type Posts = M.Map Text File
 
-type PostsTags = M.Map String (M.Map String File)
+type PostsTags = M.Map Text Posts
 
 data PostsCache = PostsCacheById | PostsCacheByDate deriving (Eq)
 instance Hashable PostsCache where
@@ -84,7 +84,7 @@ data PostCoverType = CoverLight | CoverDark deriving (Eq)
 data ImageMeta = ImageMeta
     { _imageWidth     :: Int
     , _imageHeight    :: Int
-    , _imageColor     :: String
+    , _imageColor     :: Text
     } deriving (Eq, Show, Generic)
 
 instance Binary ImageMeta
@@ -98,10 +98,13 @@ instance Default ImageMeta where
         , _imageColor = ""
         }
 
+type Images = M.Map Text ImageMeta
+
+
 -- CommonData
 data CommonData = CommonData
-    { _dataCss :: String
-    , _imageMeta :: String -> Maybe ImageMeta
+    { _dataCss :: Text
+    , _imageMeta :: Text -> Maybe ImageMeta
     }
 
 instance Default CommonData where
