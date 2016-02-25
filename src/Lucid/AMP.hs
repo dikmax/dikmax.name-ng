@@ -1,8 +1,8 @@
 module Lucid.AMP where
 
-import BasicPrelude
-import Lucid
-import Lucid.Base
+import           BasicPrelude
+import           Lucid
+import           Lucid.Base
 
 -- | Amp html
 ampDoctypeHtml_ :: Monad m => HtmlT m a -> HtmlT m a

@@ -60,6 +60,9 @@ options = shakeOptions
 imagesPatterns :: [FilePath]
 imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
 
+rssFeedFile :: Text
+rssFeedFile = "feed.rss"
+
 domain :: Text
 domain = "https://dikmax.name"
 

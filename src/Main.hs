@@ -50,7 +50,8 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["images", "blogposts", "fonts", "favicons"]
+        need ["images", "blogposts", "fonts", "favicons",
+            siteDir </> T.unpack rssFeedFile]
 
 blog :: Rules ()
 blog = do
@@ -189,6 +190,17 @@ blog = do
                 (T.defaultLayout cd
                     (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"))
                 olderPage newerPage postsOnPage
+
+    -- RSS feed
+    siteDir </> T.unpack rssFeedFile %> \out -> do
+        ps <- postsList PostsCacheByDate
+        -- cd <- commonData Anything
+        let postsOnPage = getPostsForPage ps 1
+        -- welcome <- posts "index.md"
+        putNormal $ "Writing feed " ++ out
+        liftIO $ do
+            now <- getCurrentTime
+            renderToFile out $ T.feedPage now postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out

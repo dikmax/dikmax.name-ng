@@ -21,12 +21,15 @@ executable dikmax.name
                      , FileServe
                      , Images
                      , Lib
+                     , Lucid.AMP
+                     , Lucid.Atom
                      , Rules
                      , Server
                      , Template
                      , Template.Common
                      , Template.Layout
                      , Template.Navigation
+                     , Template.Page.Feed
                      , Template.Page.Index
                      , Template.Page.List
                      , Template.Page.Post
