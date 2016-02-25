@@ -1,12 +1,12 @@
-module Template.Layout (layout) where
+module Template.Layout (defaultLayout) where
 
 import           BasicPrelude
 import           Control.Lens
 import           Lucid
 import           Types
 
-layout :: CommonData -> FileMeta -> Html () -> Html ()
-layout cd meta content = doctypehtml_ $ do
+defaultLayout :: CommonData -> FileMeta -> Html () -> Html ()
+defaultLayout cd meta content = doctypehtml_ $ do
     head_ $ do
         title_ $ toHtml title
         meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
@@ -80,7 +80,7 @@ layout cd meta content = doctypehtml_ $ do
         -}
         meta_ [term "property" "og:locale", content_ "ru_BY"]
         meta_ [term "property" "fb:profile_id", content_ "1201794820"]
-        
+
     body_ $ do
         content
 

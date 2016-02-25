@@ -99,9 +99,12 @@ blog = do
 
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
-        let postsFilePaths = map (\i -> sitePostsDir </> T.unpack i </> indexHtml) $ M.keys ps
+        let postsFilePaths = map
+                (\i -> sitePostsDir </> T.unpack i </> indexHtml) $ M.keys ps
         tags <- tagsList Anything
-        let tagsPaths = concatMap (\(t, fs) -> pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $ M.assocs tags
+        let tagsPaths = concatMap (\(t, fs) ->
+                pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $
+                M.assocs tags
         need $ postsFilePaths ++ pathsFromList siteDir ps ++ tagsPaths
 
     sitePostsDir </> "*" </> indexHtml %> \out -> do
@@ -109,7 +112,8 @@ blog = do
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.postPage cd post
+        liftIO $ renderToFile out $
+            T.postPage (T.defaultLayout cd (post ^. fileMeta)) cd post
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
@@ -118,8 +122,11 @@ blog = do
         let postsOnPage = getPostsForPage ps 1
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.indexPage cd
-            (welcome & fileMeta %~ postUrl .~ domain ++ "/") postsOnPage
+        let w = (welcome & fileMeta %~ postUrl .~ domain ++ "/")
+        liftIO $ renderToFile out $
+            T.indexPage
+                (T.defaultLayout cd (w ^. fileMeta))
+                w postsOnPage
 
     -- Older page
     siteDir </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -131,9 +138,11 @@ blog = do
         let newerPage = getNewerPage "/" ps page
         let pageMeta = def {_postTitle = show page ++ "-я страница"}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd
-            (pageMeta & postUrl .~ domain ++ "/page/" ++ show page ++ "/")
-            olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $
+            T.listPage
+                (T.defaultLayout cd
+                    (pageMeta & postUrl .~ domain ++ "/page/" ++ show page ++ "/"))
+                olderPage newerPage postsOnPage
 
     -- Tags main page
     siteDir </> tagDir </> "*" </> indexHtml %> \out -> do
@@ -145,9 +154,11 @@ blog = do
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
         let pageMeta = def {_postTitle = "\"" ++ tag ++ "\""}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd
-            (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/")
-            olderPage Nothing postsOnPage
+        liftIO $ renderToFile out $
+            T.listPage
+                (T.defaultLayout cd
+                    (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/"))
+                olderPage Nothing postsOnPage
 
     -- Tags older pages
     siteDir </> tagDir </> "*" </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -160,9 +171,11 @@ blog = do
         let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
         let pageMeta = def {_postTitle = "\"" ++ tag ++ "\", " ++ show page ++ "-я страница"}
         putNormal $ "Writing page " ++ out
-        liftIO $ renderToFile out $ T.listPage cd
-            (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/")
-            olderPage newerPage postsOnPage
+        liftIO $ renderToFile out $
+            T.listPage
+                (T.defaultLayout cd
+                    (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"))
+                olderPage newerPage postsOnPage
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out

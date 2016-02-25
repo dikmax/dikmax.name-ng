@@ -8,15 +8,14 @@ import           Data.Time
 import           Lib
 import           Lucid
 import           Template.Common
-import           Template.Layout
 import           Template.Navigation
 import           Template.SvgIcons
 import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
 import           Types
 
-postPage :: CommonData -> File -> Html ()
-postPage cd post = layout cd (post ^. fileMeta) $ do
+postPage :: (Html () -> Html ()) -> CommonData -> File -> Html ()
+postPage layout cd post = layout $ do
     header_
         [ class_ "header_for-post"
         , coverToStyle post ] $
