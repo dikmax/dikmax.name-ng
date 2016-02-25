@@ -3,6 +3,7 @@ module Template.Layout (defaultLayout, ampLayout) where
 import           BasicPrelude
 import           Control.Lens
 import           Lucid
+import           Lucid.AMP
 import           Types
 
 defaultLayout :: CommonData -> FileMeta -> Html () -> Html ()
@@ -101,33 +102,30 @@ defaultLayout cd meta content = doctypehtml_ $ do
 
 
 ampLayout :: CommonData -> FileMeta -> Html () -> Html ()
-ampLayout cd meta content = do
-    doctype_
-    html_ [term "⚡" ""] $ do
-        head_ $ do
-            meta_ [charset_ "utf-8"]
-            title_ $ toHtml title
-            link_ [rel_ "canonical", href_ $ meta ^. postUrl]
-            meta_ [name_ "viewport", content_ "width=device-width,minimum-scale=1,initial-scale=1"]
-            script_ [type_ "application/ld+json"] $
-                "{\
-                  \\"@context\": \"http://schema.org\",\
-                  \\"@type\": \"BlogPosting\",\
-                  \\"headline\": \"" ++ title ++ "\",\
-                  \\"datePublished\": \"2015-10-07T12:02:41Z\"\
-                \}" -- TODO date
-            toHtmlRaw ("<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>" :: Text)
-            script_ [async_ "", src_ "https://cdn.ampproject.org/v0.js"] ("" :: Text)
+ampLayout cd meta content = ampDoctypeHtml_ $ do
+    head_ $ do
+        meta_ [charset_ "utf-8"]
+        title_ $ toHtml title
+        link_ [rel_ "canonical", href_ $ meta ^. postUrl]
+        meta_ [name_ "viewport", content_ "width=device-width,minimum-scale=1,initial-scale=1"]
+        script_ [type_ "application/ld+json"] $
+            "{\
+              \\"@context\": \"http://schema.org\",\
+              \\"@type\": \"BlogPosting\",\
+              \\"headline\": \"" ++ title ++ "\",\
+              \\"datePublished\": \"2015-10-07T12:02:41Z\"\
+            \}" -- TODO date
+        ampBoilerplate_
 
-            link_
-                [ rel_ "stylesheet"
-                , type_ "text/css"
-                , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
-            style_ [] (cd ^. dataCss)
+        link_
+            [ rel_ "stylesheet"
+            , type_ "text/css"
+            , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
+        style_ [] (cd ^. dataCss)
 
-        body_ $ do
-            content
-            footer
+    body_ $ do
+        content
+        footer
 
     where
         title :: Text

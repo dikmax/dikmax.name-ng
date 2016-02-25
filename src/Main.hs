@@ -117,7 +117,7 @@ blog = do
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
-            T.postPage (T.defaultLayout cd (post ^. fileMeta)) cd post
+            T.postPage False (T.defaultLayout cd (post ^. fileMeta)) cd post
 
     -- AMP Post pages
     sitePostsDir </> "*" </> ampDir </> indexHtml %> \out -> do
@@ -126,7 +126,7 @@ blog = do
         let post = ps M.! idFromDestFilePath out
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
-            T.postPage (T.ampLayout cd (post ^. fileMeta)) cd post
+            T.postPage True (T.ampLayout cd (post ^. fileMeta)) cd post
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
@@ -276,7 +276,9 @@ blog = do
             (prefix </> indexHtml) : listFilePaths
             where
                 (d,m) = M.size ps `divMod` pageSize
-                listFilePaths = [prefix </> pageDir </> T.unpack (show p) </> indexHtml| p <- [2 .. d + (if m == 0 then 2 else 1)]]
+                listFilePaths =
+                    [ prefix </> pageDir </> T.unpack (show p) </> indexHtml |
+                        p <- [2 .. d + (if m == 0 then 2 else 1)] ]
 
         imageGetter :: Images -> Text -> Maybe ImageMeta
         imageGetter imagesContent filePath =

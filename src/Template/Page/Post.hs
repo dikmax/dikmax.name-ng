@@ -14,8 +14,8 @@ import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
 import           Types
 
-postPage :: (Html () -> Html ()) -> CommonData -> File -> Html ()
-postPage layout cd post = layout $ do
+postPage :: Bool -> (Html () -> Html ()) -> CommonData -> File -> Html ()
+postPage isAmp layout cd post = layout $ do
     header_
         [ class_ "header_for-post"
         , coverToStyle post ] $
@@ -27,8 +27,12 @@ postPage layout cd post = layout $ do
 
     navigation
 
+    let opts = (def :: LucidWriterOptions)
+            & commonData .~ cd
+            & renderType .~ if isAmp then RenderAMP else RenderNormal
+
     div_ [class_ "main"] $ do
-        div_ [class_ "post"] $ writeLucid ((def :: LucidWriterOptions) & commonData .~ cd) $ post ^. fileContent
+        div_ [class_ "post"] $ writeLucid opts $ post ^. fileContent
         unless (null (post ^. fileMeta ^. postTags)) $ div_ [class_ "main__centered post__meta"] $
             p_ [class_ "post__meta-tags"] $
                 mapM_ (\tag -> do
@@ -66,22 +70,23 @@ postPage layout cd post = layout $ do
 
 
         -- TODO
-        div_ [id_ "disqus_thread", class_ "main__centered"] mempty
-        div_ [class_ "main__centered disqus-post"] $ do
-            script_ "var disqus_config = function () {\
-                \    this.page.url = 'http://dikmax.name/post/satrip-2015-results/';\
-                \    this.page.identifier = 'satrip-2015-results';\
-                \    this.page.title = 'SATrip 2015: Итоги';\
-                \};\
-                \(function() {\
-                \    var d = document, s = d.createElement('script');\
-                \\
-                \    s.src = '//dikmax.disqus.com/embed.js';\
-                \\
-                \    s.setAttribute('data-timestamp', +new Date());\
-                \    (d.head || d.body).appendChild(s);\
-                \})();"
+        unless (isAmp) $ do
+            div_ [id_ "disqus_thread", class_ "main__centered"] mempty
+            div_ [class_ "main__centered disqus-post"] $ do
+                script_ "var disqus_config = function () {\
+                    \    this.page.url = 'http://dikmax.name/post/satrip-2015-results/';\
+                    \    this.page.identifier = 'satrip-2015-results';\
+                    \    this.page.title = 'SATrip 2015: Итоги';\
+                    \};\
+                    \(function() {\
+                    \    var d = document, s = d.createElement('script');\
+                    \\
+                    \    s.src = '//dikmax.disqus.com/embed.js';\
+                    \\
+                    \    s.setAttribute('data-timestamp', +new Date());\
+                    \    (d.head || d.body).appendChild(s);\
+                    \})();"
 
-            noscript_ $ do
-                "Please enable JavaScript to view the "
-                a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] "comments powered by Disqus."
+                noscript_ $ do
+                    "Please enable JavaScript to view the "
+                    a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] "comments powered by Disqus."

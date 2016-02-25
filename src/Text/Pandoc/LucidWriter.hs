@@ -2,11 +2,12 @@
 
 module Text.Pandoc.LucidWriter (
     LucidWriterOptions(..),
+    RenderType(..),
     idPrefix,
     siteDomain,
     commonData,
     debugOutput,
-    renderForRSS,
+    renderType,
 
     writeLucid,
     writeLucidText
@@ -20,16 +21,20 @@ import           Data.Default
 import qualified Data.Text           as T
 import           Lucid
 import           Lucid.Base
+import           Lucid.AMP
 import           Text.Pandoc
 import           Types
 
+
+data RenderType =
+        RenderNormal | RenderRSS | RenderAMP deriving (Eq)
 
 data LucidWriterOptions = LucidWriterOptions
     { _idPrefix     :: Text
     , _siteDomain   :: Text
     , _commonData   :: CommonData
     , _debugOutput  :: Bool
-    , _renderForRSS :: Bool
+    , _renderType   :: RenderType
     }
 
 instance Default LucidWriterOptions where
@@ -38,7 +43,7 @@ instance Default LucidWriterOptions where
         , _siteDomain   = ""
         , _commonData   = def
         , _debugOutput  = False
-        , _renderForRSS = False
+        , _renderType   = RenderNormal
         }
 
 makeLenses ''LucidWriterOptions
@@ -252,7 +257,7 @@ writeInline (Link attr inline target) = do
     options <- use writerOptions
     return $ a_
         (writeAttr attr ++
-            [ href_ $ linkToAbsolute (options ^. renderForRSS)
+            [ href_ $ linkToAbsolute (options ^. renderType)
                 (T.pack $ fst target) (options ^. siteDomain)
             , title_ $ T.pack $ snd target
             ]
@@ -265,7 +270,7 @@ writeInline (Image attr inline target) = do
             Just meta ->
                 [ width_ $ show $ meta ^. imageWidth
                 , height_ $ show $ meta ^. imageHeight
-                , term "srcset" $ (linkToAbsolute (options ^. renderForRSS) (T.pack $ fst target)
+                , term "srcset" $ (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                     (options ^. siteDomain) ++ " " ++ (show (meta ^. imageWidth)) ++ "w")
                 , sizes_ "100vw" ] :: [Attribute]
             Nothing -> []
@@ -288,11 +293,12 @@ writeInline (Image attr inline target) = do
              , class_ "main__full-width post__block post__figure"] ++ writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
-                    img_ ([ class_ "post__figure-img"
-                        , src_ $ linkToAbsolute (options ^. renderForRSS) (T.pack $ fst target)
-                            (options ^. siteDomain)
-                        , alt_ $ fixImageTitle $ T.pack $ snd target
-                        ] ++ thumb)
+                    (if (options ^. renderType == RenderAMP) then ampImg_ else img_) $
+                        ([ class_ "post__figure-img"
+                            , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                                (options ^. siteDomain)
+                            , alt_ $ fixImageTitle $ T.pack $ snd target
+                            ] ++ thumb)
                     unless (null inline) $
                         p_ [class_ "post__figure-description"] inlines
     where
@@ -341,12 +347,12 @@ getFooter = do
             transformNotes ns (i+1) prefix
         transformNotes [] _ _ = mempty
 
-linkToAbsolute :: Bool -> Text -> Text -> Text
-linkToAbsolute False link _ = link
-linkToAbsolute True link "" = link
-linkToAbsolute True link domain
+linkToAbsolute :: RenderType -> Text -> Text -> Text
+linkToAbsolute RenderRSS link "" = link
+linkToAbsolute RenderRSS link domain
   | (T.length link >= 2) && (T.head link == '/') && T.head (T.tail link) /= '/' = domain ++ link
   | otherwise = link
+linkToAbsolute _ link _ = link
 
 withCountBlocksIncrement :: (Int -> WriterState a) -> WriterState a
 withCountBlocksIncrement process = do
