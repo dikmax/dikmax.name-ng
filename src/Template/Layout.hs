@@ -55,8 +55,9 @@ defaultLayout cd meta content = doctypehtml_ $ do
         style_ [type_ "text/css"] (cd ^. dataCss)
         {-
         <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-        <link rel="alternate" type="application/rss+xml" title="Лента" href="/feed.rss" />
         -}
+        link_ [rel_ "alternate", type_ "application/rss+xml", title_ "Лента",
+            href_ "/feed.rss"]
 
         toHtmlRaw ("<!--[if lt IE 9]>\
             \<script src=\"/js/html5shiv.js\"></script>\
