@@ -101,12 +101,16 @@ blog = do
         ps <- postsList PostsCacheById
         let postsFilePaths = map
                 (\i -> sitePostsDir </> T.unpack i </> indexHtml) $ M.keys ps
+        let ampPostsFilePaths = map
+                (\i -> sitePostsDir </> T.unpack i </> ampDir </> indexHtml) $ M.keys ps
         tags <- tagsList Anything
         let tagsPaths = concatMap (\(t, fs) ->
                 pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $
                 M.assocs tags
-        need $ postsFilePaths ++ pathsFromList siteDir ps ++ tagsPaths
+        need $ postsFilePaths ++ ampPostsFilePaths ++
+            pathsFromList siteDir ps ++ tagsPaths
 
+    -- Post pages
     sitePostsDir </> "*" </> indexHtml %> \out -> do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
@@ -114,6 +118,15 @@ blog = do
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.postPage (T.defaultLayout cd (post ^. fileMeta)) cd post
+
+    -- AMP Post pages
+    sitePostsDir </> "*" </> ampDir </> indexHtml %> \out -> do
+        cd <- commonData Anything
+        ps <- postsList PostsCacheById
+        let post = ps M.! idFromDestFilePath out
+        putNormal $ "Writing page " ++ out
+        liftIO $ renderToFile out $
+            T.postPage (T.ampLayout cd (post ^. fileMeta)) cd post
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
@@ -371,11 +384,11 @@ idFromSrcFilePath filePath =
 idFromDestFilePath :: FilePath -> Text
 idFromDestFilePath filePath =
     case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [v]) -> T.pack v
+        (_, _, _, v : _) -> T.pack v
         _              -> error $ "Can't extract id from " ++ filePath
     where
         pat :: String
-        pat = "/([^/]*)/index.html$"
+        pat = "/([^/]*)(/amp)?/index\\.html$"
 
 tagAndPageFromDestFilePath :: FilePath -> (Text, Int)
 tagAndPageFromDestFilePath filePath =

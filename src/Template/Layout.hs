@@ -1,4 +1,4 @@
-module Template.Layout (defaultLayout) where
+module Template.Layout (defaultLayout, ampLayout) where
 
 import           BasicPrelude
 import           Control.Lens
@@ -83,11 +83,7 @@ defaultLayout cd meta content = doctypehtml_ $ do
 
     body_ $ do
         content
-
-        footer_ [class_ "footer"] $
-            div_ [class_ "footer__container"] $
-                toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
-                    \Любимый корректор: Анастасия Барбосова" :: Text)
+        footer
 
     where
         title :: Text
@@ -100,3 +96,49 @@ defaultLayout cd meta content = doctypehtml_ $ do
 
         keywordsString :: Text
         keywordsString = intercalate ", " keywords
+
+
+
+
+ampLayout :: CommonData -> FileMeta -> Html () -> Html ()
+ampLayout cd meta content = do
+    doctype_
+    html_ [term "⚡" ""] $ do
+        head_ $ do
+            meta_ [charset_ "utf-8"]
+            title_ $ toHtml title
+            link_ [rel_ "canonical", href_ $ meta ^. postUrl]
+            meta_ [name_ "viewport", content_ "width=device-width,minimum-scale=1,initial-scale=1"]
+            script_ [type_ "application/ld+json"] $
+                "{\
+                  \\"@context\": \"http://schema.org\",\
+                  \\"@type\": \"BlogPosting\",\
+                  \\"headline\": \"" ++ title ++ "\",\
+                  \\"datePublished\": \"2015-10-07T12:02:41Z\"\
+                \}" -- TODO date
+            toHtmlRaw ("<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>" :: Text)
+            script_ [async_ "", src_ "https://cdn.ampproject.org/v0.js"] ("" :: Text)
+
+            link_
+                [ rel_ "stylesheet"
+                , type_ "text/css"
+                , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
+            style_ [] (cd ^. dataCss)
+
+        body_ $ do
+            content
+            footer
+
+    where
+        title :: Text
+        title = case meta ^. postTitle of
+            "" -> "[dikmax's blog]"
+            a  -> a ++ " :: [dikmax's blog]"
+
+
+footer :: Html ()
+footer =
+    footer_ [class_ "footer"] $
+        div_ [class_ "footer__container"] $
+            toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
+                \Любимый корректор: Анастасия Барбосова" :: Text)

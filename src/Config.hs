@@ -28,6 +28,9 @@ pageDir = "page"
 tagDir :: FilePath
 tagDir = "tag"
 
+ampDir :: FilePath
+ampDir = "amp"
+
 indexHtml :: FilePath
 indexHtml = "index.html"
 

@@ -4,7 +4,6 @@ import           BasicPrelude
 import           Control.Lens
 import           Lucid
 import           Template.Common
-import           Template.Layout
 import           Template.Navigation
 import           Template.PostList
 import           Template.Subscribe
