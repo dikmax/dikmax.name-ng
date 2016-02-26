@@ -20,7 +20,7 @@ postPage isAmp layout cd post = layout $ do
         [ class_ "header_for-post"
         , coverToStyle post ] $
         div_ [class_ "header__title-block"] $ do
-            div_ [class_ "header__title"] $ toHtml $ post ^. fileMeta ^?! postTitle
+            div_ [class_ "header__title"] $ toHtml title
             maybe mempty (\time ->
                 div_ [data_ "post-date" $ T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
                     , class_ "header__date"] $ toHtml $ formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
@@ -58,7 +58,8 @@ postPage isAmp layout cd post = layout $ do
             a_ [href_ "#", class_ "share-buttons__button share-buttons__button_pinterest"] $ do
                 iconPinterest
                 " Запинить"
-            a_ [href_ "mailto:?subject=", class_ "share-buttons__button share-buttons__button_email"] $ do
+            a_ [href_ $ "mailto:?subject=" ++ title,
+                    class_ "share-buttons__button share-buttons__button_email"] $ do
                 iconEmail
                 " Отправить другу"
 
@@ -68,25 +69,36 @@ postPage isAmp layout cd post = layout $ do
                 p_ [class_ "related-posts__arrow-down"] $ iconArrowDown
             div_ [class_ "related-posts__collection"] mempty -- TODO
 
-
-        -- TODO
         unless (isAmp) $ do
             div_ [id_ "disqus_thread", class_ "main__centered"] mempty
             div_ [class_ "main__centered disqus-post"] $ do
-                script_ "var disqus_config = function () {\
-                    \    this.page.url = 'http://dikmax.name/post/satrip-2015-results/';\
-                    \    this.page.identifier = 'satrip-2015-results';\
-                    \    this.page.title = 'SATrip 2015: Итоги';\
+                script_ $
+                    "var disqus_config=function(){\
+                        \this.page.url='" ++ jsStringEscape url ++ "';\
+                        \this.page.identifier='" ++ jsStringEscape pId ++ "';\
+                        \this.page.title='" ++ jsStringEscape title ++ "';\
                     \};\
-                    \(function() {\
-                    \    var d = document, s = d.createElement('script');\
-                    \\
-                    \    s.src = '//dikmax.disqus.com/embed.js';\
-                    \\
-                    \    s.setAttribute('data-timestamp', +new Date());\
-                    \    (d.head || d.body).appendChild(s);\
+                    \(function(){\
+                        \var d=document,s=d.createElement('script');\
+                        \s.src='//dikmax.disqus.com/embed.js';\
+                        \s.setAttribute('data-timestamp',+new Date());\
+                        \(d.head||d.body).appendChild(s);\
                     \})();"
 
                 noscript_ $ do
                     "Please enable JavaScript to view the "
                     a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] "comments powered by Disqus."
+    where
+        pId :: Text
+        pId = post ^. fileMeta ^?! postId
+
+        title :: Text
+        title = case post ^. fileMeta ^. postTitle of
+            "" -> "[dikmax's blog]"
+            a  -> a ++ " :: [dikmax's blog]"
+
+        jsStringEscape :: Text -> Text
+        jsStringEscape = T.replace "'" "\\'"
+
+        url :: Text
+        url = post ^. fileMeta ^. postUrl

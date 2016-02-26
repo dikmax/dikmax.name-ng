@@ -21,7 +21,7 @@ feedPage now posts = atomHeader_ $
         lastBuildDate_ $ toHtml (formatTime defaultTimeLocale rfc822DateFormat now)
         maybe (mempty) (\time ->
             pubDate_ $ toHtml (formatTime defaultTimeLocale rfc822DateFormat time)) $
-            (posts !! 0) ^. fileMeta ^?! postDate
+            (head posts) ^. fileMeta ^?! postDate
         ttl_ "180"
         atomLink_ [href_ "http://dikmax.name/feed.rss", rel_ "self", type_ "application/rss+xml"] mempty
 
