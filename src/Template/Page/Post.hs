@@ -7,6 +7,7 @@ import qualified Data.Text                as T
 import           Data.Time
 import           Lib
 import           Lucid
+import           Network.URI
 import           Template.Common
 import           Template.Navigation
 import           Template.SvgIcons
@@ -43,22 +44,27 @@ postPage isAmp layout cd post = layout $ do
 
         -- TODO
         div_ [class_ "main__centered share-buttons"] $ do
-            a_ [href_ "#", class_ "share-buttons__button share-buttons__button_facebook"] $ do
+            a_ [href_ urlFacebook, target_ "blank",
+                    class_ "share-buttons__button share-buttons__button_facebook"] $ do
                 iconFacebook
                 " Поделиться"
-            a_ [href_ "#", class_ "share-buttons__button share-buttons__button_vk"] $ do
+            a_ [href_ urlVk, target_ "blank",
+                    class_ "share-buttons__button share-buttons__button_vk"] $ do
                 iconVk
                 " Расшарить"
-            a_ [href_ "#", class_ "share-buttons__button share-buttons__button_google-plus"] $ do
+            a_ [href_ urlGooglePlus, target_ "blank",
+                    class_ "share-buttons__button share-buttons__button_google-plus"] $ do
                 iconGooglePlus
                 " Рассказать"
-            a_ [href_ "#", class_ "share-buttons__button share-buttons__button_twitter"] $ do
+            a_ [href_ urlTwitter, target_ "blank",
+                    class_ "share-buttons__button share-buttons__button_twitter"] $ do
                 iconTwitter
                 " Твитнуть"
-            a_ [href_ "#", class_ "share-buttons__button share-buttons__button_pinterest"] $ do
+            a_ [href_ urlPinterest, target_ "blank",
+                    class_ "share-buttons__button share-buttons__button_pinterest"] $ do
                 iconPinterest
                 " Запинить"
-            a_ [href_ $ "mailto:?subject=" ++ title,
+            a_ [href_ urlEmail, target_ "blank",
                     class_ "share-buttons__button share-buttons__button_email"] $ do
                 iconEmail
                 " Отправить другу"
@@ -74,9 +80,9 @@ postPage isAmp layout cd post = layout $ do
             div_ [class_ "main__centered disqus-post"] $ do
                 script_ $
                     "var disqus_config=function(){\
-                        \this.page.url='" ++ jsStringEscape url ++ "';\
-                        \this.page.identifier='" ++ jsStringEscape pId ++ "';\
-                        \this.page.title='" ++ jsStringEscape title ++ "';\
+                        \this.page.url='" ++ escapeJsString url ++ "';\
+                        \this.page.identifier='" ++ escapeJsString pId ++ "';\
+                        \this.page.title='" ++ escapeJsString title ++ "';\
                     \};\
                     \(function(){\
                         \var d=document,s=d.createElement('script');\
@@ -93,12 +99,44 @@ postPage isAmp layout cd post = layout $ do
         pId = post ^. fileMeta ^?! postId
 
         title :: Text
-        title = case post ^. fileMeta ^. postTitle of
-            "" -> "[dikmax's blog]"
-            a  -> a ++ " :: [dikmax's blog]"
+        title = post ^. fileMeta ^. postTitle
 
-        jsStringEscape :: Text -> Text
-        jsStringEscape = T.replace "'" "\\'"
+        fullTitle :: Text
+        fullTitle = title ++ " :: [dikmax's blog]"
+
+        escapeJsString :: Text -> Text
+        escapeJsString = T.replace "'" "\\'"
+
+        escapeURIComponent :: Text -> Text
+        escapeURIComponent = T.pack . escapeURIString isUnescapedInURIComponent . T.unpack
 
         url :: Text
         url = post ^. fileMeta ^. postUrl
+
+        urlEmail :: Text
+        urlEmail = "mailto:?subject=" ++ escapeURIComponent fullTitle
+
+        urlFacebook :: Text
+        urlFacebook = "https://www.facebook.com/sharer/sharer.php?u="
+            ++ escapeURIComponent url
+
+        urlGooglePlus :: Text
+        urlGooglePlus = "https://plus.google.com/share?url="
+            ++ escapeURIComponent url
+
+        urlPinterest :: Text
+        urlPinterest = "https://pinterest.com/pin/create/button/?url=" ++
+            escapeURIComponent url ++
+            maybe "" (\i -> "&media=" ++ escapeURIComponent i) (post ^. fileMeta ^. postCover ^. coverImg) ++
+            "&description=" ++ escapeURIComponent fullTitle
+
+        urlTwitter :: Text
+        urlTwitter = "https://twitter.com/intent/tweet?url=" ++
+            escapeURIComponent url ++
+            "&text=" ++ escapeURIComponent fullTitle ++
+            "&via=dikmax"
+
+        urlVk :: Text
+        urlVk = "https://vk.com/share.php?url=" ++
+            escapeURIComponent url ++
+            "&title=" ++ escapeURIComponent fullTitle
