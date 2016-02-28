@@ -60,11 +60,14 @@ blog = do
         need [pandocCacheDir </> file]
         liftIO $ B.decodeFile $ pandocCacheDir </> file :: Action File
 
+
     -- Building images cache
     image <- newCache $ \file -> do
         need [file]
         liftIO $ B.decodeFile file :: Action ImageMeta
 
+
+    -- All images metadata
     images <- newCache $ \_ -> do
         imageFiles <- getDirectoryFiles "." imagesPatterns
         -- Can't be parallel because ImageMagick isn't thread safe
@@ -73,21 +76,29 @@ blog = do
             return (T.pack i, meta)) imageFiles
         return $ M.fromList imageCacheContent
 
+
+    -- All posts metadata
     postsList <- newCache $ \t -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
-        -- TODO make parallel
+        -- Preparing parsed data in parallel
+        need $ map (pandocCacheDir </>) postFiles
         postCacheContent <- mapM posts postFiles
         return $ buildList t postCacheContent
 
+
+    -- All posts grouped be tags
     tagsList <- newCache $ \_ -> do
         postFiles <- getDirectoryFiles "." ["posts//*.md"]
-        -- TODO make parallel
+        -- Preparing parsed data in parallel
+        need $ map (pandocCacheDir </>) postFiles
         postCacheContent <- mapM posts postFiles
         return $ buildTags postCacheContent
+
 
     css <- newCache $ \_ -> do
         need [siteDir </> "css/styles.css"]
         liftIO $ readFile $ siteDir </> "css/styles.css"
+
 
     commonData <- newCache $ \_ -> do
         cssContent <- css Anything
@@ -97,6 +108,7 @@ blog = do
             { _dataCss = cssContent
             , _imageMeta = imageGetter imagesContent
             }
+
 
     phony "blogposts" $ do
         ps <- postsList PostsCacheById
@@ -111,6 +123,7 @@ blog = do
         need $ postsFilePaths ++ ampPostsFilePaths ++
             pathsFromList siteDir ps ++ tagsPaths
 
+
     -- Post pages
     sitePostsDir </> "*" </> indexHtml %> \out -> do
         cd <- commonData Anything
@@ -120,6 +133,7 @@ blog = do
         liftIO $ renderToFile out $
             T.postPage False (T.defaultLayout cd (post ^. fileMeta)) cd post
 
+
     -- AMP Post pages
     sitePostsDir </> "*" </> ampDir </> indexHtml %> \out -> do
         cd <- commonData Anything
@@ -128,6 +142,7 @@ blog = do
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.postPage True (T.ampLayout cd (post ^. fileMeta)) cd post
+
 
     -- Main page
     siteDir </> indexHtml %> \out -> do
@@ -141,6 +156,7 @@ blog = do
             T.indexPage
                 (T.defaultLayout cd (w ^. fileMeta))
                 w postsOnPage
+
 
     -- Older page
     siteDir </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -158,6 +174,7 @@ blog = do
                     (pageMeta & postUrl .~ domain ++ "/page/" ++ show page ++ "/"))
                 olderPage newerPage postsOnPage
 
+
     -- Tags main page
     siteDir </> tagDir </> "*" </> indexHtml %> \out -> do
         tags <- tagsList Anything
@@ -173,6 +190,7 @@ blog = do
                 (T.defaultLayout cd
                     (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/"))
                 olderPage Nothing postsOnPage
+
 
     -- Tags older pages
     siteDir </> tagDir </> "*" </> pageDir </> "*" </> indexHtml %> \out -> do
@@ -191,6 +209,7 @@ blog = do
                     (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"))
                 olderPage newerPage postsOnPage
 
+
     -- RSS feed
     siteDir </> T.unpack rssFeedFile %> \out -> do
         ps <- postsList PostsCacheByDate
@@ -201,6 +220,7 @@ blog = do
         liftIO $ do
             now <- getCurrentTime
             renderToFile out $ T.feedPage now postsOnPage
+
 
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out

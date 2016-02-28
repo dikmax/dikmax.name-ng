@@ -23,14 +23,12 @@ postPage isAmp layout cd post = layout $ do
         div_ [class_ "header__title-block"] $ do
             div_ [class_ "header__title"] $ toHtml title
             maybe mempty (\time ->
-                div_ [data_ "post-date" $ T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
-                    , class_ "header__date"] $ toHtml $ formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
+                div_ [data_ "post-date" $
+                        T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time)
+                    , class_ "header__date"] $ toHtml $
+                        formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
 
     navigation
-
-    let opts = (def :: LucidWriterOptions)
-            & commonData .~ cd
-            & renderType .~ if isAmp then RenderAMP else RenderNormal
 
     div_ [class_ "main"] $ do
         div_ [class_ "post"] $ writeLucid opts $ post ^. fileContent
@@ -95,6 +93,12 @@ postPage isAmp layout cd post = layout $ do
                     "Please enable JavaScript to view the "
                     a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] "comments powered by Disqus."
     where
+        opts :: LucidWriterOptions
+        opts = (def :: LucidWriterOptions)
+                & commonData .~ cd
+                & renderType .~ if isAmp then RenderAMP else RenderNormal
+
+
         pId :: Text
         pId = post ^. fileMeta ^?! postId
 
