@@ -1,7 +1,7 @@
 ---
 title: "Санкт-Петербург и Гатчина"
 date: "2015-01-08T10:05:00+03:00"
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [россия, путешествие, фотки]
 thread: 3399696299

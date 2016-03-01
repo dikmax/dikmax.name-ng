@@ -2,7 +2,7 @@
 title: "Нью-Йорк: Часть 3 — Central Park"
 date: "2014-11-04T12:00:00+03:00"
 published: true
-collection: "usa-2014"
+collections: [usa-2014]
 tags: [сша, путешествие, фотки]
 ---
 

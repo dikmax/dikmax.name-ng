@@ -2,7 +2,7 @@
 title: "Белосток"
 date: "2014-11-24T09:20:00+03:00"
 published: true
-collection: "latest-travel"
+collections: [latest-travel]
 tags: [польша, путешествие, фотки]
 ---
 

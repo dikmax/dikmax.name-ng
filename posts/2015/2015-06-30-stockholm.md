@@ -1,7 +1,7 @@
 ---
 title: "Стокгольм"
 date: 2015-06-30T12:30:00+03:00
-collection: latest-travel
+collections: [latest-travel]
 published: true
 tags: [швеция, путешествие, фотки]
 cover:
@@ -24,7 +24,7 @@ cover:
 
 С\ него и\ можно начать наш обзор, тем более что отель, в\ котором мы\ поселились, располагался совсем неподалёку.
 
-![](/images/travel/2015-05-stockholm/gamla-stan-1.jpg "Gamla Stan")
+![](/images/travel/2015-05-stockholm/gamla-stan-1.jpg ]Gamla Stan")
 
 ![](/images/travel/2015-05-stockholm/gamla-stan-2.jpg "Gamla Stan крупным планом")
 

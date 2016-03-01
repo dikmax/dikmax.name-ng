@@ -1,7 +1,7 @@
 ---
 title: "SATrip 2015: национальный парк Эдуардо Авароа"
 date: 2015-11-25T11:15:00+03:00
-collection: latest-travel
+collections: [latest-travel]
 published: true
 tags: [satrip, satrip-2015, боливия, отпуск, путешествие, фотки]
 cover:
@@ -31,7 +31,7 @@ cover:
 
 ![](/images/travel/2015-09-satrip/uyuni-3-top-point.jpg)
 
-![Светает](/images/travel/2015-09-satrip/uyuni-3-sunrise.jpg "Светает")
+![Светает](/images/travel/2015-09-satrip/uyuni-3-sunrise.jpg ]Светает")
 
 А\ вот и\ гейзер!
 

@@ -1,7 +1,7 @@
 ---
 title: "Люблин и Майданек"
 date: "2015-02-23T12:20:00+03:00"
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [польша, путешествие, фотки]
 ---

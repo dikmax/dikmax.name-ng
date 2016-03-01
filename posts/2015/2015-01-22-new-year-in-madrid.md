@@ -1,7 +1,7 @@
 ---
 title: "Новый год в Мадриде"
 date: "2015-01-22T12:40:00+03:00"
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [испания, путешествие, фотки]
 ---

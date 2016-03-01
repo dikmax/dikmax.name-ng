@@ -1,7 +1,7 @@
 ---
 title: "InterRail"
 date: "2013-07-18T11:57:31+03:00"
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, interrail, вопрос, лытдыбр, отпуск, путешествие, транспорт]
 thread: 1509195133

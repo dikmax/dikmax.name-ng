@@ -25,6 +25,96 @@ latest-travel:
   - id: satrip-2015-uyuni-salt-flats
     name: Солончак Уюни
 
+eurotrip-2014:
+  name: Eurotrip 2014
+  items:
+  - id: eurotrip-2014-chisinau
+    name: Кишинёв
+
+  - id: eurotrip-2014-bucharest
+    name: Бухарест
+
+  - id: eurotrip-2014-bran-rasnov-brasov
+    name: Бран, Рашнов, Брашов
+
+  - id: eurotrip-2014-sighisoara
+    name: Сигишоара
+
+  - id: eurotrip-2014-budapest
+    name: Будапешт
+
+  - id: eurotrip-2014-bratislava
+    name: Братислава
+
+  - id: eurotrip-2014-vienna
+    name: Вена
+
+  - id: eurotrip-2014-graz
+    name: Грац
+
+  - id: eurotrip-2014-zagreb
+    name: Загреб
+
+  - id: eurotrip-2014-plitvice-lakes
+    name: Плитвицкие озёра
+
+  - id: eurotrip-2014-ljubljana
+    name: Любляна
+
+  - id: eurotrip-2014-postojna-skocjan
+    name: Постойнские и Шкотьянские пещеры
+
+  - id: eurotrip-2014-bled-bohinj
+    name: Блед и Бохинь
+
+  - id: eurotrip-2014-padua
+    name: Падуя
+
+  - id: eurotrip-2014-verona
+    name: Верона
+
+  - id: eurotrip-2014-bologna
+    name: Болонья
+
+  - id: eurotrip-2014-florence
+    name: Флоренция
+
+  - id: eurotrip-2014-vesuvius-and-pompeii
+    name: Везувий и Помпеи
+
+  - id: eurotrip-2014-naples
+    name: Неаполь
+
+  - id: eurotrip-2014-capri
+    name: Капри
+
+  - id: eurotrip-2014-rome
+    name: Рим
+
+  - id: eurotrip-2014-milan-and-bergamo
+    name: Милан и Бергамо
+
+md_proc:
+  name: История md_proc
+  items:
+  - id: md_proc-0.7.0
+    name: md_proc 0.7.0
+
+  - id: md_proc-0.5.0
+    name: md_proc 0.5.0
+
+  - id: md_proc-0.2.3
+    name: md_proc 0.2.3
+
+  - id: md_proc-0.1.1
+    name: md_proc 0.1.1
+
+  - id: commonmark-markdown-parser
+    name: md_proc 0.1.0
+
+  - id: commonmark
+    name: Про CommonMark
+
 proofreaders-stories:
   name: Колонка корректора
   items:
@@ -54,3 +144,21 @@ proofreaders-stories:
 
   - id: eurotrip-wroclaw
     name: Вроцлав
+
+usa-2014:
+  name: Поездка в США
+  items:
+  - id: new-york-2014-1
+    name: "Нью-Йорк: Часть 1"
+
+  - id: new-york-2014-2
+    name: "Нью-Йорк: Часть 2"
+
+  - id: new-york-2014-3-central-park
+    name: "Нью-Йорк: Часть 3 — Central Park"
+
+  - id: new-york-2014-4-more-parks
+    name: "Нью-Йорк: Часть 4 — ещё парки"
+
+  - id: washington-dc-2014
+    name: Вашингтон

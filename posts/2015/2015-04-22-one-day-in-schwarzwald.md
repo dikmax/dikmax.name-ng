@@ -1,7 +1,7 @@
 ---
 title: "Один день в Шварцвальде: Фельдберг, Альпирсбах и Шильтах"
 date: 2015-04-22T12:05:00+03:00
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [путешествие, фотки, германия]
 cover:

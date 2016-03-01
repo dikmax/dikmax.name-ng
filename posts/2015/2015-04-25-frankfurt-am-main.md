@@ -1,7 +1,7 @@
 ---
 title: "Франкфурт-на-Майне"
 date: 2015-04-25T13:55:00+03:00
-collection: latest-travel
+collections: [latest-travel]
 published: true
 tags: [германия, путешествие, фотки]
 cover:
@@ -46,7 +46,7 @@ cover:
 
 ![](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-1.jpg)
 
-![Вид на\ главный вокзал](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-2.jpg "Вид на главный вокзал")
+![Вид на\ главный вокзал](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-2.jpg ]Вид на главный вокзал")
 
 ![](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-3.jpg)
 

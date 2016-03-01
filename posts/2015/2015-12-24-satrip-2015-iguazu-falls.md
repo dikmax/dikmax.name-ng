@@ -1,7 +1,7 @@
 ---
 title: "SATrip 2015: водопады Игуасу"
 date: 2015-12-24T16:45:00+01:00
-collection: latest-travel
+collections: [latest-travel]
 published: true
 tags: [satrip, satrip-2015, отпуск, бразилия, путешествие, фотки]
 cover:
@@ -73,7 +73,7 @@ cover:
 каждый день проходит вечеринка с\ кайпириньей. Коктейль бесплатен в\ первый час, а\ затем продаётся по\ весьма гуманной
 цене в\ 7\ реалов.
 
-![Наш весёлый бармен](/images/travel/2015-09-satrip/iguazu-bartender.jpg "Наш весёлый бармен")
+![Наш весёлый бармен](/images/travel/2015-09-satrip/iguazu-bartender.jpg ]Наш весёлый бармен")
 
 ![](/images/travel/2015-09-satrip/iguazu-night-city.jpg)
 

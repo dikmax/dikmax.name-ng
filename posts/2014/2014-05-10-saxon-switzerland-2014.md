@@ -1,7 +1,7 @@
 ---
 title: "Весенние каникулы: Саксонская Швейцария"
 date: "2014-05-10T21:20:00+03:00"
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [германия, отпуск, путешествие, фотки]
 thread: 2675328521

@@ -1,7 +1,7 @@
 ---
 title: "Осень в Минске"
 date: 2015-11-09T09:40:00+03:00
-collection: proofreaders-stories
+collections: [proofreaders-stories]
 published: true
 tags: [беларусь, гостевой пост, фотки]
 cover:
@@ -135,3 +135,4 @@ cover:
 ![](/images/travel/2015-10-minsk/water-pano.jpg)
 
 В\ целом, осень не\ так\ уж и\ плоха.
+]

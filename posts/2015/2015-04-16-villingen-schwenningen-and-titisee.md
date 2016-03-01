@@ -1,7 +1,7 @@
 ---
 title: "Филлинген-Швеннинген и Титизе"
 date: "2015-04-16T12:00:00+03:00"
-collection: "latest-travel"
+collections: [latest-travel]
 published: true
 tags: [путешествие, фотки, германия]
 ---

@@ -1,7 +1,7 @@
 ---
 title: "SATrip 2015: Из Рио в Куско"
 date: 2015-10-19T11:20:00+03:00
-collection: latest-travel
+collections: [latest-travel]
 published: true
 tags: [satrip, satrip-2015, отпуск, перу, путешествие, фотки]
 cover:
@@ -16,7 +16,7 @@ cover:
 
 <!--more-->
 
-![Рассвет над Рио-де-Жанейро](/images/travel/2015-09-satrip/flight-rio-lima-sunrise.jpg "Рассвет над Рио-де-Жанейро")
+![Рассвет над Рио-де-Жанейро](/images/travel/2015-09-satrip/flight-rio-lima-sunrise.jpg ]Рассвет над Рио-де-Жанейро")
 
 Перелёт Рио-Лима занимает около пяти часов. Уже ближе к\ точке назначения из\ иллюминатора открываются великолепные виды
 на\ Анды.
