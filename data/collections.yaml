@@ -1,0 +1,56 @@
+latest-travel:
+  name: Последние путешествия
+  items:
+  - id: satrip-2015-rio-4
+    name: Рио-де-Жанейро
+
+  - id: satrip-2015-iguazu-falls
+    name: Водопады Игуасу
+
+  - id: satrip-2015-lima
+    name: Лима
+
+  - id: satrip-2015-cusco-again
+    name: Куско
+
+  - id: satrip-2015-copacabana
+    name: Копакабана
+
+  - id: satrip-2015-bolivia-national-park
+    name: Национальный парк Эдуардо Авароа
+
+  - id: satrip-2015-south-of-bolivia
+    name: Юг Боливии
+
+  - id: satrip-2015-uyuni-salt-flats
+    name: Солончак Уюни
+
+proofreaders-stories:
+  name: Колонка корректора
+  items:
+  - id: autumn-in-minsk
+    name: Осень в Минске
+
+  - id: istanbul
+    name: Стамбул
+
+  - id: paris-2015
+    name: Париж
+
+  - id: georgia-2014-1
+    name: "Грузия: часть 1"
+
+  - id: georgia-2014-2
+    name: "Грузия: часть 2"
+
+  - id: eurotrip-2014-verona
+    name: Верона
+
+  - id: vilnius
+    name: Вильнюс
+
+  - id: eurotrip-barcelona
+    name: Барселона
+
+  - id: eurotrip-wroclaw
+    name: Вроцлав

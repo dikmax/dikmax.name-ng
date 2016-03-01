@@ -1,12 +1,14 @@
 module Main where
 
 import           BasicPrelude
+import           Collections
 import           Config
 import           Control.Lens
 import qualified Data.Binary                as B
 import qualified Data.Map.Lazy              as M
 import qualified Data.Text                  as T
 import           Data.Time
+import           Data.Yaml
 import           Development.Shake
 import           Development.Shake.Config
 import           Development.Shake.FilePath
@@ -79,20 +81,21 @@ blog = do
 
     -- All posts metadata
     postsList <- newCache $ \t -> do
-        postFiles <- getDirectoryFiles "." ["posts//*.md"]
-        -- Preparing parsed data in parallel
-        need $ map (pandocCacheDir </>) postFiles
-        postCacheContent <- mapM posts postFiles
+        postCacheContent <- preparePostsCache posts
         return $ buildList t postCacheContent
 
 
     -- All posts grouped be tags
     tagsList <- newCache $ \_ -> do
-        postFiles <- getDirectoryFiles "." ["posts//*.md"]
-        -- Preparing parsed data in parallel
-        need $ map (pandocCacheDir </>) postFiles
-        postCacheContent <- mapM posts postFiles
+        postCacheContent <- preparePostsCache posts
         return $ buildTags postCacheContent
+
+
+    collectionsList <- newCache $ \_ -> do
+        need ["data/collections.yaml"]
+        -- postCacheContent <- preparePostsCache posts
+        res <- liftIO $ decodeFileEither "data/collections.yaml"
+        either (error . prettyPrintParseException) return res :: Action Collections
 
 
     css <- newCache $ \_ -> do
@@ -103,10 +106,12 @@ blog = do
     commonData <- newCache $ \_ -> do
         cssContent <- css Anything
         imagesContent <- images Anything
+        cl <- collectionsList Anything
 
         return $ CommonData
             { _dataCss = cssContent
             , _imageMeta = imageGetter imagesContent
+            , _collections = cl
             }
 
 
@@ -222,6 +227,7 @@ blog = do
             renderToFile out $ T.feedPage now postsOnPage
 
 
+    -- Parse Markdown with metadata and save to temp file
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
         putNormal $ "Reading post " ++ src
@@ -249,6 +255,13 @@ blog = do
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out updatedPost -- TODO File
     where
+        preparePostsCache :: (FilePath -> Action File) -> Action [File]
+        preparePostsCache posts = do
+            postFiles <- getDirectoryFiles "." ["posts//*.md"]
+            -- Preparing parsed data in parallel
+            need $ map (pandocCacheDir </>) postFiles
+            mapM posts postFiles
+
         buildList :: PostsCache -> [File] -> Posts
         buildList _ [] = M.empty
         buildList PostsCacheById [p] = M.singleton (p ^. fileMeta ^. postId) p

@@ -48,16 +48,27 @@ buildPost src pandoc = File m pandoc
         m :: FileMeta
         m
             | "posts/" `isPrefixOf` src = PostMeta
-                { _postId    = ""
-                , _postTitle = T.pack $ getMetaString (unMeta $ pandoc ^. meta) "title"
-                , _postDate  = parseDate $ getMetaString (unMeta $ pandoc ^. meta) "date"
-                , _postCover = buildPostCover (pandoc ^. meta)
-                , _postTags  = map T.pack $ getStringsList (unMeta $ pandoc ^. meta) "tags"
-                , _postUrl   = ""
+                { _postId          = ""
+                , _postTitle       = T.pack $
+                                        getMetaString (unMeta $ pandoc ^. meta)
+                                            "title"
+                , _postDate        = parseDate $
+                                        getMetaString (unMeta $ pandoc ^. meta)
+                                            "date"
+                , _postCover       = buildPostCover (pandoc ^. meta)
+                , _postTags        = map T.pack $
+                                        getStringsList (unMeta $ pandoc ^. meta)
+                                            "tags"
+                , _postCollections = map T.pack $
+                                        getStringsList (unMeta $ pandoc ^. meta)
+                                            "collections"
+                , _postUrl         = ""
                 }
             | otherwise = def
                 { _postCover = buildPostCover (pandoc ^. meta)
-                , _postTitle = T.pack $ getMetaString' "" (unMeta $ pandoc ^. meta) "title"
+                , _postTitle = T.pack $
+                                    getMetaString' "" (unMeta $ pandoc ^. meta)
+                                        "title"
                 }
 
 parseDate :: String -> Maybe UTCTime
@@ -86,10 +97,13 @@ formats    =
 
 getMetaString :: M.Map String MetaValue -> String -> String
 getMetaString m key =
-    maybe (error $ "Key \"" ++ key ++ "\" not found") extractString' $ M.lookup key m
+    maybe (error $ "Key \"" ++ key ++ "\" not found") extractString' $
+        M.lookup key m
     where
         extractString' :: MetaValue -> String
-        extractString' = fromMaybe (error "String cannot be extracted for key \"" ++ key ++ "\"") . extractString
+        extractString' = fromMaybe
+            (error "String cannot be extracted for key \"" ++ key ++ "\"") .
+                extractString
 
 getMetaString' :: String -> M.Map String MetaValue -> String -> String
 getMetaString' d m key =
@@ -116,8 +130,10 @@ buildPostCover m =
     where
         cover m' = PostCover
             { _coverImg     = fmap T.pack $ extractString' $ M.lookup "img" m'
-            , _coverVCenter = T.pack $ fromMaybe "center" $ extractString' $ M.lookup "vcenter" m'
-            , _coverHCenter = T.pack $ fromMaybe "center" $ extractString' $ M.lookup "hcenter" m'
+            , _coverVCenter = T.pack $ fromMaybe "center" $ extractString' $
+                                M.lookup "vcenter" m'
+            , _coverHCenter = T.pack $ fromMaybe "center" $ extractString' $
+                                M.lookup "hcenter" m'
             , _coverColor   = fmap T.pack $ extractString' $ M.lookup "color" m'
             }
         extractString' :: Maybe MetaValue -> Maybe String

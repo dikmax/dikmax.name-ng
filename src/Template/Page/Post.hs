@@ -1,8 +1,10 @@
 module Template.Page.Post (postPage) where
 
 import           BasicPrelude
+import           Collections
 import           Config
 import           Control.Lens
+import qualified Data.Map.Lazy            as M
 import qualified Data.Text                as T
 import           Data.Time
 import           Lib
@@ -67,32 +69,66 @@ postPage isAmp layout cd post = layout $ do
                 iconEmail
                 " Отправить другу"
 
-        div_ [class_ "main__centered related-posts"] $ do
-            div_ [class_ "related-posts__collection-name"] $ do
-                p_ "Читать ещё"
-                p_ [class_ "related-posts__arrow-down"] $ iconArrowDown
-            div_ [class_ "related-posts__collection"] mempty -- TODO
+        unless (null $ post ^. fileMeta ^. postCollections) $
+            div_ [class_ "main__full-width__centered related-posts"] $ do
+                div_ [class_ "related-posts__collection-name"] $ do
+                    p_ "Читать ещё"
+                    p_ [class_ "related-posts__arrow-down"] iconArrowDown
+                forM_ (post ^. fileMeta ^. postCollections) writeCollection
 
-        unless (isAmp) $ do
-            div_ [id_ "disqus_thread", class_ "main__centered"] mempty
-            div_ [class_ "main__centered disqus-post"] $ do
-                script_ $
-                    "var disqus_config=function(){\
-                        \this.page.url='" ++ escapeJsString url ++ "';\
-                        \this.page.identifier='" ++ escapeJsString pId ++ "';\
-                        \this.page.title='" ++ escapeJsString title ++ "';\
-                    \};\
-                    \(function(){\
-                        \var d=document,s=d.createElement('script');\
-                        \s.src='//dikmax.disqus.com/embed.js';\
-                        \s.setAttribute('data-timestamp',+new Date());\
-                        \(d.head||d.body).appendChild(s);\
-                    \})();"
-
-                noscript_ $ do
-                    "Please enable JavaScript to view the "
-                    a_ [href_ "https://disqus.com/?ref_noscript", rel_ "nofollow"] "comments powered by Disqus."
+        unless (isAmp) disqus
     where
+        writeCollection :: Text -> Html ()
+        writeCollection collectionId =
+            maybe (terror $ "Collection " ++ collectionId ++
+                    " not defined for " ++ post ^. fileMeta ^. postId)
+                (\c -> do
+                    div_ [class_ "related-posts__collection-name"] $ do
+                        p_ $ toHtml $ c ^. collectionName
+                    div_ [class_ "related-posts__collection"] $
+                        forM_ (take showMaxCount $ c ^. collectionItems)
+                            writeCollectionItem
+                ) $ M.lookup collectionId (cd ^. collections)
+
+        writeCollectionItem :: CollectionItem -> Html ()
+        writeCollectionItem cItem =
+            div_ [class_ "related-posts__cover"] $ do
+                a_ [ href_ $ cItem ^. collectionItemUrl
+                   , class_ "related-posts__cover-image"] $
+                   img_ [ src_ $ cItem ^. collectionItemCover
+                        , name_ (cItem ^. collectionItemName)]
+                a_ [ href_ $ cItem ^. collectionItemUrl
+                   , class_ "related-posts__title-background"] $
+                   toHtml (cItem ^. collectionItemName)
+
+        showMaxCount :: Int
+        showMaxCount
+            | length (post ^. fileMeta ^. postCollections) == 1 = 8
+            | otherwise = 4
+
+
+        disqus :: Html ()
+        disqus = do
+             div_ [id_ "disqus_thread", class_ "main__centered"] mempty
+             div_ [class_ "main__centered disqus-post"] $ do
+                 script_ $
+                     "var disqus_config=function(){\
+                         \this.page.url='" ++ escapeJsString url ++ "';\
+                         \this.page.identifier='" ++ escapeJsString pId ++ "';\
+                         \this.page.title='" ++ escapeJsString title ++ "';\
+                     \};\
+                     \(function(){\
+                         \var d=document,s=d.createElement('script');\
+                         \s.src='//dikmax.disqus.com/embed.js';\
+                         \s.setAttribute('data-timestamp',+new Date());\
+                         \(d.head||d.body).appendChild(s);\
+                     \})();"
+
+                 noscript_ $ do
+                     "Please enable JavaScript to view the "
+                     a_ [ href_ "https://disqus.com/?ref_noscript"
+                        , rel_ "nofollow"] "comments powered by Disqus."
+
         opts :: LucidWriterOptions
         opts = (def :: LucidWriterOptions)
                 & commonData .~ cd
@@ -131,7 +167,8 @@ postPage isAmp layout cd post = layout $ do
         urlPinterest :: Text
         urlPinterest = "https://pinterest.com/pin/create/button/?url=" ++
             escapeURIComponent url ++
-            maybe "" (\i -> "&media=" ++ escapeURIComponent i) (post ^. fileMeta ^. postCover ^. coverImg) ++
+            maybe "" (\i -> "&media=" ++ escapeURIComponent i)
+                (post ^. fileMeta ^. postCover ^. coverImg) ++
             "&description=" ++ escapeURIComponent fullTitle
 
         urlTwitter :: Text

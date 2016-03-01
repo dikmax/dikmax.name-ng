@@ -4,6 +4,7 @@
 module Types where
 
 import           BasicPrelude
+import           Collections
 import           Control.Lens
 import           Data.Binary
 import           Data.Default
@@ -36,12 +37,13 @@ makeLenses ''PostCover
 -- | Post Meta
 data FileMeta =
     PostMeta
-    { _postId    :: Text
-    , _postTitle :: Text
-    , _postDate  :: Maybe UTCTime
-    , _postCover :: PostCover
-    , _postTags  :: [Text]
-    , _postUrl   :: Text
+    { _postId          :: Text
+    , _postTitle       :: Text
+    , _postDate        :: Maybe UTCTime
+    , _postCover       :: PostCover
+    , _postCollections :: [Text]
+    , _postTags        :: [Text]
+    , _postUrl         :: Text
     } |
     PageMeta
     { _postCover :: PostCover
@@ -108,12 +110,14 @@ type Images = M.Map Text ImageMeta
 data CommonData = CommonData
     { _dataCss :: Text
     , _imageMeta :: Text -> Maybe ImageMeta
+    , _collections :: Collections
     }
 
 instance Default CommonData where
     def = CommonData
         { _dataCss = ""
         , _imageMeta = const Nothing
+        , _collections = M.empty
         }
 
 makeLenses ''CommonData
@@ -134,7 +138,3 @@ instance Binary DiffTime where
 data Anything = Anything deriving (Eq)
 instance Hashable Anything where
     hashWithSalt _ _ = 0
-
-
-
--- TODO own metadata format and lenses for it

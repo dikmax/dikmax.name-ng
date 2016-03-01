@@ -1,7 +1,7 @@
 ---
 title: "SATrip 2015: Итоги"
 date: 2016-01-21T07:35:00+01:00
-collection: latest-travel
+collections: [latest-travel]
 published: true
 tags: [satrip, satrip-2015, отпуск, бразилия, путешествие, фотки]
 cover:
