@@ -52,6 +52,7 @@ data WriterStateData = WriterStateData
     { _notesList     :: [Html ()]
     , _writerOptions :: LucidWriterOptions
     , _countBlocks   :: Int
+    , _level         :: Int
     }
 
 instance Default WriterStateData where
@@ -59,6 +60,7 @@ instance Default WriterStateData where
         { _notesList     = []
         , _writerOptions = def
         , _countBlocks   = 0
+        , _level         = 0
         }
 
 makeLenses ''WriterStateData
@@ -85,36 +87,42 @@ writeLucid' (Pandoc _ blocks) = do
 
 concatBlocks :: [Block] -> WriterState (Html ())
 concatBlocks blocks = do
+    level += 1
     result <- mapM writeBlock blocks
+    level -= 1
     return $ mconcat result
+
 
 writeBlock :: Block -> WriterState (Html ())
 writeBlock (Plain inline) =
     concatInlines inline
 
-
 writeBlock (Para inline) = withCountBlocksIncrement $ \c -> do
     inlines <- concatInlines inline
+    cl <- getMainBlockClass
     return $ case inline of
         [Image{}] -> inlines
-        _ -> p_ [class_ "main__centered post__block post__block_para", id_ $ "p-" ++ show c] inlines
+        _ -> p_ [class_ $ cl ++ "post__block_para", id_ $ "p-" ++ show c] inlines
 
-writeBlock (CodeBlock (identifier, classes, others) code) =
-    return $ pre_ (class_ "main__centered post__block post__block_code" : mapAttrs) $ code_ mapAttrs $ toHtml code
-  where
-    mapAttrs = writeAttr (identifier, "sourceCode" : classes, others)
+writeBlock (CodeBlock (identifier, classes, others) code) = do
+    cl <- getMainBlockClass
+    return $ pre_ (class_ (cl ++ "post__block_code") : mapAttrs) $ code_ mapAttrs $ toHtml code
+    where
+        mapAttrs = writeAttr (identifier, "sourceCode" : classes, others)
 
 writeBlock (RawBlock "html" str) =
     return $ toHtmlRaw str
 writeBlock (RawBlock _ _) = return mempty
 
 writeBlock (BlockQuote blocks) = do
+    cl <- getMainBlockClass
     items <- concatBlocks blocks
-    return $ blockquote_ [class_ "main__centered post__block post__block_blockquote"] items
+    return $ blockquote_ [class_ $ cl ++ "post__block_blockquote"] items
 
 writeBlock (OrderedList (startNum, numStyle, _) listItems) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     items <- mapM processListItems listItems
-    return $ ol_ (class_ "main__centered post__block post__block_ordered-list" : attributes c) $ mconcat items
+    return $ ol_ (class_ (cl ++ "post__block_ordered-list") : attributes c) $ mconcat items
     where
         char :: Text
         char = case numStyle of
@@ -129,54 +137,64 @@ writeBlock (OrderedList (startNum, numStyle, _) listItems) = withCountBlocksIncr
             [ start_ $ show startNum | startNum /= 1 ]
 
 writeBlock (BulletList listItems) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     items <- mapM processListItems listItems
     return $ ul_
-        [ class_ "main__centered post__block post__block_unordered-list"
+        [ class_ $ cl ++ "post__block_unordered-list"
         , id_ $ "p-" ++ show c
         ] $ mconcat items
 
 writeBlock (Header 1 attr inline) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h1_
-        ( class_ "main__centered post__block post__block_header-1"
+        ( class_ (cl ++ "post__block_header-1")
         : id_ ("p-" ++ show c)
         : writeAttr attr) inlines
 writeBlock (Header 2 attr inline) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h2_
-        ( class_ "main__centered post__block post__block_header-2"
+        ( class_ (cl ++ "post__block_header-2")
         : id_ ("p-" ++ show c)
         : writeAttr attr) inlines
 writeBlock (Header 3 attr inline) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h3_
-        ( class_ "main__centered post__block post__block_header-3"
+        ( class_ (cl ++ "post__block_header-3")
         : id_ ("p-" ++ show c)
         : writeAttr attr) inlines
 writeBlock (Header 4 attr inline) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h4_
-        ( class_ "main__centered post__block post__block_header-4"
+        ( class_ (cl ++ "post__block_header-4")
         : id_ ("p-" ++ show c)
         : writeAttr attr) inlines
 writeBlock (Header 5 attr inline) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h5_
-        ( class_ "main__centered post__block post__block_header-5"
+        ( class_ (cl ++ "post__block_header-5")
         : id_ ("p-" ++ show c)
         : writeAttr attr) inlines
 writeBlock (Header _ attr inline) = withCountBlocksIncrement $ \c -> do
+    cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h6_
-        ( class_ "main__centered post__block post__block_header-6"
+        ( class_ (cl ++ "post__block_header-6")
         : id_ ("p-" ++ show c)
         : writeAttr attr) inlines
 
-writeBlock HorizontalRule = return $ hr_ [class_ "main__centered post__block post__block_rule"]
+writeBlock HorizontalRule = do
+    cl <- getMainBlockClass
+    return $ hr_ [class_ $ cl ++ "post__block_rule"]
 
 writeBlock (Div attr blocks) = do
+    cl <- getMainBlockClass
     items <- concatBlocks blocks
-    return $ div_ (class_ "main__centered post__block post__block_div" : writeAttr attr) items
+    return $ div_ (class_ (cl ++ "post__block_div") : writeAttr attr) items
 
 writeBlock Null = return mempty
 
@@ -329,6 +347,7 @@ writeInline (Span attr inline) = do
 
 writeInline i = return $ toHtml (show (toConstr i) ++ " not implemented")
 
+
 getFooter :: WriterState (Html ())
 getFooter = do
     n <- use notesList
@@ -359,3 +378,8 @@ withCountBlocksIncrement process = do
     countBlocks += 1
     cb <- use countBlocks
     process cb
+
+getMainBlockClass :: WriterState Text
+getMainBlockClass = do
+    l <- use level
+    return $ if l > 1 then "post__block " else "main__centered post__block "
