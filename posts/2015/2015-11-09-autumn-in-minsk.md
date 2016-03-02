@@ -135,4 +135,3 @@ cover:
 ![](/images/travel/2015-10-minsk/water-pano.jpg)
 
 В\ целом, осень не\ так\ уж и\ плоха.
-]

@@ -46,7 +46,7 @@ cover:
 
 ![](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-1.jpg)
 
-![Вид на\ главный вокзал](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-2.jpg ]Вид на главный вокзал")
+![Вид на\ главный вокзал](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-2.jpg "Вид на главный вокзал")
 
 ![](/images/travel/2015-03-schwarzwald/frankfurt-main-tower-view-3.jpg)
 

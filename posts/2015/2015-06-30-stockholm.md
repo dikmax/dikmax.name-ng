@@ -24,7 +24,7 @@ cover:
 
 С\ него и\ можно начать наш обзор, тем более что отель, в\ котором мы\ поселились, располагался совсем неподалёку.
 
-![](/images/travel/2015-05-stockholm/gamla-stan-1.jpg ]Gamla Stan")
+![](/images/travel/2015-05-stockholm/gamla-stan-1.jpg "Gamla Stan")
 
 ![](/images/travel/2015-05-stockholm/gamla-stan-2.jpg "Gamla Stan крупным планом")
 

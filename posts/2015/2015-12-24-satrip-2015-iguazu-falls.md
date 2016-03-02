@@ -73,7 +73,7 @@ cover:
 каждый день проходит вечеринка с\ кайпириньей. Коктейль бесплатен в\ первый час, а\ затем продаётся по\ весьма гуманной
 цене в\ 7\ реалов.
 
-![Наш весёлый бармен](/images/travel/2015-09-satrip/iguazu-bartender.jpg ]Наш весёлый бармен")
+![Наш весёлый бармен](/images/travel/2015-09-satrip/iguazu-bartender.jpg "Наш весёлый бармен")
 
 ![](/images/travel/2015-09-satrip/iguazu-night-city.jpg)
 

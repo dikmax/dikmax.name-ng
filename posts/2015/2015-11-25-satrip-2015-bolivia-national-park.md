@@ -31,7 +31,7 @@ cover:
 
 ![](/images/travel/2015-09-satrip/uyuni-3-top-point.jpg)
 
-![Светает](/images/travel/2015-09-satrip/uyuni-3-sunrise.jpg ]Светает")
+![Светает](/images/travel/2015-09-satrip/uyuni-3-sunrise.jpg "Светает")
 
 А\ вот и\ гейзер!
 
