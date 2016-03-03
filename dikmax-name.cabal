@@ -30,6 +30,7 @@ executable dikmax.name
                      , Template.Common
                      , Template.Layout
                      , Template.Navigation
+                     , Template.Page.About
                      , Template.Page.Feed
                      , Template.Page.Index
                      , Template.Page.List

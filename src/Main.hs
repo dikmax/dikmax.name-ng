@@ -126,7 +126,8 @@ blog = do
                 pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $
                 M.assocs tags
         need $ postsFilePaths ++ ampPostsFilePaths ++
-            pathsFromList siteDir ps ++ tagsPaths
+            pathsFromList siteDir ps ++ tagsPaths ++
+            [siteDir </> "about" </> indexHtml]
 
 
     -- Post pages
@@ -225,6 +226,17 @@ blog = do
         liftIO $ do
             now <- getCurrentTime
             renderToFile out $ T.feedPage now postsOnPage
+
+
+    -- About page
+    siteDir </> "about" </> indexHtml %> \out -> do
+        cd <- commonData Anything
+        about <- posts "about.md"
+        putNormal $ "Writing page " ++ out
+        let a = (about & fileMeta %~ postUrl .~ domain ++ "/")
+        liftIO $ renderToFile out $
+            T.aboutPage
+                (T.defaultLayout cd (a ^. fileMeta)) a
 
 
     -- Parse Markdown with metadata and save to temp file
