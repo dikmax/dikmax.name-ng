@@ -11,7 +11,7 @@ import           Types
 
 postList :: Maybe Text -> Maybe Text -> [File] -> Html ()
 postList olderPage newerPage posts =
-    div_ [class_ "main main_list"] $ do
+    div_ [class_ "main main_no-hero"] $ do
         mconcat $ map postSingle posts
 
         when (isJust olderPage || isJust newerPage) $
@@ -36,7 +36,7 @@ postSingle file =
 
         maybe (writeLucid def $ file ^. fileContent)
             (\(doc, teaser) -> do
-                writeLucid def doc
+                writeLucid opts doc
                 div_ [class_ "main__centered post__block post__read-more"] $
                     a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml $
                         if teaser == "" then defaultReadMoreText else teaser
@@ -44,3 +44,6 @@ postSingle file =
     where
         url :: Text -> Text -- TODO extract to Config
         url id' = "/post/" ++ id' ++ "/"
+
+        opts :: LucidWriterOptions
+        opts = def & showFigureNumbers .~ False

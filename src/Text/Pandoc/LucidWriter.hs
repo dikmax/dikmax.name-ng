@@ -8,6 +8,7 @@ module Text.Pandoc.LucidWriter (
     commonData,
     debugOutput,
     renderType,
+    showFigureNumbers,
 
     writeLucid,
     writeLucidText
@@ -30,20 +31,22 @@ data RenderType =
         RenderNormal | RenderRSS | RenderAMP deriving (Eq)
 
 data LucidWriterOptions = LucidWriterOptions
-    { _idPrefix     :: Text
-    , _siteDomain   :: Text
-    , _commonData   :: CommonData
-    , _debugOutput  :: Bool
-    , _renderType   :: RenderType
+    { _idPrefix          :: Text
+    , _siteDomain        :: Text
+    , _commonData        :: CommonData
+    , _debugOutput       :: Bool
+    , _renderType        :: RenderType
+    , _showFigureNumbers :: Bool
     }
 
 instance Default LucidWriterOptions where
     def = LucidWriterOptions
-        { _idPrefix     = ""
-        , _siteDomain   = ""
-        , _commonData   = def
-        , _debugOutput  = False
-        , _renderType   = RenderNormal
+        { _idPrefix          = ""
+        , _siteDomain        = ""
+        , _commonData        = def
+        , _debugOutput       = False
+        , _renderType        = RenderNormal
+        , _showFigureNumbers = True
         }
 
 makeLenses ''LucidWriterOptions
@@ -308,7 +311,11 @@ writeInline (Image attr inline target) = do
                         p_ [class_ "figure-description"] inlines
         else figure_
             ([ id_ $ (extractId $ T.pack $ fst target)
-             , class_ "main__full-width post__block post__figure"] ++ writeAttr attr) $
+             , class_ $ "main__full-width post__block post__figure"
+                ++ if options ^. showFigureNumbers
+                    then " post__figure_with-number"
+                    else ""
+             ] ++ writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
                     (if (options ^. renderType == RenderAMP) then ampImg_ else img_) $

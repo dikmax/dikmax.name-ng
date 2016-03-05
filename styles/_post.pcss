@@ -57,24 +57,27 @@
     @e figure {
         lost-utility: clearfix;
 
-        &::before {
-            color: color(#b3b3b3 a(0.5));
-            content: counter(imgs);
-            counter-increment: imgs;
-            display: block;
-            font-range: 320px 768px;
-            font-size: responsive 56px 160px;
-            margin-top: calc(-20px - 45 * ((100vw - 320px) / 448));
-            padding-left: var(--body-padding);
-            position: absolute;
-            z-index: 1;
+        @m with-number {
 
-            @media screen and (max-width: 320px) {
-                margin-top: -20px
-            }
+            &::before {
+                color: color(#b3b3b3 a(0.5));
+                content: counter(imgs);
+                counter-increment: imgs;
+                display: block;
+                font-range: 320px 768px;
+                font-size: responsive 56px 160px;
+                margin-top: calc(-20px - 45 * ((100vw - 320px) / 448));
+                padding-left: var(--body-padding);
+                position: absolute;
+                z-index: 1;
 
-            @media screen and (min-width: 768px) {
-                margin-top: -65px
+                @media screen and (max-width: 320px) {
+                    margin-top: -20px
+                }
+
+                @media screen and (min-width: 768px) {
+                    margin-top: -65px
+                }
             }
         }
     }
