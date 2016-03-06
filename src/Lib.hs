@@ -3,10 +3,12 @@ module Lib
     ( ImageMeta(..)
     , PostCoverType(..)
     , PostCover(..)
+    , archiveMonths
     , buildPost
     , dropDirectory2
     , dropDirectory3
     , parseDate
+    , postIdToUrl
     , splitAll
     , tagToUrl
     ) where
@@ -149,3 +151,15 @@ extractString _ = Nothing
 
 tagToUrl :: Text -> Text
 tagToUrl tag = "/tag/" ++ tag ++ "/"
+
+postIdToUrl :: Text -> Text
+postIdToUrl pid = "/post/" ++ pid ++ "/"
+
+archiveMonths :: [File] -> M.Map Text [File]
+archiveMonths files =
+    M.fromListWith (++) $ catMaybes $ map m1 files
+    where
+        m1 f =
+            case f ^. fileMeta ^?! postDate of
+                Just time -> Just (T.pack $ formatTime timeLocale "%Y%m" time, [f])
+                Nothing -> Nothing

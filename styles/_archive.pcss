@@ -1,0 +1,53 @@
+/** @define archive */
+@b archive {
+
+    @e list {
+        padding: 0;
+    }
+
+    @e subheader {
+        margin-left: 56px;
+        color: var(--primary-color);
+        height: 48px;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid color(var(--black-color) a(0.12));
+    }
+
+    @e item {
+        align-items: center;
+        color: var(--light-background-text);
+        text-decoration: none;
+        display: flex;
+        height: 72px;
+    }
+
+    @e item-icon {
+        background-color: var(--accent-color);
+        border-radius: 50%;
+        box-sizing: border-box;
+        color: white;
+        margin-right: 16px;
+        min-size: 40px;
+        size: 40px;
+
+        & svg {
+            fill: var(--white-color);
+            position: relative 2px * * 4px;
+            size: 32px;
+        }
+
+        @m none {
+            background: none;
+        }
+
+        @m code {
+            & svg {
+                top: 0;
+            }
+        }
+    }
+
+    @e item-text {
+    }
+}

@@ -125,9 +125,11 @@ blog = do
         let tagsPaths = concatMap (\(t, fs) ->
                 pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $
                 M.assocs tags
+
         need $ postsFilePaths ++ ampPostsFilePaths ++
             pathsFromList siteDir ps ++ tagsPaths ++
-            [siteDir </> "about" </> indexHtml]
+            [ siteDir </> "about" </> indexHtml
+            , siteDir </> "archive" </> indexHtml ]
 
 
     -- Post pages
@@ -226,6 +228,17 @@ blog = do
         liftIO $ do
             now <- getCurrentTime
             renderToFile out $ T.feedPage now postsOnPage
+
+
+    -- Archive page
+    siteDir </> "archive" </> indexHtml %> \out -> do
+        ps <- postsList PostsCacheByDate
+        cd <- commonData Anything
+        let files = M.elems ps
+        putNormal $ "Writing page " ++ out
+        liftIO $ renderToFile out $
+            T.archivePage
+                (T.defaultLayout cd def) files
 
 
     -- About page

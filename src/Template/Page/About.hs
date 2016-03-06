@@ -23,7 +23,6 @@ buttons =
     , ("Twitter",  "twitter",     "https://twitter.com/dikmax",                          iconTwitter)
     , ("YouTube",  "youtube",     "https://www.youtube.com/user/zabeydikmax",            iconYouTube)
     ]
-    -- <a href="https://www.youtube.com/user/zabeydikmax" title="YouTube" class="btn btn-youtube"><i class="fa fa-youtube fa-2x fa-fw"></i></a>
 
 
 aboutPage :: (Html () -> Html ()) -> File -> Html ()
