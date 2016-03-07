@@ -291,13 +291,13 @@ writeInline (Image attr inline target) = do
             Just meta ->
                 [ width_ $ show $ meta ^. imageWidth
                 , height_ $ show $ meta ^. imageHeight
-                , term "srcset" $ (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                    (options ^. siteDomain) ++ " " ++ (show (meta ^. imageWidth)) ++ "w")
+                , term "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                    (options ^. siteDomain) ++ " " ++ show (meta ^. imageWidth) ++ "w")
                 , sizes_ "100vw" ] :: [Attribute]
             Nothing -> []
 
-    return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` (fst target) ||
-            "https://www.youtube.com/watch?v=" `isPrefixOf` (fst target)
+    return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` fst target ||
+            "https://www.youtube.com/watch?v=" `isPrefixOf` fst target
         -- Youtube video
         then div_ (class_ "main__full-width post__block" : writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
@@ -310,7 +310,7 @@ writeInline (Image attr inline target) = do
                     unless (null inline) $
                         p_ [class_ "figure-description"] inlines
         else figure_
-            ([ id_ $ (extractId $ T.pack $ fst target)
+            ([ id_ (extractId $ T.pack $ fst target)
              , class_ $ "main__full-width post__block post__figure"
                 ++ if options ^. showFigureNumbers
                     then " post__figure_with-number"
@@ -318,7 +318,7 @@ writeInline (Image attr inline target) = do
              ] ++ writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
-                    (if (options ^. renderType == RenderAMP) then ampImg_ else img_) $
+                    (if options ^. renderType == RenderAMP then ampImg_ else img_)
                         ([ class_ "post__figure-img"
                             , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                                 (options ^. siteDomain)
@@ -344,7 +344,7 @@ writeInline (Note block) = do   -- TODO there should be a link to footer
     notesList %= (++ [blocks])
     let noteId = length n + 1
     return $ sup_
-        [ id_ $ "note-" ++ (options ^. idPrefix) ++ (show noteId)
+        [ id_ $ "note-" ++ (options ^. idPrefix) ++ show noteId
         , class_ "note-link"
         ] $ toHtml $ show noteId
 
@@ -369,7 +369,7 @@ getFooter = do
     where
         transformNotes :: [Html ()] -> Int -> Text -> Html ()
         transformNotes (n:ns) i prefix = do
-            li_ [data_ "for" (prefix ++ (show i))] n
+            li_ [data_ "for" (prefix ++ show i)] n
             transformNotes ns (i+1) prefix
         transformNotes [] _ _ = mempty
 

@@ -76,14 +76,14 @@ postPage isAmp layout cd post = layout $ do
                     p_ [class_ "related-posts__arrow-down"] iconArrowDown
                 forM_ (post ^. fileMeta ^. postCollections) writeCollection
 
-        unless (isAmp) disqus
+        unless isAmp disqus
     where
         writeCollection :: Text -> Html ()
         writeCollection collectionId =
             maybe (terror $ "Collection " ++ collectionId ++
                     " not defined for " ++ post ^. fileMeta ^. postId)
                 (\c -> do
-                    div_ [class_ "related-posts__collection-name"] $ do
+                    div_ [class_ "related-posts__collection-name"] $
                         p_ $ toHtml $ c ^. collectionName
                     div_ [class_ "related-posts__collection"] $
                         forM_ (take showMaxCount $ c ^. collectionItems)

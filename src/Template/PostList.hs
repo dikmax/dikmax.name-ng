@@ -27,7 +27,7 @@ postSingle file =
         div_ [class_ "main__centered post__block post__title"] $
             a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml (file ^. fileMeta ^. postTitle)
 
-        maybe (mempty) (\cover ->
+        maybe mempty (\cover ->
             div_ [class_ "main__centered post__block post__cover"] $
                 a_ [href_ $ url (file ^. fileMeta ^. postId)] $
                     img_ [class_ "post__cover-image", src_ cover, alt_ ""]

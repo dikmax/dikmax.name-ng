@@ -19,9 +19,9 @@ feedPage now posts = atomHeader_ $
         link_ "http://dikmax.name/"
         language_ "ru"
         lastBuildDate_ $ toHtml (formatTime defaultTimeLocale rfc822DateFormat now)
-        maybe (mempty) (\time ->
-            pubDate_ $ toHtml (formatTime defaultTimeLocale rfc822DateFormat time)) $
-            (head posts) ^. fileMeta ^?! postDate
+        maybe mempty
+            (pubDate_ . toHtml . formatTime defaultTimeLocale rfc822DateFormat) $
+            head posts ^. fileMeta ^?! postDate
         ttl_ "180"
         atomLink_ [href_ "http://dikmax.name/feed.rss", rel_ "self", type_ "application/rss+xml"] mempty
 
@@ -31,15 +31,15 @@ feedPage now posts = atomHeader_ $
             link_ $ toHtml $ post ^. fileMeta ^. postUrl
             comments_ $ toHtml $ post ^. fileMeta ^. postUrl ++ "#disqus_thread"
             guid_ $ toHtml $ post ^. fileMeta ^. postUrl
-            maybe (mempty) (\time ->
-                pubDate_ $ toHtml (formatTime defaultTimeLocale rfc822DateFormat time)) $
+            maybe mempty
+                (pubDate_ . toHtml . formatTime defaultTimeLocale rfc822DateFormat) $
                 post ^. fileMeta ^?! postDate
 
 
 
 renderSingle :: File -> Html ()
 renderSingle file = do
-    maybe (mempty) (\cover ->
+    maybe mempty (\cover ->
         H.div_ [H.class_ "main__centered post__block post__cover"] $
             H.a_ [H.href_ $ url (file ^. fileMeta ^. postId)] $
                 H.img_ [H.class_ "post__cover-image", H.src_ cover, H.alt_ ""]

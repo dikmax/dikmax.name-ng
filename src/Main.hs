@@ -109,7 +109,7 @@ blog = do
         imagesContent <- images Anything
         cl <- collectionsList Anything
 
-        return $ CommonData
+        return CommonData
             { _dataCss = cssContent
             , _imageMeta = imageGetter imagesContent
             , _collections = cl
@@ -160,7 +160,7 @@ blog = do
         let postsOnPage = getPostsForPage ps 1
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        let w = (welcome & fileMeta %~ postUrl .~ domain ++ "/")
+        let w = welcome & fileMeta %~ postUrl .~ domain ++ "/"
         liftIO $ renderToFile out $
             T.indexPage
                 (T.defaultLayout cd (w ^. fileMeta))
@@ -247,7 +247,7 @@ blog = do
         cd <- commonData Anything
         about <- posts "about.md"
         putNormal $ "Writing page " ++ out
-        let a = (about & fileMeta %~ postUrl .~ domain ++ "/")
+        let a = about & fileMeta %~ postUrl .~ domain ++ "/"
         liftIO $ renderToFile out $
             T.aboutPage
                 (T.defaultLayout cd (a ^. fileMeta)) a
@@ -272,11 +272,11 @@ blog = do
                     (pCover ^. coverImg))
 
         let updatedPost = post & fileMeta %~ (\m -> m
-                & postId    .~ (fromMaybe "" $ idFromSrcFilePath src)
+                & postId    .~ fromMaybe "" (idFromSrcFilePath src)
                 & postDate  %~ alterDate src
                 & postCover .~ (pCover & coverColor .~ color)
-                & postUrl   .~ (maybe "" (\i -> domain ++ "/post/" ++ i
-                                    ++ "/") $ idFromSrcFilePath src)
+                & postUrl   .~ maybe "" (\i -> domain ++ "/post/" ++ i
+                                    ++ "/") (idFromSrcFilePath src)
                 )
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out updatedPost -- TODO File
@@ -306,12 +306,12 @@ blog = do
                 else M.insert key p listRest
 
         buildTags :: [File] -> PostsTags
-        buildTags [] = M.empty
-        buildTags (f:fs) =
-            M.unionWith M.union
-                (M.fromList $ map (\t ->
-                    (t, M.singleton (dateKey $ f ^. fileMeta ^?! postDate) f)) $ f ^. fileMeta ^. postTags)
-                (buildTags fs)
+        buildTags = foldr
+            (\f -> M.unionWith M.union
+                (M.fromList $ map
+                    (\t -> (t, M.singleton (dateKey $ f ^. fileMeta ^?! postDate) f)) $
+                    f ^. fileMeta ^. postTags))
+            M.empty
 
         dateKey :: Maybe UTCTime -> Text
         dateKey (Just time)= T.pack $ formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S")) time
@@ -332,7 +332,7 @@ blog = do
 
         getNewerPage prefix _ page
             | page == 1 = Nothing
-            | page == 2 = Just $ prefix
+            | page == 2 = Just prefix
             | otherwise = Just $ prefix ++ "page/" ++ show (page - 1) ++ "/"
 
         alterDate :: FilePath -> Maybe UTCTime -> Maybe UTCTime
@@ -429,7 +429,7 @@ fonts = do
     buildStatic "fonts/*"
 
 favicons :: Rules ()
-favicons = do
+favicons =
     phony "favicons" $ do
         faviconsFiles <- getDirectoryFiles "." ["favicons/*"]
         forM_ faviconsFiles (\src -> do

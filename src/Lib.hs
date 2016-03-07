@@ -157,7 +157,7 @@ postIdToUrl pid = "/post/" ++ pid ++ "/"
 
 archiveMonths :: [File] -> M.Map Text [File]
 archiveMonths files =
-    M.fromListWith (++) $ catMaybes $ map m1 files
+    M.fromListWith (++) $ mapMaybe m1 files
     where
         m1 f =
             case f ^. fileMeta ^?! postDate of

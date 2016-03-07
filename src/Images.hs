@@ -28,7 +28,7 @@ getImageMeta path =
         blue <- getPixelBlue color
         release iterator_key
 
-        return $ ImageMeta
+        return ImageMeta
             { _imageColor = fromShow $ (showChar '#' . hex (truncate $ red / 256 :: Integer)
                 . hex (truncate $ green / 256 :: Integer)
                 . hex (truncate $ blue / 256 :: Integer)) ""

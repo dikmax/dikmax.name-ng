@@ -17,13 +17,13 @@ import           Types
 archivePage :: (Html () -> Html ()) -> [File] -> Html ()
 archivePage layout files = layout $ do
     navigation
-    div_ [class_ "main main_no-hero"] $ do
-        div_ [class_ "main__centered archive__list"] $ do
+    div_ [class_ "main main_no-hero"] $
+        div_ [class_ "main__centered archive__list"] $
             forM_ sectionsKeys $ \month -> do
                 div_ [class_ "archive__subheader"] $
                     toHtml $ monthText $ head (sections M.! month)
 
-                forM_ (sections M.! month) $ \f -> do
+                forM_ (sections M.! month) $ \f ->
                     a_ [class_ "archive__item", href_ $ postIdToUrl $ f ^. fileMeta ^?! postId] $ do
                         findIcon f
                         div_ [class_ "archive__item-text"] $
@@ -40,7 +40,7 @@ archivePage layout files = layout $ do
         noIcon = div_ [class_ "archive__item-icon archive__item-icon_none"] mempty
 
         icon :: Text -> Html () -> Html ()
-        icon cl i = div_ [class_ $ "archive__item-icon archive__item-icon_" ++ cl] i
+        icon cl = div_ [class_ $ "archive__item-icon archive__item-icon_" ++ cl]
 
         findIcon :: File -> Html ()
         findIcon f

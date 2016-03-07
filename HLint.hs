@@ -1,5 +1,5 @@
+import "hint" HLint.Builtin.All
 import "hint" HLint.Default
--- import "hint" HLint.Generalise
 
 -- Used hlint --find src/ in the lens repo to generate this:
 infixl 9 :>
