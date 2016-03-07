@@ -44,9 +44,10 @@ archivePage layout files = layout $ do
 
         findIcon :: File -> Html ()
         findIcon f
-            | null $ f ^. fileMeta ^?! postTags = noIcon
             | "путешествие" `elem` (f ^. fileMeta ^?! postTags) =
                 icon "map" iconMap
             | "программирование" `elem` (f ^. fileMeta ^?! postTags) =
                 icon "code" iconCode
+            | "блог" `elem` (f ^. fileMeta ^?! postTags) =
+                icon "pages" iconPages
             | otherwise = noIcon
