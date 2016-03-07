@@ -39,6 +39,7 @@ main = shakeArgs options $ do
     prerequisites
     build
     styles
+    scripts
     imagesRules
     blog
     fonts
@@ -53,7 +54,7 @@ build =
         need ["prerequisites"]
         need ["sync-images"]
         need ["images", "blogposts", "fonts", "favicons",
-            siteDir </> T.unpack rssFeedFile]
+            siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.dart.js"]
 
 blog :: Rules ()
 blog = do
@@ -366,6 +367,25 @@ styles =
         files <- getDirectoryFiles "." ["styles//*"]
         need (postcss : "postcss.json" : files)
         cmd (FileStdout out) postcss ("-c" :: FilePath) ("postcss.json" :: FilePath) src
+
+
+-- Build scripts
+scripts :: Rules ()
+scripts = do
+    s <- newCache $ \_ -> do
+        need ["dart/pubspec.lock"]
+        files <- getDirectoryFiles "." ["dart//*.dart"]
+        need files
+        unit $ cmd (Cwd "dart") ("pub" :: FilePath) ("build" :: FilePath)
+
+    siteDir </> "scripts/*.js" %> \out -> do
+        _ <- s Anything
+        let src = "dart/build/web" </> dropDirectory3 out
+        copyFileChanged src out
+
+    "dart/pubspec.lock" %> \_ -> do
+        need ["dart/pubspec.yaml"]
+        cmd (Cwd "dart") ("pub" :: FilePath) ("get" :: FilePath)
 
 
 -- Build images

@@ -31,6 +31,7 @@ executable dikmax.name
                      , Template.Layout
                      , Template.Navigation
                      , Template.Page.About
+                     , Template.Page.Archive
                      , Template.Page.Feed
                      , Template.Page.Index
                      , Template.Page.List
