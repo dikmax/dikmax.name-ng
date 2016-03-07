@@ -42,7 +42,6 @@ main = shakeArgs options $ do
     scripts
     imagesRules
     blog
-    fonts
     favicons
 
     npmPackages
@@ -53,7 +52,7 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["images", "blogposts", "fonts", "favicons",
+        need ["images", "blogposts", "favicons",
             siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.dart.js"]
 
 blog :: Rules ()
@@ -419,14 +418,6 @@ imagesRules = do
         need [siteDir </> x | x <- imageFiles]
 
     forM_ imagesPatterns buildStatic
-
-fonts :: Rules ()
-fonts = do
-    phony "fonts" $ do
-        fontFiles <- getDirectoryFiles "." ["fonts/*"]
-        need [siteDir </> x | x <- fontFiles]
-
-    buildStatic "fonts/*"
 
 favicons :: Rules ()
 favicons =
