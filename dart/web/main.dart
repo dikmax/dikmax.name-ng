@@ -1,3 +1,5 @@
+import 'package:dikmax.name/app.dart';
+
 void main() {
-  print('Init!');
+  new App();
 }
