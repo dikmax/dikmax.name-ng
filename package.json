@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "description": "Holds required configs for build.",
   "repository": "https://github.com/dikmax/dikmax.name-ng",
-  "dependencies": {},
+  "dependencies": {
+    "google-closure-library": "*"
+  },
   "devDependencies": {
     "colorguard": "^1.0.1",
     "css-mqpacker": "^4.0.0",
     "cssnano": "^3.4.0",
+    "eslint": "^2.3.0",
+    "eslint-config-google": "^0.4.0",
+    "google-closure-compiler": "*",
     "gulp": "^3.9.0",
     "gulp-postcss": "^6.0.1",
     "gulp-rename": "^1.2.2",
@@ -52,16 +57,31 @@
   },
   "stylelint": {
     "extends": "stylelint-config-suitcss",
-
     "rules": {
-        "at-rule-empty-line-before": null,
-        "block-no-empty": null,
-        "color-hex-length": "long",
-        "comment-empty-line-before": null,
-        "declaration-colon-newline-after": null,
-        "indentation": [4, {"ignore": ["value"]}],
-        "max-empty-lines": null,
-        "rule-non-nested-empty-line-before": null
+      "at-rule-empty-line-before": null,
+      "block-no-empty": null,
+      "color-hex-length": "long",
+      "comment-empty-line-before": null,
+      "declaration-colon-newline-after": null,
+      "indentation": [
+        4,
+        {
+          "ignore": [
+            "value"
+          ]
+        }
+      ],
+      "max-empty-lines": null,
+      "rule-non-nested-empty-line-before": null
     }
+  },
+  "eslintConfig": {
+    "globals": {
+      "dikmax": false
+    },
+    "env": {
+      "browser": true
+    },
+    "extends": "google"
   }
 }

@@ -86,7 +86,7 @@ defaultLayout cd meta content = doctypehtml_ $ do
     body_ $ do
         content
         footer
-        script_ [type_ "text/javascript", src_ "/scripts/main.dart.js"] ("" :: Text)
+        script_ [type_ "text/javascript", src_ "/scripts/main.js"] ("" :: Text)
 
     where
         title :: Text

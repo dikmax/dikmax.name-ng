@@ -14,7 +14,7 @@ import           Development.Shake.Config
 import           Development.Shake.FilePath
 import           Images
 import           Lib
-import           Lucid
+import           Lucid                      hiding (command_)
 import           Rules
 import           System.Directory           (createDirectoryIfMissing)
 import qualified Template                   as T
@@ -53,7 +53,7 @@ build =
         need ["prerequisites"]
         need ["sync-images"]
         need ["images", "blogposts", "favicons",
-            siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.dart.js"]
+            siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
 
 blog :: Rules ()
 blog = do
@@ -371,20 +371,23 @@ styles =
 -- Build scripts
 scripts :: Rules ()
 scripts = do
-    s <- newCache $ \_ -> do
-        need ["dart/pubspec.lock"]
-        files <- getDirectoryFiles "." ["dart//*.dart"]
-        need files
-        unit $ cmd (Cwd "dart") ("pub" :: FilePath) ("build" :: FilePath)
-
     siteDir </> "scripts/*.js" %> \out -> do
-        _ <- s Anything
-        let src = "dart/build/web" </> dropDirectory3 out
-        copyFileChanged src out
-
-    "dart/pubspec.lock" %> \_ -> do
-        need ["dart/pubspec.yaml"]
-        cmd (Cwd "dart") ("pub" :: FilePath) ("get" :: FilePath)
+        let src = dropDirectory2 out
+        files <- getDirectoryFiles "." ["scripts//*"]
+        need (postcss : files)
+        command_ [] "java"
+            [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
+            , "--entry_point", "goog:dikmax.main"
+            , "--only_closure_dependencies", "true"
+            , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
+            , "--warning_level", "VERBOSE"
+            , "--language_in", "ECMASCRIPT6_STRICT"
+            , "--language_out", "ECMASCRIPT5_STRICT"
+            , "--js", "node_modules/google-closure-library/closure/goog/**.js"
+            , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
+            , "--js", "scripts/dikmax/*.js"
+            , "--js", src
+            , "--js_output_file", out]
 
 
 -- Build images
