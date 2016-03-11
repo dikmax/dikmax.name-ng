@@ -3,11 +3,13 @@ goog.provide('dikmax.App');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
+goog.require('goog.style');
 goog.require('goog.Timer');
 
 dikmax.App = class {
   init() {
     this.setupNavigation_();
+    this.scrollAndResizeTracker_();
   }
 
   setupNavigation_() {
@@ -32,5 +34,46 @@ dikmax.App = class {
           }
       );
     });
+  }
+
+  scrollAndResizeTracker_() {
+    // TODO calculate from center
+    const blocks = goog.dom.getElementsByClass('post__block');
+    let block = -1;
+    let offset = 0;
+    goog.events.listen(window, goog.events.EventType.SCROLL,
+        () => {
+          console.dir(window.scrollY);
+          const scroll = goog.dom.getDocumentScroll();
+          let index = goog.array.binarySelect(
+              blocks, el => {
+                const pageOffsetTop = goog.style.getPageOffsetTop(el);
+                return scroll.y - pageOffsetTop;
+              }
+          );
+          if (index < 0) {
+            index = -index - 2;
+          }
+
+          block = index;
+          if (index >= 0) {
+            const pageOffsetTop = goog.style.getPageOffsetTop(blocks[index]);
+            offset = scroll.y - pageOffsetTop;
+          } else {
+            offset = scroll.y;
+          }
+        }
+    );
+
+    goog.events.listen(window, goog.events.EventType.RESIZE,
+        () => {
+          if (block < 0) {
+            return;
+          }
+          const blockOffset = goog.style.getPageOffsetTop(blocks[block]);
+          const newOffset = blockOffset + offset;
+          window.scrollTo(0, newOffset);
+        }
+    );
   }
 };
