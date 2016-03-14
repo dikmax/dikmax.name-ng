@@ -138,3 +138,7 @@ instance Binary DiffTime where
 data Anything = Anything deriving (Eq)
 instance Hashable Anything where
     hashWithSalt _ _ = 0
+
+
+-- Map related Types
+

@@ -7,7 +7,7 @@ import           Template.SvgIcons
 navLinks :: [(Text, Text)]
 navLinks =
     [ ("/map/", "Путешествия")
-    , ("/projects/", "Проекты")
+    -- , ("/projects/", "Проекты")
     , ("/archive/", "Архив")
     , ("/about/", "Обо мне")
     ]

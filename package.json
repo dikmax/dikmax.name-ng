@@ -4,7 +4,9 @@
   "description": "Holds required configs for build.",
   "repository": "https://github.com/dikmax/dikmax.name-ng",
   "dependencies": {
-    "google-closure-library": "*"
+    "d3": "^3.5.16",
+    "google-closure-library": "*",
+    "topojson": "^1.6.24"
   },
   "devDependencies": {
     "colorguard": "^1.0.1",
@@ -77,10 +79,13 @@
   },
   "eslintConfig": {
     "globals": {
-      "dikmax": false
+      "d3": false,
+      "dikmax": false,
+      "topojson": false
     },
     "env": {
-      "browser": true
+      "browser": true,
+      "es6": true
     },
     "extends": "google"
   }

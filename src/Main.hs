@@ -4,7 +4,10 @@ import           BasicPrelude
 import           Collections
 import           Config
 import           Control.Lens
+import qualified Data.Aeson                 as A
 import qualified Data.Binary                as B
+import qualified Data.ByteString            as BS
+import qualified Data.ByteString.Lazy       as LBS
 import qualified Data.Map.Lazy              as M
 import qualified Data.Text                  as T
 import           Data.Time
@@ -15,6 +18,7 @@ import           Development.Shake.FilePath
 import           Images
 import           Lib
 import           Lucid                      hiding (command_)
+import           Map
 import           Rules
 import           System.Directory           (createDirectoryIfMissing)
 import qualified Template                   as T
@@ -129,7 +133,8 @@ blog = do
         need $ postsFilePaths ++ ampPostsFilePaths ++
             pathsFromList siteDir ps ++ tagsPaths ++
             [ siteDir </> "about" </> indexHtml
-            , siteDir </> "archive" </> indexHtml ]
+            , siteDir </> "archive" </> indexHtml
+            , siteDir </> "map" </> indexHtml ]
 
 
     -- Post pages
@@ -252,6 +257,21 @@ blog = do
                 (T.defaultLayout cd (a ^. fileMeta)) a
 
 
+    -- Map page
+    siteDir </> "map" </> indexHtml %> \out -> do
+        cd <- commonData Anything
+        need ["data/map.json"]
+
+        mapJson <- liftIO $ LBS.readFile "data/map.json"
+        let res = A.eitherDecode mapJson :: Either String MapCountries
+        either error (\countries -> do
+            putNormal $ "Writing page " ++ out
+            liftIO $ renderToFile out $
+                T.mapPage
+                    (T.mapLayout cd def) countries
+            ) res
+
+
     -- Parse Markdown with metadata and save to temp file
     pandocCacheDir <//> "*.md" %> \out -> do
         let src = dropDirectory2 out
@@ -357,7 +377,6 @@ blog = do
                 else Nothing
 
 
-
 -- Build styles
 styles :: Rules ()
 styles =
@@ -371,7 +390,7 @@ styles =
 -- Build scripts
 scripts :: Rules ()
 scripts = do
-    siteDir </> "scripts/*.js" %> \out -> do
+    siteDir </> "scripts/main.js" %> \out -> do
         let src = dropDirectory2 out
         files <- getDirectoryFiles "." ["scripts//*"]
         need (postcss : files)
@@ -388,6 +407,30 @@ scripts = do
             , "--js", "scripts/dikmax/*.js"
             , "--js", src
             , "--js_output_file", out]
+
+    siteDir </> "scripts/map.js" %> \out -> do
+        let src = dropDirectory2 out
+        -- let d3File = "node_modules/d3/d3.min.js"
+        -- let topojsonFile = "node_modules/topojson/build/topojson.min.js"
+        files <- getDirectoryFiles "." ["scripts//*"]
+        need (postcss : files)
+        -- d3 <- liftIO $ BS.readFile d3File
+        -- topojson <- liftIO $ BS.readFile topojsonFile
+        Stdout my <- command [] "java"
+            [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
+            , "--entry_point", "goog:dikmax.main"
+            , "--only_closure_dependencies", "true"
+            , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
+            , "--warning_level", "VERBOSE"
+            , "--language_in", "ECMASCRIPT6_STRICT"
+            , "--language_out", "ECMASCRIPT5_STRICT"
+            -- , "--externs", "scripts/externs/d3.js"
+            -- , "--externs", "scripts/externs/topojson.js"
+            , "--js", "node_modules/google-closure-library/closure/goog/**.js"
+            , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
+            , "--js", "scripts/dikmax/*.js"
+            , "--js", src]
+        liftIO $ BS.writeFile out my
 
 
 -- Build images
@@ -433,7 +476,7 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss] &%> \_ -> do
+    [postcss, "node_modules/d3/d3.min.js"] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
 

@@ -24,6 +24,7 @@ executable dikmax.name
                      , Lib
                      , Lucid.AMP
                      , Lucid.Atom
+                     , Map
                      , Rules
                      , Server
                      , Template
@@ -35,6 +36,7 @@ executable dikmax.name
                      , Template.Page.Feed
                      , Template.Page.Index
                      , Template.Page.List
+                     , Template.Page.Map
                      , Template.Page.Post
                      , Template.PostList
                      , Template.SvgIcons

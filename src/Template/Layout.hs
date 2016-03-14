@@ -1,4 +1,4 @@
-module Template.Layout (defaultLayout, ampLayout) where
+module Template.Layout (defaultLayout, mapLayout, ampLayout) where
 
 import           BasicPrelude
 import           Control.Lens
@@ -6,8 +6,8 @@ import           Lucid
 import           Lucid.AMP
 import           Types
 
-defaultLayout :: CommonData -> FileMeta -> Html () -> Html ()
-defaultLayout cd meta content = doctypehtml_ $ do
+layout :: Html () -> CommonData -> FileMeta -> Html () -> Html ()
+layout scripts cd meta content = doctypehtml_ $ do
     head_ $ do
         title_ $ toHtml title
         meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
@@ -86,7 +86,7 @@ defaultLayout cd meta content = doctypehtml_ $ do
     body_ $ do
         content
         footer
-        script_ [type_ "text/javascript", src_ "/scripts/main.js"] ("" :: Text)
+        scripts
 
     where
         title :: Text
@@ -101,6 +101,12 @@ defaultLayout cd meta content = doctypehtml_ $ do
         keywordsString = intercalate ", " keywords
 
 
+defaultLayout :: CommonData -> FileMeta -> Html () -> Html ()
+defaultLayout = layout (script_ [type_ "text/javascript", src_ "/scripts/main.js"] ("" :: Text))
+
+
+mapLayout :: CommonData -> FileMeta -> Html () -> Html ()
+mapLayout = layout (script_ [type_ "text/javascript", src_ "/scripts/map.js"] ("" :: Text))
 
 
 ampLayout :: CommonData -> FileMeta -> Html () -> Html ()
