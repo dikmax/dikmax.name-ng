@@ -4,6 +4,7 @@ import           BasicPrelude
 import qualified Data.Map.Lazy as M
 import           Lucid         (Html, role_)
 import           Lucid.Svg
+import           Template.SvgFlags.Spain
 
 svgFlags :: M.Map Text (Html ())
 svgFlags = M.fromAscList
@@ -12,24 +13,29 @@ svgFlags = M.fromAscList
     , ("BLR", svgFlag flagBelarus)
     , ("BOL", svgFlag flagBolivia)
     , ("BRA", svgFlag flagBrazil)
+    , ("CZE", svgFlag flagCzech)
+    , ("DEU", svgFlag flagGermany)
+    , ("ESP", svgFlag flagSpain)
+    , ("EST", svgFlag flagEstonia)
+    , ("FIN", svgFlag flagFinland)
     ]
 
 flagAustria :: Html ()
 flagAustria =
-    g_ [fill_rule_ "evenodd", clip_path_ "url(#a)"] $ do
+    g_ [fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
         path_ [fill_ "#df0000", d_ "M512 512H0V341.3h512zm0-341.2H0V0h512z"]
 
 flagBelgium :: Html ()
 flagBelgium =
-    g_ [fill_rule_ "evenodd", clip_path_ "url(#a)"] $ do
+    g_ [fill_rule_ "evenodd"] $ do
         path_ [d_ "M0 0h170.7v512H0z"]
         path_ [fill_ "#ffd90c", d_ "M170.7 0h170.6v512H170.7z"]
         path_ [fill_ "#f31830", d_ "M341.3 0H512v512H341.3z"]
 
 flagBelarus :: Html ()
 flagBelarus =
-    g_ [fill_rule_ "evenodd", clip_path_ "url(#a)"] $ do
+    g_ [fill_rule_ "evenodd"] $ do
         path_ [fill_ "#b20000", d_ "M0 0h992.13v329.53H0z"]
         path_ [fill_ "#429f00", d_ "M0 329.53h992.13v166.54H0z"]
         path_ [fill_ "#fff", d_ "M0 0h109.84v496.06H0z"]
@@ -148,14 +154,14 @@ flagBelarus =
 
 flagBolivia :: Html ()
 flagBolivia =
-    g_ [fill_rule_ "evenodd", clip_path_ "url(#a)"] $ do
+    g_ [fill_rule_ "evenodd"] $ do
         path_ [fill_ "#009a00", d_ "M0 344.6h512V512H0z"]
         path_ [fill_ "red", d_ "M0 0h512v175H0z"]
         path_ [fill_ "#ff0", d_ "M0 175h512v169.7H0z"]
 
 flagBrazil :: Html ()
 flagBrazil =
-    g_ [clip_path_ "url(#a)"] $ do
+    g_ [] $ do
         path_ [fill_rule_ "evenodd", fill_ "#229e45", d_ "M0 0h512v512H0z"]
         path_ [fill_rule_ "evenodd", fill_ "#f8e509", d_ "M261.36 405.4\
             \l229.87-149.2-231.26-149.6L29.34 256.57 261.36 405.4z"]
@@ -311,6 +317,38 @@ flagBrazil =
         path_ [fill_ "#309e3a", d_ "M246.43 228.95l1.7-7.5 5.55 1.27-.28 1.27\
             \-4.04-1-.38 1.6 3.75.8-.3 1.2-3.74-.9-.5 2 4.2.9-.3 1.2-5.7-1.3z"]
 
+flagCzech :: Html ()
+flagCzech =
+    g_ [fill_rule_ "evenodd", transform_ "translate(-74) scale(.722)"] $ do
+        path_ [fill_ "#e80000", d_ "M0 0h1063v708.7H0z"]
+        path_ [fill_ "#fff", d_ "M0 0h1063v354.3H0z"]
+        path_ [fill_ "#00006f", d_ "M0 0l529.7 354L0 707.2V0z"]
+
+flagGermany :: Html ()
+flagGermany =
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fc0", d_ "M0 341.3h512V512H0z"]
+        path_ [d_ "M0 0h512v170.7H0z"]
+        path_ [fill_ "red", d_ "M0 170.7h512v170.6H0z"]
+
+flagEstonia :: Html ()
+flagEstonia =
+    g_ [fill_rule_ "evenodd", transform_ "scale(.482 .72)"] $ do
+        rect_ [width_ "1063", height_ "708.7", rx_ "0", ry_ "0"]
+        rect_ [width_ "1063", height_ "236.2", y_ "475.6", fill_ "#fff",
+            rx_ "0", ry_ "0"]
+        path_ [fill_ "#1291ff", d_ "M0 0h1063v236.2H0z"]
+
+flagFinland :: Html ()
+flagFinland = do
+    path_ [fill_ "#0062da", fill_rule_ "evenodd", d_ "M.3-3764.3h50v8.5H.3zM0-2800500h7472800v66033H0z"]
+    g_ [fill_rule_ "evenodd", stroke_width_ "1pt", transform_ "translate(-105.62) scale(.844)"] $ do
+        path_ [fill_ "#fff", d_ "M0 385.6h295.3v220.7H0z"]
+        path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
+        path_ [fill_ "#0062da", d_ "M0 220.5h1063v165.3H0z"]
+        path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4zM0 385.6h295.3v220.7H0z"]
+        path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
+        path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4z"]
 
 svgFlagClipPath :: Html ()
 svgFlagClipPath =
@@ -321,6 +359,7 @@ svgFlagClipPath =
 
 svgFlag :: Html () -> Html ()
 svgFlag contents =
-    svg_ [viewBox_ "0 0 512 512", role_ "img"] contents
-
-
+    svg_ [viewBox_ "0 0 512 512", role_ "img", clip_path_ "url(#a)"] $ do
+        contents
+        circle_ [cx_ "256", cy_ "256", r_ "248", stroke_ "#eee",
+            stroke_width_ "12", fill_ "none"]

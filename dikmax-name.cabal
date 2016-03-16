@@ -39,6 +39,8 @@ executable dikmax.name
                      , Template.Page.Map
                      , Template.Page.Post
                      , Template.PostList
+                     , Template.SvgFlags
+                     , Template.SvgFlags.Spain
                      , Template.SvgIcons
                      , Template.Subscribe
                      , Text.Pandoc.Binary
