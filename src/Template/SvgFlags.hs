@@ -4,6 +4,8 @@ import           BasicPrelude
 import qualified Data.Map.Lazy as M
 import           Lucid         (Html, role_)
 import           Lucid.Svg
+import           Template.SvgFlags.Croatia
+import           Template.SvgFlags.Moldova
 import           Template.SvgFlags.Spain
 
 svgFlags :: M.Map Text (Html ())
@@ -18,6 +20,22 @@ svgFlags = M.fromAscList
     , ("ESP", svgFlag flagSpain)
     , ("EST", svgFlag flagEstonia)
     , ("FIN", svgFlag flagFinland)
+    , ("FRA", svgFlag flagFrance)
+    , ("FXX", svgFlag flagFrance)
+    , ("HRV", svgFlag flagCroatia)
+    , ("HUN", svgFlag flagHungary)
+    , ("ITA", svgFlag flagItaly)
+    , ("LTU", svgFlag flagLithuania)
+    , ("LVA", svgFlag flagLatvia)
+    , ("MDA", svgFlag flagMoldova)
+    , ("NLD", svgFlag flagNetherlands)
+    , ("NOR", svgFlag flagNorway)
+    , ("PER", svgFlag flagPeru)
+    , ("POL", svgFlag flagPoland)
+    , ("ROU", svgFlag flagRomania)
+    , ("RUS", svgFlag flagRussia)
+    , ("SVK", svgFlag flagSlovakia)
+    , ("SVN", svgFlag flagSlovenia)
     ]
 
 flagAustria :: Html ()
@@ -349,6 +367,108 @@ flagFinland = do
         path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4zM0 385.6h295.3v220.7H0z"]
         path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
         path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4z"]
+
+flagFrance :: Html ()
+flagFrance = do
+    g_ [fill_rule_ "evenodd", stroke_width_ "1pt"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h512.005v512H0z"]
+        path_ [fill_ "#00267f", d_ "M0 0h170.667v512H0z"]
+        path_ [fill_ "#f31830", d_ "M341.333 0H512v512H341.333z"]
+
+flagHungary :: Html ()
+flagHungary = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
+        path_ [fill_ "#388d00", d_ "M512 512H0V341.3h512z"]
+        path_ [fill_ "#d43516", d_ "M512 170.8H0V0h512z"]
+
+flagItaly :: Html ()
+flagItaly = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
+        path_ [fill_ "#005700", d_ "M0 0h170.7v512H0z"]
+        path_ [fill_ "#fc0000", d_ "M341.4 0H512v512H341.4z"]
+
+flagLithuania :: Html ()
+flagLithuania = do
+    g_ [fill_rule_ "evenodd", transform_ "scale(.51314 1.0322)"] $ do
+        rect_ [transform_ "scale(.93865 .69686)", rx_ "0", ry_ "0",
+            height_ "708.7", width_ "1063", fill_ "#007308"]
+        rect_ [transform_ "scale(.93865 .69686)", rx_ "0", ry_ "0",
+            height_ "236.2", width_ "1063", y_ "475.6", fill_ "#bf0000"]
+        path_ [fill_ "#ffb300", d_ "M0 0h997.8v164.6H0z"]
+
+flagLatvia :: Html ()
+flagLatvia = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
+        path_ [fill_ "#ab231d", d_ "M0 0h512v204.8H0zm0 307.2h512V512H0z"]
+
+flagNetherlands :: Html ()
+flagNetherlands = do
+    g_ [fill_rule_ "evenodd", transform_ "scale(.48166 .71932)"] $ do
+        rect_ [rx_ "0", ry_ "0", height_ "708.7", width_ "1063", fill_ "#fff"]
+        rect_ [rx_ "0", ry_ "0", height_ "236.2", width_ "1063", y_ "475.6",
+            fill_ "#21468b"]
+        path_ [fill_ "#ae1c28", d_ "M0 0h1063v236.2H0z"]
+
+flagNorway :: Html ()
+flagNorway = do
+    path_ [d_ "M0 0h512v512H0z", fill_ "#ef2b2d"]
+    path_ [d_ "M128 0h128v512H128z", fill_ "#fff"]
+    path_ [d_ "M0 192h512v128H0z", fill_ "#fff"]
+    path_ [d_ "M160 0h64v512h-64z", fill_ "#002868"]
+    path_ [d_ "M0 224h512v64H0z", fill_ "#002868"]
+
+flagPeru :: Html ()
+flagPeru = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M170.3 0h171.2v512H170.3z"]
+        path_ [fill_ "red", d_ "M0 0h170.3v512H0zm340 0h172v512H340z"]
+
+flagPoland :: Html ()
+flagPoland = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
+        path_ [fill_ "#dc143c", d_ "M512 512H0V256h512z"]
+
+flagRomania :: Html ()
+flagRomania = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#00319c", d_ "M0 0h170.7v512H0z"]
+        path_ [fill_ "#ffde00", d_ "M170.7 0h170.6v512H170.7z"]
+        path_ [fill_ "#de2110", d_ "M341.3 0H512v512H341.3z"]
+
+flagRussia :: Html ()
+flagRussia = do
+    g_ [fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
+        path_ [fill_ "#01017e", d_ "M0 170.7h512V512H0z"]
+        path_ [fill_ "#fe0101", d_ "M0 341.3h512V512H0z"]
+
+flagSlovakia :: Html ()
+flagSlovakia = do
+    g_ [fill_rule_ "evenodd", transform_ "translate(-69) scale(.7225)"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h1063v708.7H0z"]
+        path_ [fill_ "#01017e", d_ "M0 236.2h1063v472.4H0z"]
+        path_ [fill_ "#fe0101", d_ "M0 472.4h1063v236.2H0z"]
+        path_ [d_ "M185 160.8v198.8C198.8 437 235 516 356.7 556c121-40 160-115.7 174.2-198V160.8H185z", fill_ "#fff"]
+        path_ [d_ "M198.7 176.5V350c12.3 63.3 36 149.7 158 190 121-40.3 149-126.7 159.8-190V176.5H198.7z", fill_ "#fe0101"]
+        path_ [d_ "M375.6 281.3v28h56c7.3 0 14.4-3.7 21.6-5.6V356c-7.5-1.4-14.8-4.6-22.4-4.6h-54.5v64L339 414v-62.6h-53.2c-8 0-15.4 4-23 6v-55.7c7 2.3 14 6.8 21.7 6.8H339v-28h-40.3c-7 0-13 5-19.7 7.6v-53c7.5 3.8 14.3 10 22.5 10h38v-24c0-11-6.3-21.2-9.4-32h54c-2.2 11-8 21.6-8 32.8v23h36c9.8 0 18.6-4.8 27.6-7.3V290c-8-3-16-8.3-24.5-8.3h-39z", fill_ "#fff"]
+        path_ [d_ "M307 422.8c-32-16-62.6-7-77.2 18.6 22.7 43.4 66 78.4 126.8 98.5 60.6-20.8 104.6-55.8 128.8-97-18.8-36-54.6-31-77.8-20-16.3-40-83-38-100.7-.8z", fill_ "#01017e"]
+
+flagSlovenia :: Html ()
+flagSlovenia = do
+    g_ [fill_rule_ "evenodd", transform_ "translate(-62) scale(1.0295)"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h994.7v497.3H0z"]
+        path_ [fill_ "#de2918", d_ "M0 331.6h994.7v165.8H0z"]
+        path_ [fill_ "#08399c", d_ "M0 165.8h994.7v165.8H0z"]
+        path_ [d_ "M282 90.3c-4 60-6 92.7-15.2 108-10 16.2-19.5 28-58 42.5-38.4-14.4-48-26.3-58-42.6-9-15.2-11.2-48-15-108l5.6-1.8c11.4-3.5 20-6.3 26.3-7.5 9-2 16.7-5 41-5s32 2 41 4c6.4 1 15.3 4 26.6 7l5.7 2z", fill_ "#de2918"]
+        path_ [d_ "M276.4 88.4c-3.7 59.7-6.7 87-11.6 100.2-9.3 22.6-24 35-56 46.7-31.8-11.8-46.6-24-56-46.7-4.8-13-8-40.4-11.4-100.3 11.2-3.5 20-6.2 26.3-7.5 9-2 16.7-4.2 41-4.6 24.3.4 32 2.7 41 4.6 6.5 1.3 15.4 4 26.7 7.6z", fill_ "#08399c"]
+        path_ [d_ "M208.8 106.6l1.5 3.7 6.7 1-4.3 2.5 4.2 2.8-7 1-2 3.3-2-4-6-1 4-3-4-3 6-1 1.3-3.7z", fill_ "#fc0"]
+        path_ [d_ "M262.5 174.5l-3.7-3-2.7-4.4-5-4-3-4-5-4.5-2-4.6-3-2.4-2-1.7-4 4-2.5 4.4-3.3 3-3.4-3-2.7-4.5-10-18-10 18-2.7 5-3.5 2.7-3.5-3-2.7-4.5-5-4-1.4 2-3 2.3-2.5 4.8-5 4.8-3 4.4-5 4.7-3 4.5-3.8 3c2 16.5 12.4 29.4 18 35 6.5 6 19.6 14.7 35.6 20 16-5.2 29.3-14 35.6-20 5.5-6 16-18.5 18-35z", fill_ "#fff"]
+        path_ [d_ "M224.8 81.5l1.5 3.6 6.8 1-4 3 4 3-6 1-2 3-2-3-6-1 4-3-4-2 7-1 1-3.4zm-32 0l1.5 3.5 6.7 1-4.3 2.6 4.2 2.8-7 1-2 3.3-2-3.4-6-.8 4-3-4-2.5 6-1 1.3-3.6z", fill_ "#fc0"]
+        path_ [d_ "M254.2 197.2H247l-6.7-.5-8-4H223l-8 4-6 .5-6.4-.5-8-4h-9l-8 4-6.8.5h-7.4l-3.5-6v-.2l11 1.8 6-.5 8-4h9l8 4 6 .5 6-.6 8-3.8h9l8 4 6.7.4 10.6-2 .2.4-3.8 6zm-84 9.3l7.2-.5 8-4h9.3l8 4 6 .5 6.4-.6 8-4h9l9 4h7.8l4.7-6h-.2l-5 1-6.5-.8-8-4h-10l-8 4-6 .5-6-.7-8-4h-9l-8.3 4-6.7.4-5-1.3v.5l4.3 5.5z", fill_ "#08399c"]
 
 svgFlagClipPath :: Html ()
 svgFlagClipPath =
