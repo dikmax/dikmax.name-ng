@@ -22,9 +22,25 @@ mapPage layout countries = layout $ do
                         toHtml (country ^. countryName)
 
                 forM_ (sortCities $ country ^. countryCities) $ \city -> do
-                    div_ [class_ "map__item"] $ do
-                        div_ [class_ "map__item-text"] $
-                            toHtml (city ^. cityName)
+                    let links = visitLinks (city ^. cityVisits)
+                    if null links
+                    then
+                        span_ [class_ "map__item map__item_empty"] $ do
+                            span_ [class_ "map__item-text"] $
+                                toHtml (city ^. cityName)
+                    else
+                        if length links == 1
+                        then
+                            a_ [class_ "map__item", href_ $ head links] $ do
+                                span_ [class_ "map__item-text"] $
+                                    toHtml (city ^. cityName)
+                        else
+                            forM_ (withIndexes links) $ \(i, link) ->
+                                a_ [class_ "map__item", href_ link] $ do
+                                    span_ [class_ "map__item-text"] $
+                                        toHtml (city ^. cityName ++ " (" ++
+                                            (show $ i + 1) ++ ")")
+
 
     where
         sortCountries :: [(Text, MapCountry)] -> [(Text, MapCountry)]
@@ -41,3 +57,12 @@ mapPage layout countries = layout $ do
         icon :: Html () -> Html ()
         icon = div_ [class_ $ "map__subheader-icon"]
 
+        visitLinks :: [Visit] -> [Text]
+        visitLinks = catMaybes . map (^. visitLink)
+
+        withIndexes :: [a] -> [(Int, a)]
+        withIndexes = withIndexes' 0
+
+        withIndexes' :: Int -> [a] -> [(Int, a)]
+        withIndexes' _ [] = []
+        withIndexes' i (x : xs) = (i, x) : withIndexes' (i + 1) xs

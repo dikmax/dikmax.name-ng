@@ -9,6 +9,7 @@
         align-items: center;
         color: var(--primary-color);
         display: flex;
+        font-size: smaller;
         height: 72px;
 
         &:first-child {
@@ -43,6 +44,10 @@
         height: 48px;
         margin-left: 56px;
         text-decoration: none;
+
+        @m empty {
+            color: var(--primary-color);
+        }
     }
 
     @e subheader-text {
