@@ -268,7 +268,7 @@ blog = do
             putNormal $ "Writing page " ++ out
             liftIO $ renderToFile out $
                 T.mapPage
-                    (T.mapLayout cd def) countries
+                    (T.defaultLayout cd def) countries
             ) res
 
 
