@@ -40,6 +40,8 @@ executable dikmax.name
                      , Template.Page.Post
                      , Template.PostList
                      , Template.SvgFlags
+                     , Template.SvgFlags.Croatia
+                     , Template.SvgFlags.Moldova
                      , Template.SvgFlags.Spain
                      , Template.SvgIcons
                      , Template.Subscribe
