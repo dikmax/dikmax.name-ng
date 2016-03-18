@@ -136,16 +136,25 @@ buildPostCover m =
                                 M.lookup "vcenter" m'
             , _coverHCenter = T.pack $ fromMaybe "center" $ extractString' $
                                 M.lookup "hcenter" m'
+            , _coverSmall   = extractBool' $ M.lookup "small" m'
             , _coverColor   = fmap T.pack $ extractString' $ M.lookup "color" m'
             }
         extractString' :: Maybe MetaValue -> Maybe String
         extractString' (Just v) = extractString v
         extractString' Nothing = Nothing
 
+        extractBool' :: Maybe MetaValue -> Bool
+        extractBool' (Just v) = fromMaybe False (extractBool v)
+        extractBool' Nothing = False
+
 extractString :: MetaValue -> Maybe String
 extractString (MetaString str) = Just str
 extractString (MetaInlines inlines) = Just $ concatMap stringify inlines
 extractString _ = Nothing
+
+extractBool :: MetaValue -> Maybe Bool
+extractBool (MetaBool bool) = Just bool
+extractBool _ = Nothing
 
 -- Conversions
 

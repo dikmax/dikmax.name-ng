@@ -29,7 +29,7 @@ getImageMeta path =
         release iterator_key
 
         return ImageMeta
-            { _imageColor = fromShow $ (showChar '#' . hex (truncate $ red / 256 :: Integer)
+            { _imageColor = (T.pack . showChar '#' . hex (truncate $ red / 256 :: Integer)
                 . hex (truncate $ green / 256 :: Integer)
                 . hex (truncate $ blue / 256 :: Integer)) ""
             , _imageWidth = width

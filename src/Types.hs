@@ -19,6 +19,7 @@ data PostCover = PostCover
     { _coverImg     :: Maybe Text
     , _coverVCenter :: Text
     , _coverHCenter :: Text
+    , _coverSmall   :: Bool
     , _coverColor   :: Maybe Text
     } deriving (Eq, Show, Generic)
 
@@ -27,6 +28,7 @@ instance Default PostCover where
         { _coverImg     = Nothing
         , _coverVCenter = "center"
         , _coverHCenter = "center"
+        , _coverSmall   = False
         , _coverColor   = Nothing
         }
 
