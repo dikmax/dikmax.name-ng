@@ -25,7 +25,6 @@ dikmax.App.setupNavigation_ = function() {
   });
 
   goog.events.listen(sidebar, goog.events.EventType.CLICK, event => {
-    event.preventDefault();
     goog.dom.classlist.remove(sidebarPanel, 'sidebar__panel_active');
     goog.events.listenOnce(sidebarPanel, goog.events.EventType.TRANSITIONEND,
         () => {
