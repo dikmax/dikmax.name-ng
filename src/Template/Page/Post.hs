@@ -20,9 +20,10 @@ import           Types
 postPage :: Bool -> (Html () -> Html ()) -> CommonData -> File -> Html ()
 postPage isAmp layout cd post = layout $ do
     header_
-        [ class_ (if post ^. fileMeta ^. postCover ^. coverSmall
-            then "header_for-post-small" else "header_for-post")
-        , coverToStyle post ] $
+        [ class_ $ "header_for-post " ++
+            (if post ^. fileMeta ^. postCover ^. coverSmall
+            then "header_for-post-small" else "header_for-post-large")
+        ] $
         div_ [class_ "header__title-block"] $ do
             div_ [class_ "header__title"] $ toHtml title
             maybe mempty (\time ->

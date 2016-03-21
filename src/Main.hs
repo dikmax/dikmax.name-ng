@@ -142,9 +142,11 @@ blog = do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
+        let postCd = cd & dataCss %~
+                (++ ".header_for-post:before{" ++ coverToStyle post ++ "}")
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
-            T.postPage False (T.defaultLayout cd (post ^. fileMeta)) cd post
+            T.postPage False (T.defaultLayout postCd (post ^. fileMeta)) cd post
 
 
     -- AMP Post pages
@@ -152,9 +154,11 @@ blog = do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
         let post = ps M.! idFromDestFilePath out
+        let postCd = cd & dataCss %~
+                (++ ".header_for-post:before{" ++ coverToStyle post ++ "}")
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
-            T.postPage True (T.ampLayout cd (post ^. fileMeta)) cd post
+            T.postPage True (T.ampLayout postCd (post ^. fileMeta)) cd post
 
 
     -- Main page
@@ -496,3 +500,12 @@ tagAndPageFromDestFilePath filePath =
         _              -> error $ "Can't extract id from " ++ filePath
     where
         pat = tagDir ++ "/([^/]*)/" ++ pageDir ++ "/([^/]*)/index.html$"
+
+coverToStyle :: File -> Text
+coverToStyle file =
+    maybe "" (\i -> "background-image:url(" ++ i ++ ");") (cover ^. coverImg)
+        ++ maybe "" (\i -> "background-color:" ++ i ++ ";") (cover ^. coverColor)
+        ++ "background-position-x:" ++ (cover ^. coverHCenter) ++ ";"
+        ++ "background-position-y:" ++ (cover ^. coverVCenter)
+    where
+        cover = file ^. fileMeta ^. postCover

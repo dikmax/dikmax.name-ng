@@ -8,21 +8,31 @@
     }
 
     @m for-post {
-        @mixin cover-background;
-        background-attachment: fixed;
+        lost-utility: clearfix;
+        overflow: hidden;
         position: relative;
         size: 100vw 100vh;
-        transform: translateZ(0);
+        z-index: -1;
+
+        &:before {
+            content: ' ';
+            position: fixed 0 * * 0;
+            size: 100vw 100vh;
+            will-change: transform;
+        }
+    }
+
+    @m for-post-large {
+        &:before {
+            background-size: cover;
+        }
     }
 
     @m for-post-small {
-        background-color: color(var(--primary-color));
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        position: relative;
-        size: 100vw 100vh;
-        transform: translateZ(0);
+        &:before {
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     }
 
     @e title-block {
