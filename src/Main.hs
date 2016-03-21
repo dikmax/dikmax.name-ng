@@ -386,15 +386,21 @@ styles =
         need (postcss : "postcss.json" : files)
         cmd (FileStdout out) postcss ("-c" :: FilePath) ("postcss.json" :: FilePath) src
 
-
 -- Build scripts
 scripts :: Rules ()
 scripts = do
+    highlightJsPack %> \_ -> do
+        need ["scripts/highlight.js/package.json"]
+        command_ [Cwd "scripts/highlight.js/"] "npm" ["install"]
+        command_ [Cwd "scripts/highlight.js/"] "node" ("tools/build.js" : "-t" :
+            "browser" : includeHighlightingLanguages)
+
     siteDir </> "scripts/main.js" %> \out -> do
         let src = dropDirectory2 out
         files <- getDirectoryFiles "." ["scripts//*"]
-        need (postcss : files)
-        command_ [] "java"
+        need (postcss : highlightJsPack : files)
+        h <- liftIO $ BS.readFile highlightJsPack
+        Stdout my <- command [] "java"
             [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
             , "--entry_point", "goog:dikmax.main"
             , "--only_closure_dependencies", "true"
@@ -402,11 +408,12 @@ scripts = do
             , "--warning_level", "VERBOSE"
             , "--language_in", "ECMASCRIPT6_STRICT"
             , "--language_out", "ECMASCRIPT5_STRICT"
+            , "--externs", "scripts/externs/highlight.js"
             , "--js", "node_modules/google-closure-library/closure/goog/**.js"
             , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
             , "--js", "scripts/dikmax/*.js"
-            , "--js", src
-            , "--js_output_file", out]
+            , "--js", src]
+        liftIO $ BS.writeFile out (h ++ my)
 
     siteDir </> "scripts/map.js" %> \out -> do
         let src = dropDirectory2 out
@@ -432,6 +439,9 @@ scripts = do
             , "--js", src]
         liftIO $ BS.writeFile out my
 
+    where
+        highlightJsPack :: FilePath
+        highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
 
 favicons :: Rules ()
 favicons =

@@ -9,6 +9,7 @@ goog.require('goog.Timer');
 dikmax.App.init = function() {
   dikmax.App.setupNavigation_();
   dikmax.App.scrollAndResizeTracker_();
+  dikmax.App.setupHighlighting_();
 };
 
 dikmax.App.setupNavigation_ = function() {
@@ -72,4 +73,13 @@ dikmax.App.scrollAndResizeTracker_ = function() {
         window.scrollTo(0, newOffset);
       }
   );
+};
+
+dikmax.App.setupHighlighting_ = function() {
+  const blocks = document.querySelectorAll('pre > code.sourceCode');
+  for (var i = 0; i < blocks.length; ++i) {
+    var block = blocks[i];  // Calling myNodeList.item(i) isn't necessary in JavaScript
+    console.log(block);
+    hljs.highlightBlock(block);
+  }
 };

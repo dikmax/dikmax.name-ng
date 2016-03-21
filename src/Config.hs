@@ -69,6 +69,10 @@ domain = "https://dikmax.name"
 defaultReadMoreText :: Text
 defaultReadMoreText = "Читать далее..."
 
+includeHighlightingLanguages :: [String]
+includeHighlightingLanguages = ["bash", "css", "haskell", "javascript",
+    "markdown", "sql", "xml", "dart"]
+
 timeLocale :: TimeLocale
 timeLocale = defaultTimeLocale
   { wDays =
