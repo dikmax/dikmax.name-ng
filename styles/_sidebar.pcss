@@ -18,11 +18,12 @@
     @e panel {
         background: var(--white-color);
         position: absolute 0 * 0 -var(--sidebar-width);
-        transition: left 0.3s;
+        transition: transform 0.3s;
         width: var(--sidebar-width);
+        will-change: transform;
 
         @m active {
-            left: 0;
+            transform: translateX(var(--sidebar-width));
         }
     }
 
