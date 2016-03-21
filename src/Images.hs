@@ -1,13 +1,18 @@
 module Images where
 
 import           BasicPrelude
+import           Config
 import           Control.Monad.Trans.Resource    (release)
+import qualified Data.Binary                     as B
 import qualified Data.Text                       as T
 import           Data.Vector.Storable            ((!))
 import           Development.Shake
+import           Development.Shake.Config
+import           Development.Shake.FilePath
 import           Graphics.ImageMagick.MagickWand
+import           Lib
 import           Numeric
-import           Types
+import           System.Directory                (createDirectoryIfMissing)
 
 getImageMeta :: FilePath -> Action ImageMeta
 getImageMeta path =
@@ -39,3 +44,43 @@ getImageMeta path =
                 hex a
                     | a < 16 = showChar '0' . showHex a
                     | otherwise = showHex a
+
+-- Build images
+imagesRules :: Rules ()
+imagesRules = do
+    imagesBuildDir <//> "*.meta" %> \out -> do
+        let src' = imagesDir </> dropDirectory2 out
+        let src = take (length src' - 5) src'
+        need [src]
+        putNormal $ "Reading image " ++ src
+        meta <- getImageMeta src
+        liftIO $ B.encodeFile out meta
+
+    phony "sync-images" $ do
+        putNormal "Syncing images"
+        srcImagesDir <- getConfig "IMAGES_DIR"
+        when (isJust srcImagesDir) $ do
+            let dir = fromMaybe "" srcImagesDir
+            files <- getDirectoryFiles dir ["//*"]
+            -- TODO delete no more existent files
+            forM_ files (\file -> do
+                exists <- doesFileExist (imagesDir </> file)
+                unless exists $ do
+                    liftIO $ createDirectoryIfMissing True $ takeDirectory (imagesDir </> file)
+                    putNormal $ "Copying file " ++ (imagesDir </> file)
+                    copyFileChanged (dir </> file) (imagesDir </> file)
+                )
+
+    phony "images" $ do
+        imageFiles <- getDirectoryFiles "." imagesPatterns
+        need [siteDir </> x | x <- imageFiles]
+
+    forM_ imagesPatterns buildStatic
+
+-- Static files, that just should be copied to `siteDir`
+buildStatic :: FilePath -> Rules ()
+buildStatic filePath =
+    siteDir </> filePath %> \out -> do
+        let src = dropDirectory2 out
+        -- putNormal $ "Copying file " ++ out
+        copyFileChanged src out

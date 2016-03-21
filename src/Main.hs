@@ -433,38 +433,6 @@ scripts = do
         liftIO $ BS.writeFile out my
 
 
--- Build images
-imagesRules :: Rules ()
-imagesRules = do
-    imagesBuildDir <//> "*.meta" %> \out -> do
-        let src' = imagesDir </> dropDirectory2 out
-        let src = take (length src' - 5) src'
-        need [src]
-        putNormal $ "Reading image " ++ src
-        meta <- getImageMeta src
-        liftIO $ B.encodeFile out meta
-
-    phony "sync-images" $ do
-        putNormal "Syncing images"
-        srcImagesDir <- getConfig "IMAGES_DIR"
-        when (isJust srcImagesDir) $ do
-            let dir = fromMaybe "" srcImagesDir
-            files <- getDirectoryFiles dir ["//*"]
-            -- TODO delete no more existent files
-            forM_ files (\file -> do
-                exists <- doesFileExist (imagesDir </> file)
-                unless exists $ do
-                    liftIO $ createDirectoryIfMissing True $ takeDirectory (imagesDir </> file)
-                    putNormal $ "Copying file " ++ (imagesDir </> file)
-                    copyFileChanged (dir </> file) (imagesDir </> file)
-                )
-
-    phony "images" $ do
-        imageFiles <- getDirectoryFiles "." imagesPatterns
-        need [siteDir </> x | x <- imageFiles]
-
-    forM_ imagesPatterns buildStatic
-
 favicons :: Rules ()
 favicons =
     phony "favicons" $ do
@@ -479,14 +447,6 @@ npmPackages =
     [postcss, "node_modules/d3/d3.min.js"] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
-
--- Static files, that just should be copied to `siteDir`
-buildStatic :: FilePath -> Rules ()
-buildStatic filePath =
-    siteDir </> filePath %> \out -> do
-        let src = dropDirectory2 out
-        -- putNormal $ "Copying file " ++ out
-        copyFileChanged src out
 
 
 idFromPost :: Pandoc -> Text
