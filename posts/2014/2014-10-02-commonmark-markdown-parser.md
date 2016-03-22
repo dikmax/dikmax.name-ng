@@ -2,11 +2,12 @@
 title: "Парсер для CommonMark"
 date: "2014-10-02T23:15:00+03:00"
 published: true
-collections: [md_proc]
 tags: [commonmark, dart, markdown, md_proc, программирование]
+cover:
+    img: /images/3rd-party/markdown-logo.png
+    small: true
+    color: black
 ---
-
-![](/images/3rd-party/markdown-logo.png "Markdown logo")
 
 Все началось с\ того, что мне понадобился парсер для Markdown, который строит [AST], а\ не\ пытается сразу выдавать 
 готовый HTML. А\ ещё было желательно, чтобы парсер был написан на\ [Dart], так как проект я\ собирался писать именно 

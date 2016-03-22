@@ -100,27 +100,6 @@ eurotrip-2014:
   - id: eurotrip-2014-milan-and-bergamo
     name: Милан и Бергамо
 
-md_proc:
-  name: История md_proc
-  items:
-  - id: md_proc-0.7.0
-    name: md_proc 0.7.0
-
-  - id: md_proc-0.5.0
-    name: md_proc 0.5.0
-
-  - id: md_proc-0.2.3
-    name: md_proc 0.2.3
-
-  - id: md_proc-0.1.1
-    name: md_proc 0.1.1
-
-  - id: commonmark-markdown-parser
-    name: md_proc 0.1.0
-
-  - id: commonmark
-    name: Про CommonMark
-
 proofreaders-stories:
   name: Колонка корректора
   items:

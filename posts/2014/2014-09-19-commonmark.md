@@ -2,11 +2,12 @@
 title: "CommonMark"
 date: "2014-09-19T10:45:00+03:00"
 published: true
-collections: [md_proc]
 tags: [commonmark, markdown, программирование]
+cover:
+    img: /images/3rd-party/markdown-logo.png
+    small: true
+    color: black
 ---
-
-![](/images/3rd-party/markdown-logo.png "Markdown logo")
 
 Пару недель назад в\ блоге [Coding Horror][coding-horror] появилась запись о\ том, что объединённые усилия GitHub,
 StackOverflow и ещё нескольких компаний увенчались успехом и\ они готовы представить общественности точную [спецификацию
