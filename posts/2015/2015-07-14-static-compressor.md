@@ -6,6 +6,9 @@ tags: [dart, nginx, webp, zopfli, блог, оптимизация]
 thread: 3926625640
 cover:
     img: /images/photos/static-compress.png
+    small: true
+    color: white
+image-numbers: false
 ---
 
 Я\ уже рассказывал про ускорение загрузки страницы [с\ помощью оптимизации картинок][webp]. Пришла пора двигаться дальше

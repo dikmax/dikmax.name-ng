@@ -6,6 +6,9 @@ published: true
 tags: [airbnb, деньги, путешествие]
 cover:
     img: /images/3rd-party/airbnb-logo.png
+    small: true
+    color: white
+image-numbers: false
 ---
 
 Я\ давеча озадачился снять квартиру на\ пару суток в\ Витебске через [airbnb][], у\ которого выбор и\ цены достаточно
