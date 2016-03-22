@@ -5,6 +5,8 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, отпуск, путешествие, словакия, фотки]
 thread: 2789638545
+cover:
+    img: /images/travel/2014-06-eurotrip/bratislava-castle-stairs.jpg
 ---
 
 Скажу честно, все мои представления о\ Братиславе заканчивались фильмом [EuroTrip] и\ распространённым мнением, что 

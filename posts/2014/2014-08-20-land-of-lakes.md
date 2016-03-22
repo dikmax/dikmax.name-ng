@@ -5,9 +5,9 @@ collections: [latest-travel]
 published: true
 tags: [путешествие, беларусь, фотки]
 thread: 2944558875
+cover:
+    img: /images/travel/2014-07-lakes/cover.jpg
 ---
-
-![](/images/travel/2014-07-lakes/cover.jpg)
 
 Что-то я\ вам всё про заморские красоты рассказываю, а\ про родные, белорусские, ни\ слова. Надо\ бы это
 исправить.

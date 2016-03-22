@@ -4,11 +4,11 @@ date: "2014-07-15T23:35:00+03:00"
 collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки]
+cover:
+    img: /images/travel/2014-06-eurotrip/florence-cover.jpg
 ---
 
-![Давид](/images/travel/2014-06-eurotrip/florence-cover.jpg)
-
-Добро пожаловать во\ Флоренцию\ --- город [Боттичелли][sandro] и\ [Данте][dante], [Донателло][donatello] 
+Добро пожаловать во\ Флоренцию\ --- город [Боттичелли][sandro] и\ [Данте][dante], [Донателло][donatello]
 и\ [Микеланджело][michelangelo], и, конечно, [Леонардо да\ Винчи][da-vinci].
 
 <!--more-->

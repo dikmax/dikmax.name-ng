@@ -5,11 +5,11 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, отпуск, путешествие, транспорт, фотки]
 thread: 2897765376
+cover:
+    img: /images/travel/2014-06-eurotrip/results-selfie.jpg
 ---
 
-![Селфи!](/images/travel/2014-06-eurotrip/results-selfie.jpg "Селфи!")
-
-Eurotrip подошёл к\ концу, мы\ благополучно вернулись в\ Минск. Самое время поделиться всякой общей информацией 
+Eurotrip подошёл к\ концу, мы\ благополучно вернулись в\ Минск. Самое время поделиться всякой общей информацией
 о\ поездке.
 
 <!--more-->

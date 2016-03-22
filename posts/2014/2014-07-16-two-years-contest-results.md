@@ -27,7 +27,7 @@ tags: [блог, конкурс, фотки]
 
 Итоговая таблица.
 
-<div class="table-responsive">
+<div>
 <table class="table table-striped table-hover table-bordered">
 <thead>
 <tr class="header">

@@ -3,9 +3,10 @@ title: "HTTPS Everywhere"
 date: "2014-12-12T18:30:00+03:00"
 published: true
 tags: [https, блог]
+cover:
+    img: /images/3rd-party/https-everywhere-logo.png
+    small: true
 ---
-
-![](/images/3rd-party/https-everywhere-logo.png)
 
 В\ том числе и\ у\ меня. Я\ сделал то, что нужно было сделать уже давно,\ --- добавил поддержку шифрования на\ сайт,
 то\ есть [https]. Более того, при попытке запросить обычную страницу, сервер перенаправляет на\ её\ защищённую версию.

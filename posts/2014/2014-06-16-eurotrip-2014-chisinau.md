@@ -5,6 +5,8 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, молдова, отпуск, путешествие, фотки]
 thread: 2768801852
+cover:
+    img: /images/travel/2014-06-eurotrip/chisinau-skates.jpg
 ---
 
 Кишинёв оказался очень зелёным, по-своему красивым и\ необычайно ароматным городом. Здесь очень много цветущих

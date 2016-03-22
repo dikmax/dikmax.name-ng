@@ -4,6 +4,8 @@ date: "2014-06-20T20:40:00+02:00"
 collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, венгрия, отпуск, путешествие, фотки]
+cover:
+    img: /images/travel/2014-06-eurotrip/budapest-top-view-1.jpg
 ---
 
 Началось всё с\ того, что поезд в\ Будапешт опоздал на\ 2,5 часа. В\ результате дорога из\ [Сигишоары][sighisoara] 

@@ -4,9 +4,9 @@ date: "2014-07-03T19:30:00+02:00"
 collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, отпуск, путешествие, словения, фотки]
+cover:
+    img: /images/travel/2014-06-eurotrip/ljubljana-cover.jpg
 ---
-
-![](/images/travel/2014-06-eurotrip/ljubljana-cover.jpg)
 
 Помните, я\ писал, что мне понравилась Словакия и\ Братислава? Так вот, Словения мне понравилась ещё больше!
 

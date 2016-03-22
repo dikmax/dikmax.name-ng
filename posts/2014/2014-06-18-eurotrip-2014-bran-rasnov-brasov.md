@@ -5,6 +5,8 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, отпуск, путешествие, румыния, фотки]
 thread: 2774940920
+cover:
+    img: /images/travel/2014-06-eurotrip/rasnov-5.jpg
 ---
 
 # Бран

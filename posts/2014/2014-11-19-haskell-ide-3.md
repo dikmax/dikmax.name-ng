@@ -4,9 +4,9 @@ date: "2014-11-19T10:00:00+03:00"
 published: true
 tags: [haskell, ide, jetbrains, webstorm, программирование]
 thread: 3239023010
+cover:
+    img: /images/screenshots/haskell-ide-3-1.png
 ---
-
-![](/images/screenshots/haskell-ide-3-1.png)
 
 Самое время продолжить эпопею с\ IDE для\ Haskell ([первая часть][one], [вторая часть][two]). Дело в\ том, что
 в\ IntelliJ Platform обнаружился [новый Haskell-плагин][plugin]. И, в\ отличие от\ старого, он\ работает.

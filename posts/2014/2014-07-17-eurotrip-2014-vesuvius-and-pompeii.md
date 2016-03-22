@@ -5,9 +5,9 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки]
 thread: 2852026800
+cover:
+    img: /images/travel/2014-06-eurotrip/pompeii-cover.jpg
 ---
-
-![](/images/travel/2014-06-eurotrip/pompeii-cover.jpg)
 
 Однажды погожим июньским днём мы\ отправились на\ Везувий. День-то был погожим, но\ над Везувием всю дорогу упорно
 висело облако, оно-то нас и\ смущало. Как оказалось, не\ зря.

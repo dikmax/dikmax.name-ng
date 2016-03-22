@@ -5,6 +5,8 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, лытдыбр, отпуск, путешествие, фотки]
 thread: 2755970864
+cover:
+    img: /images/travel/2014-06-eurotrip/start-packing.jpg
 ---
 
 Редакция блога в\ составе двух человек отправляется в\ Большое Европейское Путешествие. Некоторые читатели даже

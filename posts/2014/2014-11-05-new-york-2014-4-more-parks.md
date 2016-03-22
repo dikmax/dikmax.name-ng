@@ -4,9 +4,9 @@ date: "2014-11-05T10:35:00+03:00"
 published: true
 collections: [usa-2014]
 tags: [сша, путешествие, фотки]
+cover:
+    img: /images/travel/2014-10-usa/new-york-4-cover.jpg
 ---
-
-![](/images/travel/2014-10-usa/new-york-4-cover.jpg)
 
 Продолжим прогулку по нью-йоркским паркам.
 

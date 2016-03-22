@@ -4,9 +4,11 @@ date: "2014-08-15T17:55:00+03:00"
 published: true
 tags: [d3, javascript, svg, карта, программирование]
 thread: 2927760853
+cover:
+    img: /images/map-tutorial/cover.png
+    small: true
+    color: white
 ---
-
-![](/images/map-tutorial/cover.png)
 
 Сегодня я\ расскажу вам, как с\ помощью JavaScript и\ [d3] нарисовать карту, [подобную моей][map].
 

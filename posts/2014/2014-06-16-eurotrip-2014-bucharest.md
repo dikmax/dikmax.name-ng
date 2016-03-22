@@ -5,6 +5,8 @@ collections: [eurotrip-2014]
 published: true
 tags: [eurotrip, eurotrip-2014, отпуск, путешествие, румыния, фотки]
 thread: 2770052776
+cover:
+    img: /images/travel/2014-06-eurotrip/bucharest-parlament.jpg
 ---
 
 В\ шесть утра поезд из\ Кишинёва доставил нас в\ столицу Румынии\ --- Бухарест. Мы\ тут\ же оставили большую часть вещей 

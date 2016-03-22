@@ -3,9 +3,10 @@ title: "Dart и highlight.js"
 date: "2014-08-21T21:20:00+03:00"
 published: true
 tags: [dart, highlight.js, javascript, блог, программирование]
+cover:
+    img: /images/3rd-party/highlight-js.png
+    small: true
 ---
-
-![](/images/3rd-party/highlight-js.png "highlight.js: Syntax highlighting for the Web")
 
 Когда я\ создавал этот блог, нужно было что-то делать с\ подсветкой синтаксиса для примеров кода, которые здесь
 появляются. После рассмотрения различных альтернатив (уже и\ не\ помню, каких именно) я\ остановился на\ [highlight.js].
