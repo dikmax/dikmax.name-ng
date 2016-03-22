@@ -5,6 +5,8 @@ published: true
 tags: [top, путешествие, фотки]
 cover:
     img: /images/travel/top10-2015/top10-cover-2.png
+    small: true
+    color: black
 ---
 
 Пришло время опубликовать верхнюю часть списка ([нижняя часть][bottom]). С победителем [конкурса][puzzle] я свяжусь

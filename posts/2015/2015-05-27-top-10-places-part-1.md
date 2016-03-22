@@ -5,6 +5,8 @@ published: true
 tags: [top, путешествие, фотки]
 cover:
     img: /images/travel/top10-2015/top10-cover-1.png
+    small: true
+    color: black
 ---
 
 Сегодня у\ нас необычная запись. Я\ хочу поделиться лучшими воспоминаниями по\ результатам путешествий. Подвести, так

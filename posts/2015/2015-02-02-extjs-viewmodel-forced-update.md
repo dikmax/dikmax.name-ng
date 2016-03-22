@@ -3,9 +3,11 @@ title: "Обновление ViewModel в ExtJs 5"
 date: "2015-02-02T21:55:00+03:00"
 published: true
 tags: [extjs, javascript, программирование, работа]
+cover:
+    img: /images/3rd-party/extjs-logo.png
+    small: true
+    color: white
 ---
-
-![](/images/3rd-party/extjs-logo.png)
 
 [Sencha] добавила в\ ExtJs\ 5 крайне удобную концепцию\ --- ViewModel. Она позволяет динамически связывать данные
 с\ представлением. Причём данные могут зависеть друг от\ друга и\ вычисляться по\ сложным алгоритмам. Результат

@@ -4,9 +4,9 @@ date: "2015-04-09T12:00:00+03:00"
 collections: [latest-travel]
 published: true
 tags: [путешествие, фотки, германия]
+cover:
+    img: /images/travel/2015-03-schwarzwald/schauinsland-cover.jpg
 ---
-
-![](/images/travel/2015-03-schwarzwald/schauinsland-cover.jpg)
 
 В\ Чёрном лесу, совсем рядом [с\ Фрайбургом][freiburg], есть гора Шауинсланд (Schauinsland). Её\ высота 1284\ метра, поэтому туда 
 мы\ и\ отправились обозревать окрестности.

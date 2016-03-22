@@ -5,6 +5,8 @@ published: true
 tags: [rail&fly, германия, путешествие, транспорт]
 cover:
     img: /images/3rd-party/rail-and-fly.png
+    small: true
+    color: white
 ---
 
 Хочу рассказать ещё об\ одной возможности путешествовать по\ Германии дешевле, чем обычно. У\ Deutsche Bahn (оператор

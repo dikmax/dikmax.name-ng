@@ -5,9 +5,9 @@ collections: [latest-travel]
 published: true
 tags: [россия, путешествие, фотки]
 thread: 3399696299
+cover:
+    img: /images/travel/2014-12-saint-petersburg-and-gatchina/spb-cover.jpg
 ---
-
-![](/images/travel/2014-12-saint-petersburg-and-gatchina/spb-cover.jpg)
 
 Однажды прохладным декабрьским утром самолёт нашей национальной авиакомпании Белавиа забросил нас во\ второй
 по\ величине город России, дабы редакция блога смогла полностью насладиться сим местом.

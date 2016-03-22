@@ -4,9 +4,9 @@ date: "2015-04-16T12:00:00+03:00"
 collections: [latest-travel]
 published: true
 tags: [путешествие, фотки, германия]
+cover:
+    img: /images/travel/2015-03-schwarzwald/titisee-cover.jpg
 ---
-
-![](/images/travel/2015-03-schwarzwald/titisee-cover.jpg)
 
 Филлинген-Швеннинген (Villingen-Schwenningen)\ --- ещё один город в\ Шварцвальде. Когда-то это было два города, 
 но\ потом они настолько разрослись, что стало непонятно, где заканчивается один и\ начинается другой. В\ той части, что 
