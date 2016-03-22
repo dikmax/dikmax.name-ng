@@ -109,9 +109,14 @@ writeBlock (Para inline) = withCountBlocksIncrement $ \c -> do
 
 writeBlock (CodeBlock (identifier, classes, others) code) = do
     cl <- getMainBlockClass
-    return $ pre_ (class_ (cl ++ "post__block_code") : mapAttrs) $ code_ mapAttrs $ toHtml code
-    where
-        mapAttrs = writeAttr (identifier, "sourceCode" : classes, others)
+    let mapAttrs =
+            writeAttr (identifier,
+                T.unpack cl : "post__block_code sourceCode" : classes, others)
+    let mapAttrs2 =
+            writeAttr (identifier,
+                "sourceCode" : classes, others)
+    return $ pre_ mapAttrs $ code_ mapAttrs2 $ toHtml code
+
 
 writeBlock (RawBlock "html" str) =
     return $ toHtmlRaw str

@@ -10,7 +10,6 @@ import           Data.Time
 import           Lib
 import           Lucid
 import           Network.URI
-import           Template.Common
 import           Template.Navigation
 import           Template.SvgIcons
 import           Text.Pandoc
