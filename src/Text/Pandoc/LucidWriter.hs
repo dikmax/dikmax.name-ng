@@ -199,10 +199,17 @@ writeBlock HorizontalRule = do
     cl <- getMainBlockClass
     return $ hr_ [class_ $ cl ++ "post__block_rule"]
 
-writeBlock (Div attr blocks) = do
+writeBlock (Div (identifier, classes, others) blocks) = do
     cl <- getMainBlockClass
     items <- concatBlocks blocks
-    return $ div_ (class_ (cl ++ "post__block_div") : writeAttr attr) items
+    let mapAttrs =
+            writeAttr (identifier,
+                if length classes == 0
+                    then [(T.unpack cl), "post__block_div"]
+                    else classes,
+                others)
+
+    return $ div_ mapAttrs items
 
 writeBlock Null = return mempty
 
