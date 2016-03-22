@@ -149,8 +149,9 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
 
         opts :: LucidWriterOptions
         opts = (def :: LucidWriterOptions)
-                & commonData .~ cd
-                & renderType .~ if isAmp then RenderAMP else RenderNormal
+                & commonData        .~ cd
+                & renderType        .~ (if isAmp then RenderAMP else RenderNormal)
+                & showFigureNumbers .~ (post ^. fileMeta ^?! postFigureNumbers)
 
 
         pId :: Text

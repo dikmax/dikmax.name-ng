@@ -8,7 +8,7 @@ cover:
     img: /images/3rd-party/airbnb-logo.png
     small: true
     color: white
-image-numbers: false
+figure-numbers: false
 ---
 
 Я\ давеча озадачился снять квартиру на\ пару суток в\ Витебске через [airbnb][], у\ которого выбор и\ цены достаточно

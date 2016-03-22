@@ -50,21 +50,24 @@ buildPost src pandoc = File m pandoc
         m :: FileMeta
         m
             | "posts/" `isPrefixOf` src = PostMeta
-                { _postId          = ""
-                , _postTitle       = T.pack $
-                                        getMetaString (unMeta $ pandoc ^. meta)
+                { _postId            = ""
+                , _postTitle         = T.pack $ getMetaString
+                                            (unMeta $ pandoc ^. meta)
                                             "title"
-                , _postDate        = parseDate $
-                                        getMetaString (unMeta $ pandoc ^. meta)
+                , _postDate          = parseDate $ getMetaString
+                                            (unMeta $ pandoc ^. meta)
                                             "date"
-                , _postCover       = buildPostCover (pandoc ^. meta)
-                , _postTags        = map T.pack $
-                                        getStringsList (unMeta $ pandoc ^. meta)
+                , _postCover         = buildPostCover (pandoc ^. meta)
+                , _postTags          = map T.pack $ getStringsList
+                                            (unMeta $ pandoc ^. meta)
                                             "tags"
-                , _postCollections = map T.pack $
-                                        getStringsList (unMeta $ pandoc ^. meta)
+                , _postCollections   = map T.pack $ getStringsList
+                                            (unMeta $ pandoc ^. meta)
                                             "collections"
-                , _postUrl         = ""
+                , _postFigureNumbers = getMetaBool True
+                                            (unMeta $ pandoc ^. meta)
+                                            "figure-numbers"
+                , _postUrl           = ""
                 }
             | otherwise = def
                 { _postCover = buildPostCover (pandoc ^. meta)
@@ -122,6 +125,14 @@ getStringsList m key =
         extractList :: MetaValue -> [String]
         extractList (MetaList values) = mapMaybe extractString values
         extractList _ = []
+
+
+getMetaBool :: Bool -> M.Map String MetaValue -> String -> Bool
+getMetaBool d m key =
+    maybe d extractBool' $ M.lookup key m
+    where
+        extractBool' :: MetaValue -> Bool
+        extractBool' = fromMaybe d . extractBool
 
 
 buildPostCover :: Meta -> PostCover

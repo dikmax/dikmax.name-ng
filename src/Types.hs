@@ -39,13 +39,14 @@ makeLenses ''PostCover
 -- | Post Meta
 data FileMeta =
     PostMeta
-    { _postId          :: Text
-    , _postTitle       :: Text
-    , _postDate        :: Maybe UTCTime
-    , _postCover       :: PostCover
-    , _postCollections :: [Text]
-    , _postTags        :: [Text]
-    , _postUrl         :: Text
+    { _postId            :: Text
+    , _postTitle         :: Text
+    , _postDate          :: Maybe UTCTime
+    , _postCover         :: PostCover
+    , _postCollections   :: [Text]
+    , _postTags          :: [Text]
+    , _postUrl           :: Text
+    , _postFigureNumbers :: Bool
     } |
     PageMeta
     { _postCover :: PostCover

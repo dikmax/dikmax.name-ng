@@ -9,7 +9,7 @@ cover:
     hcenter: 50%
     vcenter: 100%
     background: dark
-image-numbers: false
+figure-numbers: false
 ---
 
 Уже четыре месяца, как мы\ вернулись из\ нашего супер-тура по\ Южной Америке. Всё это время я\ совместно с\ любимым
