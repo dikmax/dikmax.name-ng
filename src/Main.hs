@@ -141,24 +141,48 @@ blog = do
     sitePostsDir </> "*" </> indexHtml %> \out -> do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
+        psd <- postsList PostsCacheByDate
         let post = ps M.! idFromDestFilePath out
+        let postIndex = M.findIndex (dateKey $ post ^. fileMeta ^?! postDate) psd
+        let prevPage =
+                if (postIndex == 0)
+                then Nothing
+                else Just $ snd $ M.elemAt (postIndex - 1) psd
+        let nextPage =
+                if (postIndex == M.size psd - 1)
+                then Nothing
+                else Just $ snd $ M.elemAt (postIndex + 1) psd
         let postCd = cd & dataCss %~
                 (++ ".header_for-post:before{" ++ coverToStyle post ++ "}")
+
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.postPage False (T.defaultLayout postCd (post ^. fileMeta)) cd post
+                prevPage nextPage
 
 
     -- AMP Post pages
     sitePostsDir </> "*" </> ampDir </> indexHtml %> \out -> do
         cd <- commonData Anything
         ps <- postsList PostsCacheById
+        psd <- postsList PostsCacheByDate
         let post = ps M.! idFromDestFilePath out
+        let postIndex = M.findIndex (dateKey $ post ^. fileMeta ^?! postDate) psd
+        let prevPage =
+                if (postIndex == 0)
+                then Nothing
+                else Just $ snd $ M.elemAt (postIndex - 1) psd
+        let nextPage =
+                if (postIndex == M.size psd - 1)
+                then Nothing
+                else Just $ snd $ M.elemAt (postIndex + 1) psd
+
         let postCd = cd & dataCss %~
                 (++ ".header_for-post:before{" ++ coverToStyle post ++ "}")
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.postPage True (T.ampLayout postCd (post ^. fileMeta)) cd post
+                prevPage nextPage
 
 
     -- Main page

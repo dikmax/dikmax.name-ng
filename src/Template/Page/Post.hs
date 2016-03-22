@@ -16,8 +16,14 @@ import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
 import           Types
 
-postPage :: Bool -> (Html () -> Html ()) -> CommonData -> File -> Html ()
-postPage isAmp layout cd post = layout $ do
+postPage :: Bool
+         -> (Html () -> Html ())
+         -> CommonData
+         -> File
+         -> Maybe File
+         -> Maybe File
+         -> Html ()
+postPage isAmp layout cd post previousPost nextPost = layout $ do
     header_
         [ class_ $ "header_for-post " ++
             (if post ^. fileMeta ^. postCover ^. coverSmall
@@ -43,7 +49,6 @@ postPage isAmp layout cd post = layout $ do
                     post ^. fileMeta ^. postTags
 
 
-        -- TODO
         div_ [class_ "main__centered share-buttons"] $ do
             a_ [href_ urlFacebook, target_ "blank",
                     class_ "share-buttons__button share-buttons__button_facebook"] $ do
@@ -69,6 +74,18 @@ postPage isAmp layout cd post = layout $ do
                     class_ "share-buttons__button share-buttons__button_email"] $ do
                 iconEmail
                 " Отправить другу"
+
+        when (isJust previousPost || isJust nextPost) $
+            div_ [class_ "main__centered pager"] $ do
+                maybe (span_ [] mempty) (\p ->
+                    a_ [ href_ $ postUrlFromId (p ^. fileMeta ^. postId)
+                       , class_ "pager__previous"] $
+                        toHtml ("← " ++ p ^. fileMeta ^. postTitle)) previousPost
+                maybe (span_ [] mempty) (\p ->
+                    a_ [ href_ $ postUrlFromId (p ^. fileMeta ^. postId)
+                       , class_ "pager__next"] $
+                        toHtml (p ^. fileMeta ^. postTitle ++ " →")) nextPost
+
 
         unless (null $ post ^. fileMeta ^. postCollections) $
             div_ [class_ "main__full-width__centered related-posts"] $ do

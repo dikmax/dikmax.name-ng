@@ -66,6 +66,9 @@ rssFeedFile = "feed.rss"
 domain :: Text
 domain = "https://dikmax.name"
 
+postUrlFromId :: Text -> Text
+postUrlFromId postId = "/post/" ++ postId ++ "/"
+
 defaultReadMoreText :: Text
 defaultReadMoreText = "Читать далее..."
 

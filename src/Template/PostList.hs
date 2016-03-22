@@ -25,11 +25,12 @@ postSingle :: File -> Html ()
 postSingle file =
     div_ [class_ "post post_list"] $ do
         div_ [class_ "main__centered post__block post__title"] $
-            a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml (file ^. fileMeta ^. postTitle)
+            a_ [href_ $ postUrlFromId (file ^. fileMeta ^. postId)] $
+                toHtml (file ^. fileMeta ^. postTitle)
 
         maybe mempty (\cover ->
             div_ [class_ "main__centered post__block post__cover"] $
-                a_ [href_ $ url (file ^. fileMeta ^. postId)] $
+                a_ [href_ $ postUrlFromId (file ^. fileMeta ^. postId)] $
                     img_ [class_ "post__cover-image", src_ cover, alt_ ""]
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
@@ -38,12 +39,9 @@ postSingle file =
             (\(doc, teaser) -> do
                 writeLucid opts doc
                 div_ [class_ "main__centered post__block post__read-more"] $
-                    a_ [href_ $ url (file ^. fileMeta ^. postId)] $ toHtml $
+                    a_ [href_ $ postUrlFromId (file ^. fileMeta ^. postId)] $ toHtml $
                         if teaser == "" then defaultReadMoreText else teaser
             ) $ extractTeaser $ file ^. fileContent
     where
-        url :: Text -> Text -- TODO extract to Config
-        url id' = "/post/" ++ id' ++ "/"
-
         opts :: LucidWriterOptions
         opts = def & showFigureNumbers .~ False
