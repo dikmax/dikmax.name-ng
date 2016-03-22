@@ -5,6 +5,8 @@ collections: [latest-travel]
 published: true
 tags: [германия, отпуск, путешествие, фотки]
 thread: 2675328521
+cover:
+    img: /images/travel/2014-04-germany/rathen-bastei-brigde-3.jpg
 ---
 
 Это путешествие было задумано в\ последний момент. Я\ просматривал путеводитель по\ Германии в\ поисках того, чем ещё
