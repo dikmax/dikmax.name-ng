@@ -4,6 +4,8 @@ date: "2013-09-06T14:58:57+03:00"
 collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, отпуск, путешествие, фотки, франция]
+cover:
+    img: /images/travel/2013-08-eurotrip/paris-hotel-des-invalides.jpg
 ---
 
 Вскоре после посещения Антверпена мы\ сели на\ скоростной [TGV], который должен был доставить нас до\ Парижа.

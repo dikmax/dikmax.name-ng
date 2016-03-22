@@ -5,6 +5,8 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, гостевой пост, испания, отпуск, путешествие, фотки]
 thread: 1833535879
+cover:
+    img: /images/travel/2013-08-eurotrip/barcelona-storm.jpg
 ---
 
 ***Ещё один гостевой пост***

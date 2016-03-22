@@ -5,6 +5,8 @@ collections: [latest-travel]
 published: true
 tags: [booking, eurotrip, eurotrip-2013, interrail, lonely planet, отпуск, путешествие, транспорт, фотки]
 thread: 1885559170
+cover:
+    img: /images/travel/2013-08-eurotrip/minsk-backpacks.jpg
 ---
 
 В завершение темы о\ прошедшей поездке я\ выкладываю общую информацию. Надеюсь, кому-нибудь она окажется полезной
