@@ -5,6 +5,8 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, нидерланды, отпуск, путешествие, фотки]
 thread: 1635102307
+cover:
+    img: /images/travel/2013-08-eurotrip/amsterdam-flowers.jpg
 ---
 
 Мы\ приехали в\ Амстердам поздно вечером и\ сразу\ же запутались в\ местной навигации. Я\ думаю, во\ всем виноваты новый

@@ -5,6 +5,8 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, германия, отпуск, путешествие, фотки]
 thread: 1629783775
+cover:
+    img: /images/travel/2013-08-eurotrip/hannover-top-view.jpg
 ---
 
 В\ Ганновер мы\ заехали по\ дороге из\ Берлина в\ Амстердам. Просто решили, что раз уж\ делать тут пересадку,

@@ -4,6 +4,8 @@ date: "2013-08-13T13:35:30+03:00"
 collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, отпуск, польша, путешествие, фотки]
+cover:
+    img: /images/travel/2013-08-eurotrip/warsaw-mermaid.jpg
 ---
 
 Летняя Варшава встречает нас намного дружелюбнее, чем зимне-весенняя. Даже в\ 6 утра светит солнышко, город так

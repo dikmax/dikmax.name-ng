@@ -5,11 +5,11 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, бельгия, отпуск, путешествие, фотки]
 thread: 1671146682
+cover:
+    img: /images/travel/2013-08-eurotrip/ghent-welcome.jpg
 ---
 
 На\ обратном пути из\ Брюгге мы\ заглянули в\ Гент.
-
-![Gent-St.Pieters](/images/travel/2013-08-eurotrip/ghent-welcome.jpg "Gent-St.Pieters")
 
 Это, вероятно, самый нетуристический город на\ нашем пути. Об\ этом можно судить хотя\ бы по\ тому, что нам попалось
 только пара сувенирных лавок, но и\ они были закрыты, несмотря на\ раннее время. И\ это довольно странно, потому что

@@ -5,6 +5,8 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, бельгия, отпуск, путешествие, фотки]
 thread: 1680530670
+cover:
+    img: /images/travel/2013-08-eurotrip/antwerpen-sunflowers.jpg
 ---
 
 А\ вот Антверпен оставил гораздо меньше впечатлений, чем другие бельгийские города. Но\ кое-какими фотографиями

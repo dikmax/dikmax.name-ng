@@ -5,6 +5,10 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, отпуск, польша, путешествие, фотки]
 thread: 1607936053
+cover:
+    img: /images/travel/2013-08-eurotrip/krakow-wodka.jpg
+    hcenter: 50%
+    vcenter: 0%
 ---
 
 В\ Кракове толпы туристов бродят по\ перронам и\ переходам в\ поисках вокзала и\ выхода в\ город. И\ мы\ не\ были

@@ -4,6 +4,8 @@ date: "2013-08-27T18:50:20+03:00"
 collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, бельгия, отпуск, путешествие, фотки]
+cover:
+    img: /images/travel/2013-08-eurotrip/brussels-atomium.jpg
 ---
 
 В\ Брюсселе мы\ поселились в\ отеле в\ двух шагах от\ вокзала [Brussels Midi]. И\ нам был предоставлен отличный номер

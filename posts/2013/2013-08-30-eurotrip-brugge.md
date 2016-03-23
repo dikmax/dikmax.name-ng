@@ -5,11 +5,11 @@ collections: [latest-travel]
 published: true
 tags: [eurotrip, eurotrip-2013, бельгия, отпуск, путешествие, фотки]
 thread: 1668487788
+cover:
+    img: /images/travel/2013-08-eurotrip/brugge-welcome.jpg
 ---
 
 Добро пожаловать в\ Брюгге.
-
-![Brugge](/images/travel/2013-08-eurotrip/brugge-welcome.jpg "Brugge")
 
 В\ Брюгге влюбляешься с\ первого взгляда. Особенно если приехать туда пораньше, до\ основных толп туристов. Тихие
 улочки, дома и\ каналы, окутанные дымкой солнечных лучей.
