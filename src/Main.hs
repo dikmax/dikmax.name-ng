@@ -138,7 +138,9 @@ blog = do
             pathsFromList siteDir ps ++ tagsPaths ++
             [ siteDir </> "about" </> indexHtml
             , siteDir </> "archive" </> indexHtml
-            , siteDir </> "map" </> indexHtml ]
+            , siteDir </> "map" </> indexHtml
+            , siteDir </> "404" </> indexHtml
+            ]
 
 
     -- Post pages
@@ -304,6 +306,18 @@ blog = do
                 T.mapPage
                     (T.defaultLayout cd def) countries
             ) res
+
+
+    -- 404 error
+    siteDir </> "404" </> indexHtml %> \out -> do
+        cd <- commonData Anything
+        notFound <- posts "404.md"
+        putNormal $ "Writing page " ++ out
+        let nf = notFound & fileMeta %~ postUrl .~ domain ++ "/"
+        liftIO $ renderToFile out $
+            T.notFoundPage
+                (T.defaultLayout cd (nf ^. fileMeta))
+                nf
 
 
     -- Parse Markdown with metadata and save to temp file
