@@ -2,6 +2,7 @@ module Main where
 
 import           BasicPrelude
 import           Collections
+import           Compress
 import           Config
 import           Control.Lens
 import qualified Data.Aeson                 as A
@@ -49,6 +50,7 @@ main = shakeArgs options $ do
     favicons
 
     npmPackages
+    compress
 
 
 build :: Rules ()
@@ -58,6 +60,7 @@ build =
         need ["sync-images"]
         need ["images", "blogposts", "favicons",
             siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
+        need ["compress"]
 
 blog :: Rules ()
 blog = do
@@ -221,6 +224,7 @@ blog = do
         tags <- tagsList Anything
         cd <- commonData Anything
         let tag = idFromDestFilePath out
+        when (tag `M.notMember` tags) $ putNormal $ "Tag " ++ T.unpack tag ++ "not found"
         let ps = tags M.! tag
         let postsOnPage = getPostsForPage ps 1
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
@@ -238,6 +242,7 @@ blog = do
         tags <- tagsList Anything
         cd <- commonData Anything
         let (tag, page) = tagAndPageFromDestFilePath out
+        when (tag `M.notMember` tags) $ putNormal $ "Tag " ++ T.unpack tag ++ "not found"
         let ps = tags M.! tag
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps page

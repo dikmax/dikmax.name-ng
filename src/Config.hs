@@ -19,6 +19,12 @@ shakeBuildDir = buildDir </> "shake"
 siteDir :: FilePath
 siteDir = buildDir </> "site"
 
+zopfliCacheDir :: FilePath
+zopfliCacheDir = buildDir </> "zopfli"
+
+webpCacheDir :: FilePath
+webpCacheDir = buildDir </> "webp"
+
 sitePostsDir :: FilePath
 sitePostsDir = siteDir </> "post"
 
