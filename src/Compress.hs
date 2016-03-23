@@ -12,6 +12,7 @@ import qualified System.Directory     as D
 compress :: Rules ()
 compress = do
     phony "compress" $ do
+        liftIO $ D.createDirectoryIfMissing True brotliCacheDir
         liftIO $ D.createDirectoryIfMissing True zopfliCacheDir
         liftIO $ D.createDirectoryIfMissing True webpCacheDir
         webpFiles <- getDirectoryFiles "."
@@ -27,7 +28,9 @@ compress = do
             , siteDir <//> "*.txt"
             , siteDir <//> "*.xml"
             ]
-        need $ (map (++ ".webp") webpFiles) ++ (map (++ ".gz") gzFiles)
+        need $ (map (++ ".webp") webpFiles) ++
+            (map (++ ".gz") gzFiles) ++
+            (map (++ ".br") gzFiles)
 
     siteDir <//> "*.jpg.webp" %> \out -> do
         let src = take (length out - 5) out
@@ -43,6 +46,12 @@ compress = do
         let src = take (length out - 3) out
         process zopfliCacheDir src out $
             command_ [] "zopfli" ["--i100", "--gzip", src]
+    siteDir <//> "*.br" %> \out -> do
+        let src = take (length out - 3) out
+        process brotliCacheDir src out $
+            command_ [] "bro"
+                [ "--input", src, "--output", out
+                , "--quality", "10", "--force"]
     where
         process cacheDir src out exec = do
             need [normalizeSrc src]

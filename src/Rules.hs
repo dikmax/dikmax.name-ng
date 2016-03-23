@@ -32,8 +32,9 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        mapM_ check ["java", "node", "npm", "rsync", "zopflipng"]
+        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "bro"]
     where
         check executable = do
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable
-            when (code /= ExitSuccess) $ error $ "PREREQUISITE: '" ++ executable ++ "' is not available"
+            when (code /= ExitSuccess) $ error $ "PREREQUISITE: '" ++
+                executable ++ "' is not available"
