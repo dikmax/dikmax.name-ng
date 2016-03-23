@@ -76,11 +76,3 @@ imagesRules = do
         need [siteDir </> x | x <- imageFiles]
 
     forM_ imagesPatterns buildStatic
-
--- Static files, that just should be copied to `siteDir`
-buildStatic :: FilePath -> Rules ()
-buildStatic filePath =
-    siteDir </> filePath %> \out -> do
-        let src = dropDirectory2 out
-        -- putNormal $ "Copying file " ++ out
-        copyFileChanged src out

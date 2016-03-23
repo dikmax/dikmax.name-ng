@@ -5,6 +5,7 @@ module Lib
     , PostCover(..)
     , archiveMonths
     , buildPost
+    , buildStatic
     , dropDirectory2
     , dropDirectory3
     , parseDate
@@ -19,12 +20,23 @@ import           Control.Lens
 import qualified Data.Map.Lazy              as M
 import qualified Data.Text                  as T
 import           Data.Time
+import           Development.Shake
 import           Development.Shake.FilePath
 import           Text.Pandoc
 import           Text.Pandoc.Lens
 import           Text.Pandoc.Shared
 import           Text.Regex.Posix ((=~~))
 import           Types
+
+
+-- Static files, that just should be copied to `siteDir`
+buildStatic :: FilePath -> Rules ()
+buildStatic filePath =
+    siteDir </> filePath %> \out -> do
+        let src = dropDirectory2 out
+        -- putNormal $ "Copying file " ++ out
+        copyFileChanged src out
+
 
 splitAll :: String    -- ^ Pattern
          -> String    -- ^ String to split

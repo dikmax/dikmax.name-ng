@@ -52,6 +52,9 @@ nodeModulesBinDir = nodeModulesDir </> ".bin"
 imagesDir :: FilePath
 imagesDir = "images"
 
+demosDir :: FilePath
+demosDir = "demos"
+
 postcss :: FilePath
 postcss = nodeModulesBinDir </> "postcss"
 

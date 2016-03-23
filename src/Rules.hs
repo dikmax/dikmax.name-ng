@@ -3,6 +3,7 @@ module Rules where
 import           BasicPrelude
 import           Config
 import           Development.Shake
+import           Development.Shake.FilePath
 import           Server
 import           System.Directory           (createDirectoryIfMissing)
 import           System.Exit
@@ -38,3 +39,14 @@ prerequisites =
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable
             when (code /= ExitSuccess) $ error $ "PREREQUISITE: '" ++
                 executable ++ "' is not available"
+
+demos :: Rules ()
+demos = do
+    phony "demos" $ do
+        files <- getDirectoryFiles "demos" ["//*"]
+        forM_ files $ \file -> do
+            exists <- doesFileExist (demosDir </> file)
+            unless exists $ do
+                liftIO $ createDirectoryIfMissing True $ takeDirectory (demosDir </> file)
+                putNormal $ "Copying file " ++ (demosDir </> file)
+                copyFileChanged ("demos" </> file) (demosDir </> file)

@@ -48,6 +48,7 @@ main = shakeArgs options $ do
     imagesRules
     blog
     favicons
+    demos
 
     npmPackages
     compress
@@ -58,7 +59,7 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["images", "blogposts", "favicons",
+        need ["images", "blogposts", "favicons", "demos",
             siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
         need ["compress"]
 
