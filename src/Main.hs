@@ -131,15 +131,16 @@ blog = do
                 (\i -> sitePostsDir </> T.unpack i </> ampDir </> indexHtml) $ M.keys ps
         tags <- tagsList Anything
         let tagsPaths = concatMap (\(t, fs) ->
-                pathsFromList (siteDir </> tagDir </> T.unpack t) fs) $
+                pathsFromList (siteDir </> tagDir </> T.unpack t) indexHtml fs) $
                 M.assocs tags
 
         need $ postsFilePaths ++ ampPostsFilePaths ++
-            pathsFromList siteDir ps ++ tagsPaths ++
+            pathsFromList siteDir indexHtml ps ++ tagsPaths ++
             [ siteDir </> "about" </> indexHtml
             , siteDir </> "archive" </> indexHtml
             , siteDir </> "map" </> indexHtml
             , siteDir </> "404" </> indexHtml
+            , siteDir </> "sitemap.xml"
             ]
 
 
@@ -319,6 +320,18 @@ blog = do
                 (T.defaultLayout cd (nf ^. fileMeta))
                 nf
 
+    -- Sitemap
+    siteDir </> "sitemap.xml" %> \out -> do
+        ps <- postsList PostsCacheById
+        let postsFilePaths = map
+                (\i -> def & suLoc .~ ("/post/" ++ i ++ "/")) $ M.keys ps
+
+        putNormal $ "Writing sitemap " ++ out
+        liftIO $ renderToFile out $ T.sitemapPage $
+            [ def { _suLoc = "/", _suPriority = "0.8" }
+            , def { _suLoc = "/about/", _suPriority = "0.5" }
+            ] ++ postsFilePaths
+
 
     -- Parse Markdown with metadata and save to temp file
     pandocCacheDir <//> "*.md" %> \out -> do
@@ -409,13 +422,13 @@ blog = do
         dateFromFilePath :: FilePath -> Maybe UTCTime
         dateFromFilePath = parseDate . intercalate "-" . take 3 . splitAll "-" . takeFileName
 
-        pathsFromList :: FilePath -> Posts -> [FilePath]
-        pathsFromList prefix ps =
-            (prefix </> indexHtml) : listFilePaths
+        pathsFromList :: FilePath -> FilePath -> Posts -> [FilePath]
+        pathsFromList prefix suffix ps =
+            (prefix </> suffix) : listFilePaths
             where
                 (d,m) = M.size ps `divMod` pageSize
                 listFilePaths =
-                    [ prefix </> pageDir </> T.unpack (show p) </> indexHtml |
+                    [ prefix </> pageDir </> T.unpack (show p) </> suffix |
                         p <- [2 .. d + (if m == 0 then 2 else 1)] ]
 
         imageGetter :: Images -> Text -> Maybe ImageMeta

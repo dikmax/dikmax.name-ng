@@ -142,6 +142,20 @@ data Anything = Anything deriving (Eq)
 instance Hashable Anything where
     hashWithSalt _ _ = 0
 
+data SitemapUrl = SitemapUrl
+    { _suLoc        :: Text
+    , _suChangeFreq :: Text
+    , _suPriority   :: Text
+    }
+
+instance Default SitemapUrl where
+    def = SitemapUrl
+        { _suLoc = ""
+        , _suChangeFreq = "daily"
+        , _suPriority = "1.0"
+        }
+
+makeLenses ''SitemapUrl
 
 -- Map related Types
 

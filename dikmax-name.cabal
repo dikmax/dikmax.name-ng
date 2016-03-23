@@ -25,6 +25,7 @@ executable dikmax.name
                      , Lib
                      , Lucid.AMP
                      , Lucid.Atom
+                     , Lucid.Sitemap
                      , Map
                      , Rules
                      , Server
@@ -38,7 +39,9 @@ executable dikmax.name
                      , Template.Page.Index
                      , Template.Page.List
                      , Template.Page.Map
+                     , Template.Page.NotFound
                      , Template.Page.Post
+                     , Template.Page.Sitemap
                      , Template.PostList
                      , Template.SvgFlags
                      , Template.SvgFlags.Croatia
