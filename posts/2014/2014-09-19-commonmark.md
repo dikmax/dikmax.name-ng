@@ -6,7 +6,7 @@ tags: [commonmark, markdown, программирование]
 cover:
     img: /images/3rd-party/markdown-logo.png
     small: true
-    color: black
+    color: \#ddd
 ---
 
 Пару недель назад в\ блоге [Coding Horror][coding-horror] появилась запись о\ том, что объединённые усилия GitHub,

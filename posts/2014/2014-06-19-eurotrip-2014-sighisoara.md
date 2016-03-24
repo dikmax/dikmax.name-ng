@@ -6,6 +6,7 @@ published: true
 tags: [eurotrip, eurotrip-2014, отпуск, путешествие, румыния, фотки]
 cover:
     img: /images/travel/2014-06-eurotrip/sighisoara-faces.jpg
+    vcenter: 0%
 ---
 
 Знаете, зачем туристы едут в\ Сигишоару? Ну\ уж точно не\ посмотреть на\ место рождения графа Дракулы. Они едут, чтобы 

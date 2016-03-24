@@ -6,7 +6,7 @@ tags: [commonmark, dart, markdown, md_proc, программирование]
 cover:
     img: /images/3rd-party/markdown-logo.png
     small: true
-    color: black
+    color: \#ddd
 ---
 
 Все началось с\ того, что мне понадобился парсер для Markdown, который строит [AST], а\ не\ пытается сразу выдавать 

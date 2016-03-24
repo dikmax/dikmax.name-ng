@@ -35,7 +35,7 @@ postSingle file =
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
 
-        maybe (writeLucid def $ file ^. fileContent)
+        maybe (writeLucid opts $ file ^. fileContent)
             (\(doc, teaser) -> do
                 writeLucid opts doc
                 div_ [class_ "main__centered post__block post__read-more"] $
