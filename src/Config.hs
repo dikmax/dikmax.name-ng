@@ -53,7 +53,7 @@ imagesDir :: FilePath
 imagesDir = "images"
 
 demosDir :: FilePath
-demosDir = "demos"
+demosDir = siteDir </> "demos"
 
 postcss :: FilePath
 postcss = nodeModulesBinDir </> "postcss"

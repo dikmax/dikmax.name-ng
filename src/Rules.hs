@@ -43,6 +43,7 @@ prerequisites =
 demos :: Rules ()
 demos = do
     phony "demos" $ do
+        command_ [] "git" ["submodule", "update"]
         files <- getDirectoryFiles "demos" ["//*"]
         forM_ files $ \file -> do
             exists <- doesFileExist (demosDir </> file)
