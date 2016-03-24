@@ -6,16 +6,16 @@ import qualified Data.Text            as T
 import           Config
 import           Crypto.Hash
 import           Development.Shake
-import           Development.Shake.FilePath
 import qualified System.Directory     as D
 
 
 compress :: Rules ()
 compress = do
     phony "compress" $ do
-        liftIO $ D.createDirectoryIfMissing True brotliCacheDir
-        liftIO $ D.createDirectoryIfMissing True zopfliCacheDir
-        liftIO $ D.createDirectoryIfMissing True webpCacheDir
+        liftIO $ do
+            createCacheDirectory brotliCacheDir
+            createCacheDirectory zopfliCacheDir
+            createCacheDirectory webpCacheDir
         webpFiles <- getDirectoryFiles "."
             [ siteDir <//> "*.jpg"
             , siteDir <//> "*.png"
@@ -59,8 +59,6 @@ compress = do
             file <- liftIO $ BSL.readFile src
             let h = T.unpack $ hashToPath $
                     show (hashlazy file :: Digest SHA3_256)
-            let d = takeDirectory h
-            liftIO $ D.createDirectoryIfMissing True (cacheDir </> d)
             exists <- liftIO $ D.doesFileExist $ cacheDir </> h
             if (exists)
                 then do
@@ -75,3 +73,14 @@ normalizeSrc = T.unpack . T.replace "\1080\774" "\1081" . T.pack
 
 hashToPath :: Text -> Text
 hashToPath h = T.take 2 h ++ "/" ++ T.drop 2 h
+
+createCacheDirectory :: FilePath -> IO ()
+createCacheDirectory cacheDir = do
+    D.createDirectoryIfMissing True (cacheDir)
+    forM_ hex $ \a ->
+        forM_ hex $ \b ->
+            D.createDirectoryIfMissing False (cacheDir </> [a, b])
+
+    where
+        hex = [ '0', '1', '2', '3', '4', '5', '6', '7'
+              , '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
