@@ -1,7 +1,7 @@
 ---
 title: "Нюрнберг"
 date: "2016-03-17T08:15:00+01:00"
-collection: [latest-travel, proofreaders-stories]
+collections: [latest-travel, proofreaders-stories]
 published: true
 tags: [путешествие, фотки, германия]
 cover:
