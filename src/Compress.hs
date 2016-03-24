@@ -6,6 +6,7 @@ import qualified Data.Text            as T
 import           Config
 import           Crypto.Hash
 import           Development.Shake
+import           Development.Shake.FilePath
 import qualified System.Directory     as D
 
 
@@ -56,7 +57,10 @@ compress = do
         process cacheDir src out exec = do
             need [normalizeSrc src]
             file <- liftIO $ BSL.readFile src
-            let h = T.unpack $ show (hashlazy file :: Digest SHA3_256)
+            let h = T.unpack $ hashToPath $
+                    show (hashlazy file :: Digest SHA3_256)
+            let d = takeDirectory h
+            liftIO $ D.createDirectoryIfMissing True (cacheDir </> d)
             exists <- liftIO $ D.doesFileExist $ cacheDir </> h
             if (exists)
                 then do
@@ -69,4 +73,5 @@ compress = do
 normalizeSrc :: String -> String
 normalizeSrc = T.unpack . T.replace "\1080\774" "\1081" . T.pack
 
-
+hashToPath :: Text -> Text
+hashToPath h = T.take 2 h ++ "/" ++ T.drop 2 h
