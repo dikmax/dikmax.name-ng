@@ -13,10 +13,10 @@ site sitePath =
     path "rss" (redirect "feed.rss") <|>
     path "rss/" (redirect "feed.rss") <|>
     serveDirectory sitePath <|>
-    notFoundHandler
+    notFoundHandler sitePath
 
 
-notFoundHandler :: Snap ()
-notFoundHandler = do
+notFoundHandler :: FilePath -> Snap ()
+notFoundHandler sitePath = do
   modifyResponse $ setResponseCode 404
-  sendFile "_site/404/index.html"
+  sendFile $ sitePath ++ "/404/index.html"
