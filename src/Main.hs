@@ -39,6 +39,7 @@ main = shakeArgs options $ do
     usingConfigFile "build.cfg"
     want ["build"]
     clean
+    deploy
 
     runServer
     prerequisites

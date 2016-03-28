@@ -18,6 +18,14 @@ clean = do
         putNormal $ "Cleaning files in " ++ buildDir
         removeFilesAfter buildDir ["//*"]
 
+deploy :: Rules ()
+deploy =
+    phony "deploy" $ do
+        need ["build"]
+        command_ [] "rsync" ["--recursive", "--delete", "--force", "--compress",
+            "--progress", "--delay-updates", "--iconv=UTF8-MAC,UTF-8",
+            "_build/site/", "dikmax@dikmax.name:/home/dikmax/dikmax.name/"]
+
 runServer :: Rules ()
 runServer =
     phony "server" $ do
