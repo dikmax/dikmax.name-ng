@@ -7,7 +7,7 @@ tags: [путешествие, фотки, германия]
 cover:
     img: /images/travel/2016-01-heidelberg/heidelberg-cover.jpg
     hcenter: 50%
-    vcenter: 50%
+    vcenter: 100%
 ---
 
 **Пост написан любимым корректором.**

@@ -6,7 +6,7 @@ published: true
 tags: [путешествие, фотки, германия]
 cover:
     img: /images/travel/2016-01-nuerenberg/nuernberg-cover.jpg
-    hcenter: 50%
+    hcenter: 0%
     vcenter: 50%
 ---
 
