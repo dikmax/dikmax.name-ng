@@ -62,7 +62,6 @@ build =
         need ["sync-images"]
         need ["images", "blogposts", "favicons", "demos",
             siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
-        need ["compress"]
 
 blog :: Rules ()
 blog = do
