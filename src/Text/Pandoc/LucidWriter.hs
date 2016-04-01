@@ -70,6 +70,11 @@ makeLenses ''WriterStateData
 
 type WriterState = State WriterStateData
 
+blankImage :: Text
+blankImage = "data:image/gif;base64,\
+    \R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+
+
 writeLucidText :: LucidWriterOptions -> Pandoc -> LText
 writeLucidText options pandoc = renderText $ writeLucid options pandoc
 
@@ -303,7 +308,7 @@ writeInline (Image attr inline target) = do
             Just meta ->
                 [ width_ $ show $ meta ^. imageWidth
                 , height_ $ show $ meta ^. imageHeight
-                , term "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                , data_ "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                     (options ^. siteDomain) ++ " " ++ show (meta ^. imageWidth) ++ "w")
                 , sizes_ "100vw" ] :: [Attribute]
             Nothing -> []
@@ -330,12 +335,26 @@ writeInline (Image attr inline target) = do
              ] ++ writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
-                    (if options ^. renderType == RenderAMP then ampImg_ else img_)
+                    if options ^. renderType == RenderAMP
+                    then ampImg_
                         ([ class_ "post__figure-img"
-                            , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                        , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                            (options ^. siteDomain)
+                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        ] ++ thumb)
+                    else do
+                        img_ ([ class_ "post__figure-img post__figure-img_lazy"
+                            , src_ blankImage
+                            , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                                 (options ^. siteDomain)
                             , alt_ $ fixImageTitle $ T.pack $ snd target
                             ] ++ thumb)
+                        noscript_ $
+                            img_ ([ class_ "post__figure-img"
+                                , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                                    (options ^. siteDomain)
+                                , alt_ $ fixImageTitle $ T.pack $ snd target
+                                ] ++ thumb)
                     unless (null inline) $
                         p_ [class_ "post__figure-description"] inlines
     where
