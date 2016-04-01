@@ -195,7 +195,7 @@ cover:
 
 ![](/images/travel/2015-09-satrip/iguazu-pano.jpg)
 
-Читать далее: [Рио-де-Жанейро, часть\ 4](/post/satrip-2015-iguazu-falls).
+Читать далее: [Рио-де-Жанейро, часть\ 4](/post/satrip-2015-rio-4/).
 
 SATrip 2015:
 [начало](/post/satrip-2015-paris/),
