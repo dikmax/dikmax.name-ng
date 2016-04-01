@@ -116,8 +116,8 @@ dikmax.App.setupLazyImages_ = function() {
   var scrollHandler = () => {
     const scroll = goog.dom.getDocumentScroll();
     const size = vsm.getSize();
-    const trackTop = scroll.y + size.height * 1.5;
-    const trackBottom = scroll.y - size.height * 1.5;
+    const trackTop = scroll.y + size.height;
+    const trackBottom = scroll.y;
 
     const newImages = [];
 
@@ -127,7 +127,6 @@ dikmax.App.setupLazyImages_ = function() {
           goog.style.getBorderBoxSize(image).height;
 
       if (imageTop < trackTop && imageBottom > trackBottom) {
-        console.log('Reveal', image);
         goog.events.listenOnce(image, goog.events.EventType.LOAD, () => {
           goog.style.setWidth(image, 'auto');
           goog.style.setHeight(image, 'auto');
@@ -145,9 +144,9 @@ dikmax.App.setupLazyImages_ = function() {
 
   goog.events.listen(window, goog.events.EventType.SCROLL, scrollHandler);
   goog.events.listen(vsm, goog.events.EventType.RESIZE, () => {
-    scrollHandler();
     resizeImages();
+    scrollHandler();
   });
-  scrollHandler();
   resizeImages();
+  scrollHandler();
 };

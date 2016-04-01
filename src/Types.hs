@@ -93,6 +93,7 @@ data ImageMeta = ImageMeta
     { _imageWidth     :: Int
     , _imageHeight    :: Int
     , _imageColor     :: Text
+    , _imageThumbnail :: Text
     } deriving (Eq, Show, Generic)
 
 instance Binary ImageMeta
@@ -104,6 +105,7 @@ instance Default ImageMeta where
         { _imageWidth = 0
         , _imageHeight = 0
         , _imageColor = ""
+        , _imageThumbnail = ""
         }
 
 type Images = M.Map Text ImageMeta

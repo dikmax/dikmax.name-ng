@@ -304,14 +304,6 @@ writeInline (Link attr inline target) = do
 writeInline (Image attr inline target) = do
     inlines <- concatInlines inline
     options <- use writerOptions
-    let thumb = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
-            Just meta ->
-                [ width_ $ show $ meta ^. imageWidth
-                , height_ $ show $ meta ^. imageHeight
-                , data_ "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                    (options ^. siteDomain) ++ " " ++ show (meta ^. imageWidth) ++ "w")
-                , sizes_ "100vw" ] :: [Attribute]
-            Nothing -> []
 
     return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` fst target ||
             "https://www.youtube.com/watch?v=" `isPrefixOf` fst target
@@ -335,33 +327,53 @@ writeInline (Image attr inline target) = do
              ] ++ writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
-                    if options ^. renderType == RenderAMP
-                    then ampImg_
-                        ([ class_ "post__figure-img"
-                        , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                            (options ^. siteDomain)
-                        , alt_ $ fixImageTitle $ T.pack $ snd target
-                        ] ++ thumb)
-                    else do
-                        img_ ([ class_ "post__figure-img post__figure-img_lazy"
-                            , src_ blankImage
-                            , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                                (options ^. siteDomain)
-                            , alt_ $ fixImageTitle $ T.pack $ snd target
-                            ] ++ thumb)
-                        noscript_ $
-                            img_ ([ class_ "post__figure-img"
-                                , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                                    (options ^. siteDomain)
-                                , alt_ $ fixImageTitle $ T.pack $ snd target
-                                ] ++ thumb)
+                    img options
                     unless (null inline) $
-                        p_ [class_ "post__figure-description"] inlines
+                      p_ [class_ "post__figure-description"] inlines
+
     where
         videoId url = T.takeWhile (/= '&') $ T.replace "http://www.youtube.com/watch?v=" "" $
             T.replace "https://www.youtube.com/watch?v=" "" url
         -- http://dikmax.name/images/travel/2014-06-eurotrip/rome-santa-maria-maggiore-1.jpg -> rome-santa-maria-maggiore-1
         extractId = T.init . fst . T.breakOnEnd "." . snd . T.breakOnEnd "/"
+
+        img :: LucidWriterOptions -> Html ()
+        img options = do
+            if options ^. renderType == RenderAMP
+            then ampImg_
+                ([ class_ "post__figure-img"
+                , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                  (options ^. siteDomain)
+                , alt_ $ fixImageTitle $ T.pack $ snd target
+                ] ++ imgAttrs options)
+            else do
+                img_ ([ class_ "post__figure-img post__figure-img_lazy"
+                    , src_ $ imgSrc options
+                    , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                        (options ^. siteDomain)
+                    , alt_ $ fixImageTitle $ T.pack $ snd target
+                    ] ++ imgAttrs options)
+                noscript_ $
+                    img_ ([ class_ "post__figure-img"
+                        , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                            (options ^. siteDomain)
+                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        ] ++ imgAttrs options)
+
+        imgSrc :: LucidWriterOptions -> Text
+        imgSrc options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
+            Just meta -> meta ^. imageThumbnail
+            Nothing -> blankImage
+
+        imgAttrs :: LucidWriterOptions -> [Attribute]
+        imgAttrs options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
+            Just meta ->
+                [ width_ $ show $ meta ^. imageWidth
+                , height_ $ show $ meta ^. imageHeight
+                , data_ "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                    (options ^. siteDomain) ++ " " ++ show (meta ^. imageWidth) ++ "w")
+                , sizes_ "100vw" ] :: [Attribute]
+            Nothing -> []
 
         fixImageTitle :: Text -> Text
         fixImageTitle title
