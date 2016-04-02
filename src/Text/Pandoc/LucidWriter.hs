@@ -344,6 +344,7 @@ writeInline (Image attr inline target) = do
                 ([ class_ "post__figure-img"
                 , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                   (options ^. siteDomain)
+                , term "layout" "responsive"
                 , alt_ $ fixImageTitle $ T.pack $ snd target
                 ] ++ imgAttrs options)
             else do

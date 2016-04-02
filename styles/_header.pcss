@@ -3,23 +3,24 @@
 @b header {
     @m for-index {
         background-size: cover;
-        lost-utility: clearfix;
         padding-top: var(--navbar-height);
+
+        @mixin clearfix;
     }
 
     @m for-post {
-        lost-utility: clearfix;
+        @mixin clearfix;
         overflow: hidden;
         position: relative;
         size: 100vw 100vh;
         z-index: -1;
 
         &:before {
+            background-color: black;
             content: ' ';
             position: fixed 0 * * 0;
             size: 100vw 100vh;
             will-change: transform;
-            background-color: black;
         }
     }
 

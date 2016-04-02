@@ -16,3 +16,15 @@
         width: var(--body-width);
     }
 }
+
+@define-mixin clearfix {
+    &:before,
+    &:after {
+        content: ' ';
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+}

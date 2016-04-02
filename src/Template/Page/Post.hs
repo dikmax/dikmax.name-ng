@@ -9,6 +9,7 @@ import qualified Data.Text                as T
 import           Data.Time
 import           Lib
 import           Lucid
+import           Lucid.AMP
 import           Network.URI
 import           Template.Navigation
 import           Template.SvgIcons
@@ -48,30 +49,29 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                         " ") $
                     post ^. fileMeta ^. postTags
 
-
         div_ [class_ "main__centered share-buttons"] $ do
-            a_ [href_ urlFacebook, target_ "blank",
-                    class_ "share-buttons__button share-buttons__button_facebook"] $ do
+            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlFacebook,
+                    class_ "share-buttons__button share-buttons__button_facebook"]) $ do
                 iconFacebook
                 " Поделиться"
-            a_ [href_ urlVk, target_ "blank",
-                    class_ "share-buttons__button share-buttons__button_vk"] $ do
+            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlVk,
+                    class_ "share-buttons__button share-buttons__button_vk"]) $ do
                 iconVk
                 " Расшарить"
-            a_ [href_ urlGooglePlus, target_ "blank",
-                    class_ "share-buttons__button share-buttons__button_google-plus"] $ do
+            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlGooglePlus,
+                    class_ "share-buttons__button share-buttons__button_google-plus"]) $ do
                 iconGooglePlus
                 " Рассказать"
-            a_ [href_ urlTwitter, target_ "blank",
-                    class_ "share-buttons__button share-buttons__button_twitter"] $ do
+            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlTwitter,
+                    class_ "share-buttons__button share-buttons__button_twitter"]) $ do
                 iconTwitter
                 " Твитнуть"
-            a_ [href_ urlPinterest, target_ "blank",
-                    class_ "share-buttons__button share-buttons__button_pinterest"] $ do
+            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlPinterest,
+                    class_ "share-buttons__button share-buttons__button_pinterest"]) $ do
                 iconPinterest
                 " Запинить"
-            a_ [href_ urlEmail, target_ "blank",
-                    class_ "share-buttons__button share-buttons__button_email"] $ do
+            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlEmail,
+                    class_ "share-buttons__button share-buttons__button_email"]) $ do
                 iconEmail
                 " Отправить другу"
 
@@ -109,15 +109,32 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                 ) $ M.lookup collectionId (cd ^. collections)
 
         writeCollectionItem :: CollectionItem -> Html ()
-        writeCollectionItem cItem =
-            div_ [class_ "related-posts__cover"] $ do
-                a_ [ href_ $ cItem ^. collectionItemUrl
-                   , class_ "related-posts__cover-image"] $
-                   img_ [ src_ $ cItem ^. collectionItemCover
-                        , name_ (cItem ^. collectionItemName)]
-                a_ [ href_ $ cItem ^. collectionItemUrl
-                   , class_ "related-posts__title-background"] $
-                   toHtml (cItem ^. collectionItemName)
+        writeCollectionItem cItem
+            | isAmp =
+                div_ [class_ "related-posts__cover"] $ do
+                    a_ [ href_ $ cItem ^. collectionItemUrl
+                       , class_ "related-posts__cover-image"] $
+                        ampImg_ [ src_ $ cItem ^. collectionItemCover
+                            , term "layout" "fixed"
+                            , height_ "180"
+                            , width_ "320"
+                            , title_ (cItem ^. collectionItemName)
+                            ]
+                    a_ [ href_ $ cItem ^. collectionItemUrl
+                       , class_ "related-posts__title-background"] $
+                       toHtml (cItem ^. collectionItemName)
+            | otherwise =
+                div_ [class_ "related-posts__cover"] $ do
+                    a_ [ href_ $ cItem ^. collectionItemUrl
+                       , class_ "related-posts__cover-image"] $
+                       img_ [ src_ $ cItem ^. collectionItemCover
+                            , height_ "180"
+                            , width_ "320"
+                            , title_ (cItem ^. collectionItemName)
+                            ]
+                    a_ [ href_ $ cItem ^. collectionItemUrl
+                       , class_ "related-posts__title-background"] $
+                       toHtml (cItem ^. collectionItemName)
 
         showMaxCount :: Int
         showMaxCount

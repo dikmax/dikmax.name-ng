@@ -12,6 +12,7 @@
         "postcss-responsive-type",
         "postcss-short",
 
+        "stylehacks",
         "postcss-discard-comments",
         "css-mqpacker",
         "cssnano"
@@ -38,5 +39,8 @@
     },
     "colorguard": {
         "ignore": ["#000000", "#ffffff", "#212121", "#b3b3b3"]
+    },
+    "stylehacks": {
+        "browsers": "last 1 version, > 10%"
     }
 }

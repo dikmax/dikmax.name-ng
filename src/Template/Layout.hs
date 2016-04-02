@@ -118,6 +118,12 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         title_ $ toHtml title
         link_ [rel_ "canonical", href_ $ meta ^. postUrl]
         meta_ [name_ "viewport", content_ "width=device-width,minimum-scale=1,initial-scale=1"]
+        link_
+            [ rel_ "stylesheet"
+            , type_ "text/css"
+            , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
+        style_ [term "amp-custom" ""] (cd ^. dataCss)
+
         script_ [type_ "application/ld+json"] $
             "{\
               \\"@context\": \"http://schema.org\",\
@@ -126,12 +132,6 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
               \\"datePublished\": \"2015-10-07T12:02:41Z\"\
             \}" -- TODO date
         ampBoilerplate_
-
-        link_
-            [ rel_ "stylesheet"
-            , type_ "text/css"
-            , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
-        style_ [] (cd ^. dataCss)
 
     body_ $ do
         content

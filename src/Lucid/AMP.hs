@@ -7,7 +7,7 @@ import           Lucid.Base
 -- | Amp html
 ampDoctypeHtml_ :: Monad m => HtmlT m a -> HtmlT m a
 ampDoctypeHtml_ m = do
-    doctype_
+    toHtmlRaw ("<!doctype html>" :: Text)
     html_ [term "⚡" ""] m
 
 ampBoilerplate_ :: Monad m => HtmlT m ()
