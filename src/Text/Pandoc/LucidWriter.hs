@@ -9,6 +9,7 @@ module Text.Pandoc.LucidWriter (
     debugOutput,
     renderType,
     showFigureNumbers,
+    responsiveFigures,
 
     writeLucid,
     writeLucidText
@@ -37,6 +38,7 @@ data LucidWriterOptions = LucidWriterOptions
     , _debugOutput       :: Bool
     , _renderType        :: RenderType
     , _showFigureNumbers :: Bool
+    , _responsiveFigures :: Bool
     }
 
 instance Default LucidWriterOptions where
@@ -47,6 +49,7 @@ instance Default LucidWriterOptions where
         , _debugOutput       = False
         , _renderType        = RenderNormal
         , _showFigureNumbers = True
+        , _responsiveFigures = True
         }
 
 makeLenses ''LucidWriterOptions
@@ -324,9 +327,18 @@ writeInline (Image attr inline target) = do
                 ++ if options ^. showFigureNumbers
                     then " post__figure_with-number"
                     else ""
+                ++ if options ^. responsiveFigures
+                    then " post__figure_responsive"
+                    else ""
              ] ++ writeAttr attr) $
-            div_ [class_ "post__figure-outer"] $
-                div_ [class_ "post__figure-inner"] $ do
+            div_ [class_ $ "post__figure-outer"
+                    ++ if options ^. responsiveFigures
+                        then " post__figure-outer_responsive"
+                        else ""] $
+                div_ [class_ $ "post__figure-inner"
+                        ++ if options ^. responsiveFigures
+                            then " post__figure-inner_responsive"
+                            else ""] $ do
                     img options
                     unless (null inline) $
                       p_ [class_ "post__figure-description"] inlines
@@ -348,7 +360,10 @@ writeInline (Image attr inline target) = do
                 , alt_ $ fixImageTitle $ T.pack $ snd target
                 ] ++ imgAttrs options)
             else do
-                img_ ([ class_ "post__figure-img post__figure-img_lazy"
+                img_ ([ class_ $ "post__figure-img post__figure-img_lazy"
+                        ++ if options ^. responsiveFigures
+                            then " post__figure-img_responsive"
+                            else ""
                     , src_ $ imgSrc options
                     , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                         (options ^. siteDomain)

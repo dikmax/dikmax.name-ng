@@ -96,12 +96,17 @@
     }
 
     @e figure-img {
-        display: block;
         max-size: calc(100vw - var(--body-padding) * 2) calc(100vh - var(--navbar-height));
-        size: auto auto;
+        height: auto;
 
-        @media (width >= 1056px) { /* 1024px + var(--body-padding) */
-            max-width: 1024px
+        @m responsive {
+            display: block;
+            max-size: calc(100vw - var(--body-padding) * 2) calc(100vh - var(--navbar-height));
+            size: auto auto;
+
+            @media (width >= 1056px) { /* 1024px + var(--body-padding) */
+                max-width: 1024px
+            }
         }
     }
 

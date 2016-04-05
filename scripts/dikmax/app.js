@@ -128,8 +128,8 @@ dikmax.App.setupLazyImages_ = function() {
 
       if (imageTop < trackTop && imageBottom > trackBottom) {
         goog.events.listenOnce(image, goog.events.EventType.LOAD, () => {
-          goog.style.setWidth(image, 'auto');
-          goog.style.setHeight(image, 'auto');
+          goog.style.setWidth(image, '');
+          goog.style.setHeight(image, '');
         });
         image.src = goog.dom.dataset.get(image, 'src');
         image.srcset = goog.dom.dataset.get(image, 'srcset');

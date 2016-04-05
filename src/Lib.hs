@@ -79,6 +79,9 @@ buildPost src pandoc = File m pandoc
                 , _postFigureNumbers = getMetaBool True
                                             (unMeta $ pandoc ^. meta)
                                             "figure-numbers"
+                , _postFigureResponsive = getMetaBool True
+                                            (unMeta $ pandoc ^. meta)
+                                            "figure-responsive"
                 , _postUrl           = ""
                 }
             | otherwise = def

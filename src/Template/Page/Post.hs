@@ -169,6 +169,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                 & commonData        .~ cd
                 & renderType        .~ (if isAmp then RenderAMP else RenderNormal)
                 & showFigureNumbers .~ (post ^. fileMeta ^?! postFigureNumbers)
+                & responsiveFigures .~ (post ^. fileMeta ^?! postFigureResponsive)
 
 
         pId :: Text

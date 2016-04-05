@@ -41,6 +41,6 @@
         "ignore": ["#000000", "#ffffff", "#212121", "#b3b3b3"]
     },
     "stylehacks": {
-        "browsers": "last 1 version, > 10%"
+        "browsers": "> 5%"
     }
 }
