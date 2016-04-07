@@ -133,3 +133,5 @@ archiveTimeLocale = timeLocale
       ]
     }
 
+googleAnalyticsUA :: Text
+googleAnalyticsUA = "UA-32213724-1"

@@ -1,6 +1,7 @@
 module Template.Layout (defaultLayout, mapLayout, ampLayout) where
 
 import           BasicPrelude
+import           Config
 import           Control.Lens
 import           Lucid
 import           Lucid.AMP
@@ -123,6 +124,9 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
             , type_ "text/css"
             , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
         style_ [term "amp-custom" ""] (cd ^. dataCss)
+        script_ [ async_ ""
+                , term "custom-element" "amp-analytics"
+                , src_ "https://cdn.ampproject.org/v0/amp-analytics-0.1.js"] ("" :: Text)
 
         script_ [type_ "application/ld+json"] $
             "{\
@@ -134,6 +138,23 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         ampBoilerplate_
 
     body_ $ do
+        ampAnalytics_ [type_ "googleanalytics"] $
+            script_ [type_ "application/json"] $
+                ("{\
+                   \\"vars\": {\
+                     \\"account\": \"" ++ googleAnalyticsUA ++ "\"\
+                   \},\
+                   \\"triggers\": {\
+                     \\"trackPageview\": {\
+                       \\"on\": \"visible\",\
+                       \\"request\": \"pageview\",\
+                       \\"vars\": {\
+                           \\"title\": \"" ++ title ++ "\",\
+                           \\"ampdocUrl\": \"" ++ (meta ^. postUrl) ++ "\"\
+                       \}\
+                     \}\
+                   \}\
+                 \}" :: Text)
         content
         footer
 
@@ -153,15 +174,15 @@ footer =
 
 googleAnalytics :: Html ()
 googleAnalytics =
-    -- TODO move UA to config
-    toHtmlRaw $ ("<script type=\"text/javascript\">\
-                     \var _gaq = _gaq || [];\
-                     \_gaq.push(['_setAccount', 'UA-32213724-1']);\
-                     \_gaq.push(['_setDomainName', 'dikmax.name']);\
-                     \_gaq.push(['_trackPageview']);\
-                     \(function() {\
-                         \var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\
-                         \ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\
-                         \var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\
-                     \})();\
-                 \</script>" :: Text)
+    toHtmlRaw $
+        ("<script type=\"text/javascript\">\
+             \var _gaq = _gaq || [];\
+             \_gaq.push(['_setAccount', '" ++ googleAnalyticsUA ++ "']);\
+             \_gaq.push(['_setDomainName', 'dikmax.name']);\
+             \_gaq.push(['_trackPageview']);\
+             \(function() {\
+                 \var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\
+                 \ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\
+                 \var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\
+             \})();\
+        \</script>" :: Text)

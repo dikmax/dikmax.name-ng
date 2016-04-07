@@ -24,6 +24,10 @@ ampBoilerplate_ = do
         \-ms-animation:none;animation:none}</style></noscript>" :: Text)
     script_ [async_ "", src_ "https://cdn.ampproject.org/v0.js"] ("" :: Text)
 
+-- | @amp-analytics@ element
+ampAnalytics_ :: Term arg result => arg -> result
+ampAnalytics_ = term "amp-analytics"
+
 -- | @amp-img@ element
 ampImg_ :: Monad m => [Attribute] -> HtmlT m ()
 ampImg_ = with (makeElementNoEnd "amp-img")
