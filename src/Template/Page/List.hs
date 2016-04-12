@@ -7,7 +7,12 @@ import           Template.PostList
 import           Types
 
 
-listPage :: (Html () -> Html ()) -> Maybe Text -> Maybe Text -> [File] -> Html ()
-listPage layout olderPage newerPage posts = layout $ do
+listPage :: (Html () -> Html ())
+         -> CommonData
+         -> Maybe Text
+         -> Maybe Text
+         -> [File]
+         -> Html ()
+listPage layout cd olderPage newerPage posts = layout $ do
     navigation
-    postList olderPage newerPage posts
+    postList cd olderPage newerPage posts

@@ -25,8 +25,8 @@ buttons =
     ]
 
 
-aboutPage :: (Html () -> Html ()) -> File -> Html ()
-aboutPage layout about = layout $ do
+aboutPage :: (Html () -> Html ()) -> CommonData -> File -> Html ()
+aboutPage layout cd about = layout $ do
     navigation
     div_ [class_ "main main_no-hero"] $ do
         writeLucid opts $ about ^. fileContent
@@ -40,4 +40,6 @@ aboutPage layout about = layout $ do
                    , class_ $ "about__contact about__contact_" ++ cl] icon
     where
         opts :: LucidWriterOptions
-        opts = def & showFigureNumbers .~ False
+        opts = def
+            & commonData        .~ cd
+            & showFigureNumbers .~ False

@@ -9,10 +9,10 @@ import           Text.Pandoc.LucidWriter
 import           Text.Pandoc.Utils
 import           Types
 
-postList :: Maybe Text -> Maybe Text -> [File] -> Html ()
-postList olderPage newerPage posts =
+postList :: CommonData -> Maybe Text -> Maybe Text -> [File] -> Html ()
+postList cd olderPage newerPage posts =
     div_ [class_ "main main_no-hero"] $ do
-        mconcat $ map postSingle posts
+        mconcat $ map (postSingle cd) posts
 
         when (isJust olderPage || isJust newerPage) $
             div_ [class_ "main__centered pager"] $ do
@@ -21,8 +21,8 @@ postList olderPage newerPage posts =
                 maybe (span_ [] mempty) (\link ->
                     a_ [href_ link, class_ "pager__next"] "Моложе →") newerPage
 
-postSingle :: File -> Html ()
-postSingle file =
+postSingle :: CommonData -> File -> Html ()
+postSingle cd file =
     div_ [class_ "post post_list"] $ do
         div_ [class_ "main__centered post__block post__title"] $
             a_ [href_ $ postUrlFromId (file ^. fileMeta ^. postId)] $
@@ -44,4 +44,6 @@ postSingle file =
             ) $ extractTeaser $ file ^. fileContent
     where
         opts :: LucidWriterOptions
-        opts = def & showFigureNumbers .~ False
+        opts = def
+            & commonData        .~ cd
+            & showFigureNumbers .~ False

@@ -203,7 +203,7 @@ blog = do
         liftIO $ renderToFile out $
             T.indexPage
                 (T.defaultLayout cd (w ^. fileMeta))
-                w postsOnPage
+                cd w postsOnPage
 
 
     -- Older page
@@ -220,7 +220,7 @@ blog = do
             T.listPage
                 (T.defaultLayout cd
                     (pageMeta & postUrl .~ domain ++ "/page/" ++ show page ++ "/"))
-                olderPage newerPage postsOnPage
+                cd olderPage newerPage postsOnPage
 
 
     -- Tags main page
@@ -238,7 +238,7 @@ blog = do
             T.listPage
                 (T.defaultLayout cd
                     (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/"))
-                olderPage Nothing postsOnPage
+                cd olderPage Nothing postsOnPage
 
 
     -- Tags older pages
@@ -257,7 +257,7 @@ blog = do
             T.listPage
                 (T.defaultLayout cd
                     (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"))
-                olderPage newerPage postsOnPage
+                cd olderPage newerPage postsOnPage
 
 
     -- RSS feed
@@ -291,7 +291,7 @@ blog = do
         let a = about & fileMeta %~ postUrl .~ domain ++ "/"
         liftIO $ renderToFile out $
             T.aboutPage
-                (T.defaultLayout cd (a ^. fileMeta)) a
+                (T.defaultLayout cd (a ^. fileMeta)) cd a
 
 
     -- Map page
