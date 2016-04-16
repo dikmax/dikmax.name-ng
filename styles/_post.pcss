@@ -93,6 +93,11 @@
         display: inline-block;
         overflow: hidden;
         position: relative;
+
+        @m pano {
+            width: 100%;
+            overflow-x: scroll;
+        }
     }
 
     @e figure-img {
@@ -107,6 +112,11 @@
             @media (width >= 1056px) { /* 1024px + var(--body-padding) */
                 max-width: 1024px
             }
+        }
+
+        @m pano {
+            max-width: none;
+            height: calc(100vh - var(--navbar-height));
         }
     }
 

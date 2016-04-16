@@ -8,6 +8,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.dom.dataset');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
+goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.Timer');
 
@@ -15,6 +16,7 @@ dikmax.App.init = function() {
   dikmax.App.setupNavigation_();
   dikmax.App.scrollAndResizeTracker_();
   dikmax.App.setupHighlighting_();
+  dikmax.App.setupPanoramas_();
   dikmax.App.setupLazyImages_();
 };
 
@@ -149,4 +151,40 @@ dikmax.App.setupLazyImages_ = function() {
   });
   resizeImages();
   scrollHandler();
+};
+
+dikmax.App.setupPanoramas_ = function() {
+  let images = goog.dom.getElementsByClass('post__figure-img');
+  goog.array.forEach(images, image => {
+    const src = goog.dom.dataset.get(image, 'src');
+    if (src !== null && goog.string.endsWith(src, '-pano.jpg')) {
+      dikmax.App.handlePanorama_(image);
+    }
+  });
+};
+
+/**
+ * @param {!Element} image
+ * @private
+ */
+dikmax.App.handlePanorama_ = function(image) {
+  let expanded = false;
+  const inner = goog.dom.getParentElement(image);
+  const smallSrc = goog.dom.dataset.get(image, 'srcset');
+  const smallSrcSet = goog.dom.dataset.get(image, 'srcset');
+  const largeSrc = smallSrc.replace(/-pano\.jpg$/, "-pano-full.jpg");
+  const largeSrcSet = smallSrcSet.replace(/-pano\.jpg/g, "-pano-full.jpg");
+  goog.events.listen(image, goog.events.EventType.CLICK, () => {
+    expanded = !expanded;
+    goog.dom.classlist.enable(image, 'post__figure-img_pano', expanded);
+    goog.dom.classlist.enable(inner, 'post__figure-inner_pano', expanded);
+
+    image.src = expanded ? largeSrc : smallSrc;
+    image.srcset = expanded ? largeSrcSet : smallSrcSet;
+
+    if (expanded) {
+      const imageTop = goog.style.getPageOffsetTop(image);
+      window.scrollTo(0, imageTop - 60);
+    }
+  });
 };
