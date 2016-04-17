@@ -252,7 +252,7 @@ dikmax.App.getZoomInIcon_ = function() {
 dikmax.App.handlePanorama_ = function(image) {
   let expanded = false;
   const inner = goog.dom.getParentElement(image);
-  goog.style.setStyle(inner, 'cursor', 'pointer');
+  goog.style.setStyle(inner, 'cursor', 'zoom-in');
 
   // Adding overlay
   const overlay = goog.dom.createDom('div', 'post__figure-pano-overlay',
@@ -272,6 +272,7 @@ dikmax.App.handlePanorama_ = function(image) {
     expanded = !expanded;
     goog.dom.classlist.enable(image, 'post__figure-img_pano', expanded);
     goog.dom.classlist.enable(inner, 'post__figure-inner_pano', expanded);
+    goog.style.setStyle(inner, 'cursor', expanded ? 'zoom-out' : 'zoom-in');
     goog.style.setElementShown(overlay, !expanded);
 
     image.src = expanded ? largeSrc : smallSrc;
