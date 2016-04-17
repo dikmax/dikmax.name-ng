@@ -17,9 +17,10 @@
         "css-mqpacker",
         "cssnano"
     ],
-    "cssnext": {
+    "postcss-cssnext": {
         "browsers": "> 5%",
-        "compress": false
+        "compress": false,
+        "warnForDuplicates": false
     },
     "postcss-bem-linter": {
         "preset": "bem"
