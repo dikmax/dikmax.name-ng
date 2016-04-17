@@ -97,6 +97,10 @@
         @m pano {
             width: 100%;
             overflow-x: scroll;
+
+            &:hover .post__figure-pano-overlay svg {
+                fill: color(#b3b3b3 a(0.8));
+            }
         }
     }
 
@@ -110,13 +114,29 @@
             size: auto auto;
 
             @media (width >= 1056px) { /* 1024px + var(--body-padding) */
-                max-width: 1024px
+                max-width: 1024px;
             }
         }
 
         @m pano {
             max-width: none;
             height: calc(100vh - var(--navbar-height));
+            margin: * auto;
+
+            @media (width >= 1056px) { /* 1024px + var(--body-padding) */
+                max-width: none;
+            }
+        }
+    }
+
+    @e figure-pano-overlay {
+        position: absolute 50% * * 50%;
+
+        margin: -48px * * -48px;
+
+        & svg {
+            size: 96px 96px;
+            fill: color(#b3b3b3 a(0.5));
         }
     }
 
