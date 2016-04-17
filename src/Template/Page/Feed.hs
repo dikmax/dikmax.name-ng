@@ -42,7 +42,10 @@ renderSingle file = do
     maybe mempty (\cover ->
         H.div_ [H.class_ "main__centered post__block post__cover"] $
             H.a_ [H.href_ $ url (file ^. fileMeta ^. postId)] $
-                H.img_ [H.class_ "post__cover-image", H.src_ cover, H.alt_ ""]
+                H.img_
+                    [ H.class_ "post__cover-image"
+                    , H.src_ (domain ++ cover)
+                    , H.alt_ ""]
         ) $ file ^. fileMeta ^. postCover ^. coverImg
 
     writeLucid opts $ file ^. fileContent
