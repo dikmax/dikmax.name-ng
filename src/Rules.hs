@@ -51,7 +51,7 @@ prerequisites =
 
 demos :: Rules ()
 demos = do
-    phony "demos" $ do
+    phony "phony-demos" $ do
         command_ [] "git" ["submodule", "update"]
         files <- getDirectoryFiles "demos" ["//*"]
         forM_ files $ \file -> do

@@ -13,54 +13,54 @@ import           Template.SvgFlags.Spain
 
 svgFlags :: M.Map Text (Html ())
 svgFlags = M.fromAscList
-    [ ("AUT", svgFlag flagAustria)
-    , ("BEL", svgFlag flagBelgium)
-    , ("BLR", svgFlag flagBelarus)
-    , ("BOL", svgFlag flagBolivia)
-    , ("BRA", svgFlag flagBrazil)
-    , ("CZE", svgFlag flagCzech)
-    , ("DEU", svgFlag flagGermany)
-    , ("ESP", svgFlag flagSpain)
-    , ("EST", svgFlag flagEstonia)
-    , ("FIN", svgFlag flagFinland)
-    , ("FRA", svgFlag flagFrance)
-    , ("FXX", svgFlag flagFrance)
-    , ("HRV", svgFlag flagCroatia)
-    , ("HUN", svgFlag flagHungary)
-    , ("ITA", svgFlag flagItaly)
-    , ("LTU", svgFlag flagLithuania)
-    , ("LVA", svgFlag flagLatvia)
-    , ("MDA", svgFlag flagMoldova)
-    , ("NLD", svgFlag flagNetherlands)
-    , ("NOR", svgFlag flagNorway)
-    , ("PER", svgFlag flagPeru)
-    , ("POL", svgFlag flagPoland)
-    , ("ROU", svgFlag flagRomania)
-    , ("RUS", svgFlag flagRussia)
-    , ("SVK", svgFlag flagSlovakia)
-    , ("SVN", svgFlag flagSlovenia)
-    , ("SWE", svgFlag flagSweden)
-    , ("TUR", svgFlag flagTurkey)
-    , ("UKR", svgFlag flagUkraine)
-    , ("USA", svgFlag flagUSA)
+    [ ("AUT", svgFlag "aut" flagAustria)
+    , ("BEL", svgFlag "bel" flagBelgium)
+    , ("BLR", svgFlag "blr" flagBelarus)
+    , ("BOL", svgFlag "bol" flagBolivia)
+    , ("BRA", svgFlag "bra" flagBrazil)
+    , ("CZE", svgFlag "cze" flagCzech)
+    , ("DEU", svgFlag "deu" flagGermany)
+    , ("ESP", svgFlag "esp" flagSpain)
+    , ("EST", svgFlag "est" flagEstonia)
+    , ("FIN", svgFlag "fin" flagFinland)
+    , ("FRA", svgFlag "fra" flagFrance)
+    , ("FXX", svgFlag "fxx" flagFrance)
+    , ("HRV", svgFlag "hrv" flagCroatia)
+    , ("HUN", svgFlag "hun" flagHungary)
+    , ("ITA", svgFlag "ita" flagItaly)
+    , ("LTU", svgFlag "ltu" flagLithuania)
+    , ("LVA", svgFlag "lva" flagLatvia)
+    , ("MDA", svgFlag "mda" flagMoldova)
+    , ("NLD", svgFlag "nld" flagNetherlands)
+    , ("NOR", svgFlag "nor" flagNorway)
+    , ("PER", svgFlag "per" flagPeru)
+    , ("POL", svgFlag "pol" flagPoland)
+    , ("ROU", svgFlag "rou" flagRomania)
+    , ("RUS", svgFlag "rus" flagRussia)
+    , ("SVK", svgFlag "svk" flagSlovakia)
+    , ("SVN", svgFlag "svn" flagSlovenia)
+    , ("SWE", svgFlag "swe" flagSweden)
+    , ("TUR", svgFlag "tur" flagTurkey)
+    , ("UKR", svgFlag "ukr" flagUkraine)
+    , ("USA", svgFlag "usa" flagUSA)
     ]
 
-flagAustria :: Html ()
-flagAustria =
-    g_ [fill_rule_ "evenodd"] $ do
+flagAustria :: Attribute -> Html ()
+flagAustria clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
         path_ [fill_ "#df0000", d_ "M512 512H0V341.3h512zm0-341.2H0V0h512z"]
 
-flagBelgium :: Html ()
-flagBelgium =
-    g_ [fill_rule_ "evenodd"] $ do
+flagBelgium :: Attribute -> Html ()
+flagBelgium clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [d_ "M0 0h170.7v512H0z"]
         path_ [fill_ "#ffd90c", d_ "M170.7 0h170.6v512H170.7z"]
         path_ [fill_ "#f31830", d_ "M341.3 0H512v512H341.3z"]
 
-flagBelarus :: Html ()
-flagBelarus =
-    g_ [fill_rule_ "evenodd"] $ do
+flagBelarus :: Attribute -> Html ()
+flagBelarus clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#b20000", d_ "M0 0h992.13v329.53H0z"]
         path_ [fill_ "#429f00", d_ "M0 329.53h992.13v166.54H0z"]
         path_ [fill_ "#fff", d_ "M0 0h109.84v496.06H0z"]
@@ -177,16 +177,16 @@ flagBelarus =
                 \H10.4zm73.3-159.75h5.2v-8.4h-5.2zm-62.8 0h5.2v-8.4h-5.2z\
                 \m26.1-8.4h15.7v8.4H47z"]
 
-flagBolivia :: Html ()
-flagBolivia =
-    g_ [fill_rule_ "evenodd"] $ do
+flagBolivia :: Attribute -> Html ()
+flagBolivia clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#009a00", d_ "M0 344.6h512V512H0z"]
         path_ [fill_ "red", d_ "M0 0h512v175H0z"]
         path_ [fill_ "#ff0", d_ "M0 175h512v169.7H0z"]
 
-flagBrazil :: Html ()
-flagBrazil =
-    g_ [] $ do
+flagBrazil :: Attribute -> Html ()
+flagBrazil clipId =
+    g_ [clipId] $ do
         path_ [fill_rule_ "evenodd", fill_ "#229e45", d_ "M0 0h512v512H0z"]
         path_ [fill_rule_ "evenodd", fill_ "#f8e509", d_ "M261.36 405.4\
             \l229.87-149.2-231.26-149.6L29.34 256.57 261.36 405.4z"]
@@ -342,120 +342,122 @@ flagBrazil =
         path_ [fill_ "#309e3a", d_ "M246.43 228.95l1.7-7.5 5.55 1.27-.28 1.27\
             \-4.04-1-.38 1.6 3.75.8-.3 1.2-3.74-.9-.5 2 4.2.9-.3 1.2-5.7-1.3z"]
 
-flagCzech :: Html ()
-flagCzech =
-    g_ [fill_rule_ "evenodd", transform_ "translate(-74) scale(.722)"] $ do
+flagCzech :: Attribute -> Html ()
+flagCzech clipId =
+    g_ [clipId, fill_rule_ "evenodd", transform_ "translate(-74) scale(.722)"] $ do
         path_ [fill_ "#e80000", d_ "M0 0h1063v708.7H0z"]
         path_ [fill_ "#fff", d_ "M0 0h1063v354.3H0z"]
         path_ [fill_ "#00006f", d_ "M0 0l529.7 354L0 707.2V0z"]
 
-flagGermany :: Html ()
-flagGermany =
-    g_ [fill_rule_ "evenodd"] $ do
+flagGermany :: Attribute -> Html ()
+flagGermany clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fc0", d_ "M0 341.3h512V512H0z"]
         path_ [d_ "M0 0h512v170.7H0z"]
         path_ [fill_ "red", d_ "M0 170.7h512v170.6H0z"]
 
-flagEstonia :: Html ()
-flagEstonia =
-    g_ [fill_rule_ "evenodd", transform_ "scale(.482 .72)"] $ do
+flagEstonia :: Attribute -> Html ()
+flagEstonia clipId =
+    g_ [clipId, fill_rule_ "evenodd", transform_ "scale(.482 .72)"] $ do
         rect_ [width_ "1063", height_ "708.7", rx_ "0", ry_ "0"]
         rect_ [width_ "1063", height_ "236.2", y_ "475.6", fill_ "#fff",
             rx_ "0", ry_ "0"]
         path_ [fill_ "#1291ff", d_ "M0 0h1063v236.2H0z"]
 
-flagFinland :: Html ()
-flagFinland = do
-    path_ [fill_ "#0062da", fill_rule_ "evenodd", d_ "M.3-3764.3h50v8.5H.3zM0-2800500h7472800v66033H0z"]
-    g_ [fill_rule_ "evenodd", stroke_width_ "1pt", transform_ "translate(-105.62) scale(.844)"] $ do
-        path_ [fill_ "#fff", d_ "M0 385.6h295.3v220.7H0z"]
-        path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
-        path_ [fill_ "#0062da", d_ "M0 220.5h1063v165.3H0z"]
-        path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4zM0 385.6h295.3v220.7H0z"]
-        path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
-        path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4z"]
+flagFinland :: Attribute -> Html ()
+flagFinland clipId = do
+    g_ [clipId] $ do
+        path_ [fill_ "#0062da", fill_rule_ "evenodd", d_ "M.3-3764.3h50v8.5H.3zM0-2800500h7472800v66033H0z"]
+        g_ [fill_rule_ "evenodd", stroke_width_ "1pt", transform_ "translate(-105.62) scale(.844)"] $ do
+            path_ [fill_ "#fff", d_ "M0 385.6h295.3v220.7H0z"]
+            path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
+            path_ [fill_ "#0062da", d_ "M0 220.5h1063v165.3H0z"]
+            path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4zM0 385.6h295.3v220.7H0z"]
+            path_ [fill_ "#0062da", d_ "M295 0h177.6v606.3H295z"]
+            path_ [fill_ "#fff", d_ "M0 0h295.3v220.7H0zm472.4 385.6H1063v220.7H472.4zm0-385.6H1063v220.7H472.4z"]
 
-flagFrance :: Html ()
-flagFrance = do
-    g_ [fill_rule_ "evenodd", stroke_width_ "1pt"] $ do
+flagFrance :: Attribute -> Html ()
+flagFrance clipId = do
+    g_ [clipId, fill_rule_ "evenodd", stroke_width_ "1pt"] $ do
         path_ [fill_ "#fff", d_ "M0 0h512.005v512H0z"]
         path_ [fill_ "#00267f", d_ "M0 0h170.667v512H0z"]
         path_ [fill_ "#f31830", d_ "M341.333 0H512v512H341.333z"]
 
-flagHungary :: Html ()
-flagHungary = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagHungary :: Attribute -> Html ()
+flagHungary clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
         path_ [fill_ "#388d00", d_ "M512 512H0V341.3h512z"]
         path_ [fill_ "#d43516", d_ "M512 170.8H0V0h512z"]
 
-flagItaly :: Html ()
-flagItaly = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagItaly :: Attribute -> Html ()
+flagItaly clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
         path_ [fill_ "#005700", d_ "M0 0h170.7v512H0z"]
         path_ [fill_ "#fc0000", d_ "M341.4 0H512v512H341.4z"]
 
-flagLithuania :: Html ()
-flagLithuania = do
-    g_ [fill_rule_ "evenodd", transform_ "scale(.51314 1.0322)"] $ do
+flagLithuania :: Attribute -> Html ()
+flagLithuania clipId = do
+    g_ [clipId, fill_rule_ "evenodd", transform_ "scale(.51314 1.0322)"] $ do
         rect_ [transform_ "scale(.93865 .69686)", rx_ "0", ry_ "0",
             height_ "708.7", width_ "1063", fill_ "#007308"]
         rect_ [transform_ "scale(.93865 .69686)", rx_ "0", ry_ "0",
             height_ "236.2", width_ "1063", y_ "475.6", fill_ "#bf0000"]
         path_ [fill_ "#ffb300", d_ "M0 0h997.8v164.6H0z"]
 
-flagLatvia :: Html ()
-flagLatvia = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagLatvia :: Attribute -> Html ()
+flagLatvia clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
         path_ [fill_ "#ab231d", d_ "M0 0h512v204.8H0zm0 307.2h512V512H0z"]
 
-flagNetherlands :: Html ()
-flagNetherlands = do
-    g_ [fill_rule_ "evenodd", transform_ "scale(.48166 .71932)"] $ do
+flagNetherlands :: Attribute -> Html ()
+flagNetherlands clipId = do
+    g_ [clipId, fill_rule_ "evenodd", transform_ "scale(.48166 .71932)"] $ do
         rect_ [rx_ "0", ry_ "0", height_ "708.7", width_ "1063", fill_ "#fff"]
         rect_ [rx_ "0", ry_ "0", height_ "236.2", width_ "1063", y_ "475.6",
             fill_ "#21468b"]
         path_ [fill_ "#ae1c28", d_ "M0 0h1063v236.2H0z"]
 
-flagNorway :: Html ()
-flagNorway = do
-    path_ [d_ "M0 0h512v512H0z", fill_ "#ef2b2d"]
-    path_ [d_ "M128 0h128v512H128z", fill_ "#fff"]
-    path_ [d_ "M0 192h512v128H0z", fill_ "#fff"]
-    path_ [d_ "M160 0h64v512h-64z", fill_ "#002868"]
-    path_ [d_ "M0 224h512v64H0z", fill_ "#002868"]
+flagNorway :: Attribute -> Html ()
+flagNorway clipId =
+    g_ [clipId] $ do
+        path_ [d_ "M0 0h512v512H0z", fill_ "#ef2b2d"]
+        path_ [d_ "M128 0h128v512H128z", fill_ "#fff"]
+        path_ [d_ "M0 192h512v128H0z", fill_ "#fff"]
+        path_ [d_ "M160 0h64v512h-64z", fill_ "#002868"]
+        path_ [d_ "M0 224h512v64H0z", fill_ "#002868"]
 
-flagPeru :: Html ()
-flagPeru = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagPeru :: Attribute -> Html ()
+flagPeru clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M170.3 0h171.2v512H170.3z"]
         path_ [fill_ "red", d_ "M0 0h170.3v512H0zm340 0h172v512H340z"]
 
-flagPoland :: Html ()
-flagPoland = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagPoland :: Attribute -> Html ()
+flagPoland clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
         path_ [fill_ "#dc143c", d_ "M512 512H0V256h512z"]
 
-flagRomania :: Html ()
-flagRomania = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagRomania :: Attribute -> Html ()
+flagRomania clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#00319c", d_ "M0 0h170.7v512H0z"]
         path_ [fill_ "#ffde00", d_ "M170.7 0h170.6v512H170.7z"]
         path_ [fill_ "#de2110", d_ "M341.3 0H512v512H341.3z"]
 
-flagRussia :: Html ()
-flagRussia = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagRussia :: Attribute -> Html ()
+flagRussia clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
         path_ [fill_ "#01017e", d_ "M0 170.7h512V512H0z"]
         path_ [fill_ "#fe0101", d_ "M0 341.3h512V512H0z"]
 
-flagSlovakia :: Html ()
-flagSlovakia = do
-    g_ [fill_rule_ "evenodd", transform_ "translate(-69) scale(.7225)"] $ do
+flagSlovakia :: Attribute -> Html ()
+flagSlovakia clipId = do
+    g_ [clipId, fill_rule_ "evenodd", transform_ "translate(-69) scale(.7225)"] $ do
         path_ [fill_ "#fff", d_ "M0 0h1063v708.7H0z"]
         path_ [fill_ "#01017e", d_ "M0 236.2h1063v472.4H0z"]
         path_ [fill_ "#fe0101", d_ "M0 472.4h1063v236.2H0z"]
@@ -464,9 +466,9 @@ flagSlovakia = do
         path_ [d_ "M375.6 281.3v28h56c7.3 0 14.4-3.7 21.6-5.6V356c-7.5-1.4-14.8-4.6-22.4-4.6h-54.5v64L339 414v-62.6h-53.2c-8 0-15.4 4-23 6v-55.7c7 2.3 14 6.8 21.7 6.8H339v-28h-40.3c-7 0-13 5-19.7 7.6v-53c7.5 3.8 14.3 10 22.5 10h38v-24c0-11-6.3-21.2-9.4-32h54c-2.2 11-8 21.6-8 32.8v23h36c9.8 0 18.6-4.8 27.6-7.3V290c-8-3-16-8.3-24.5-8.3h-39z", fill_ "#fff"]
         path_ [d_ "M307 422.8c-32-16-62.6-7-77.2 18.6 22.7 43.4 66 78.4 126.8 98.5 60.6-20.8 104.6-55.8 128.8-97-18.8-36-54.6-31-77.8-20-16.3-40-83-38-100.7-.8z", fill_ "#01017e"]
 
-flagSlovenia :: Html ()
-flagSlovenia = do
-    g_ [fill_rule_ "evenodd", transform_ "translate(-62) scale(1.0295)"] $ do
+flagSlovenia :: Attribute -> Html ()
+flagSlovenia clipId = do
+    g_ [clipId, fill_rule_ "evenodd", transform_ "translate(-62) scale(1.0295)"] $ do
         path_ [fill_ "#fff", d_ "M0 0h994.7v497.3H0z"]
         path_ [fill_ "#de2918", d_ "M0 331.6h994.7v165.8H0z"]
         path_ [fill_ "#08399c", d_ "M0 165.8h994.7v165.8H0z"]
@@ -477,32 +479,32 @@ flagSlovenia = do
         path_ [d_ "M224.8 81.5l1.5 3.6 6.8 1-4 3 4 3-6 1-2 3-2-3-6-1 4-3-4-2 7-1 1-3.4zm-32 0l1.5 3.5 6.7 1-4.3 2.6 4.2 2.8-7 1-2 3.3-2-3.4-6-.8 4-3-4-2.5 6-1 1.3-3.6z", fill_ "#fc0"]
         path_ [d_ "M254.2 197.2H247l-6.7-.5-8-4H223l-8 4-6 .5-6.4-.5-8-4h-9l-8 4-6.8.5h-7.4l-3.5-6v-.2l11 1.8 6-.5 8-4h9l8 4 6 .5 6-.6 8-3.8h9l8 4 6.7.4 10.6-2 .2.4-3.8 6zm-84 9.3l7.2-.5 8-4h9.3l8 4 6 .5 6.4-.6 8-4h9l9 4h7.8l4.7-6h-.2l-5 1-6.5-.8-8-4h-10l-8 4-6 .5-6-.7-8-4h-9l-8.3 4-6.7.4-5-1.3v.5l4.3 5.5z", fill_ "#08399c"]
 
-flagSweden :: Html ()
-flagSweden = do
-    g_ [fill_rule_ "evenodd", transform_ "translate(-124.12 -7.622) scale(1.0433)"] $ do
+flagSweden :: Attribute -> Html ()
+flagSweden clipId = do
+    g_ [clipId, fill_rule_ "evenodd", transform_ "translate(-124.12 -7.622) scale(1.0433)"] $ do
         path_ [fill_ "#006aa7", d_ "M3 7.7h245.4V204H3zM3 301.8h245.4V498H3z"]
         path_ [fill_ "#fecc00", d_ "M3 203.7h245.4v98H3z"]
         path_ [fill_ "#fecc00", d_ "M247.3 7.4h98V498h-98z"]
         path_ [fill_ "#fecc00", d_ "M342.3 203.7H784v98H342.3z"]
         path_ [fill_ "#006aa7", d_ "M345.4 301.8H787V498H345.5zM345.4 7.7H787V204H345.5z"]
 
-flagTurkey :: Html ()
-flagTurkey = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagTurkey :: Attribute -> Html ()
+flagTurkey clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#f31930", d_ "M0 0h512v512H0z"]
         path_ [d_ "M348.8 264c0 70.6-58.3 128-130 128S88.5 334.5 88.5 264s58.2-128 130-128S349 193.4 349 264z", fill_ "#fff"]
         path_ [d_ "M355.3 264c0 56.5-46.6 102.3-104 102.3S147 320.5 147 264s46.7-102.3 104.2-102.3 104 45.8 104 102.3z", fill_ "#f31830"]
         path_ [d_ "M374 204.2l-1 47.3-44 12 43.4 15.5-1 43.3 28.3-33.8 43 14.8-25-36.3 30.3-36-46.4 12.7-27.5-39.5z", fill_ "#fff"]
 
-flagUkraine :: Html ()
-flagUkraine = do
-    g_ [fill_rule_ "evenodd"] $ do
+flagUkraine :: Attribute -> Html ()
+flagUkraine clipId = do
+    g_ [clipId, fill_rule_ "evenodd"] $ do
         path_ [fill_ "#ffd500", d_ "M0 0h512v512H0z"]
         path_ [fill_ "#005bbb", d_ "M0 0h512v256H0z"]
 
-flagUSA :: Html ()
-flagUSA = do
-    g_ [fill_rule_ "evenodd", transform_ "scale(3.9385)"] $ do
+flagUSA :: Attribute -> Html ()
+flagUSA clipId = do
+    g_ [clipId, fill_rule_ "evenodd", transform_ "scale(3.9385)"] $ do
         path_ [d_ "M0 0h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0z", fill_ "#bd3d44"]
         path_ [d_ "M0 10h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0z", fill_ "#fff"]
         path_ [d_ "M0 0h98.8v70H0z", fill_ "#192f5d"]
@@ -515,9 +517,12 @@ svgFlagClipPath =
             clipPath_ [id_ "a"] $
                 circle_ [cx_ "256", cy_ "256", r_ "248"]
 
-svgFlag :: Html () -> Html ()
-svgFlag contents =
-    svg_ [viewBox_ "0 0 512 512", role_ "img", clip_path_ "url(#a)"] $ do
-        contents
+svgFlag :: Text -> (Attribute -> Html ()) -> Html ()
+svgFlag code contents =
+    svg_ [viewBox_ "0 0 512 512", role_ "img"] $ do
+        defs_ $
+            clipPath_ [id_ $ "flag-" ++ code] $
+                circle_ [cx_ "256", cy_ "256", r_ "248"]
+        contents (clip_path_ $ "url(#flag-" ++ code ++ ")")
         circle_ [cx_ "256", cy_ "256", r_ "248", stroke_ "#e2e2e2",
             stroke_width_ "16", fill_ "none"]

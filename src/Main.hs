@@ -60,7 +60,7 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["images", "blogposts", "favicons", "demos",
+        need ["phony-images", "blogposts", "phony-favicons", "phony-demos",
             siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
 
 blog :: Rules ()
@@ -506,7 +506,7 @@ scripts = do
 
 favicons :: Rules ()
 favicons =
-    phony "favicons" $ do
+    phony "phony-favicons" $ do
         faviconsFiles <- getDirectoryFiles "." ["favicons/*"]
         forM_ faviconsFiles (\src -> do
             let out = siteDir </> dropDirectory1 src

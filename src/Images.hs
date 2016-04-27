@@ -89,7 +89,7 @@ imagesRules = do
                     copyFileChanged (dir </> file) (imagesDir </> file)
                 )
 
-    phony "images" $ do
+    phony "phony-images" $ do
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need [siteDir </> x | x <- imageFiles]
 
