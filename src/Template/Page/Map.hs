@@ -10,7 +10,6 @@ import           Template.SvgFlags
 
 mapPage :: (Html () -> Html ()) -> MapCountries -> Html ()
 mapPage layout countries = layout $ do
-    svgFlagClipPath
     navigation
     div_ [class_ "main main_no-hero"] $
         div_ [class_ "main__centered map__list"] $ do
