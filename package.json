@@ -2,7 +2,10 @@
   "name": "redesign",
   "version": "1.0.0",
   "description": "Holds required configs for build.",
-  "repository": "https://github.com/dikmax/dikmax.name-ng",
+  "repository": {
+      "type": "git",
+      "url": "git@github.com:dikmax/dikmax.name-ng.git"
+  },
   "dependencies": {
     "d3": "^3.5.17",
     "google-closure-library": "*",
