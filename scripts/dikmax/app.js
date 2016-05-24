@@ -28,17 +28,19 @@ dikmax.App.setupNavigation_ = function() {
 
   goog.events.listen(menuButton, goog.events.EventType.CLICK, event => {
     event.preventDefault();
-    goog.dom.classlist.add(sidebar, 'sidebar_active');
+    goog.style.setStyle(sidebar, 'display', 'block');
     goog.Timer.callOnce(() => {
+      goog.dom.classlist.add(sidebar, 'sidebar_active');
       goog.dom.classlist.add(sidebarPanel, 'sidebar__panel_active');
     }, 10);
   });
 
   goog.events.listen(sidebar, goog.events.EventType.CLICK, () => {
     goog.dom.classlist.remove(sidebarPanel, 'sidebar__panel_active');
-    goog.events.listenOnce(sidebarPanel, goog.events.EventType.TRANSITIONEND,
+    goog.dom.classlist.remove(sidebar, 'sidebar_active');
+    goog.events.listenOnce(sidebar, goog.events.EventType.TRANSITIONEND,
         () => {
-          goog.dom.classlist.remove(sidebar, 'sidebar_active');
+          goog.style.setStyle(sidebar, 'display', 'none');
         }
     );
   });

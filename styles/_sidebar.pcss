@@ -1,10 +1,12 @@
 /** @define sidebar */
 @b sidebar {
-    background: color(var(--black-color) a(0.5));
+    background-color: rgba(0, 0, 0, 0);
     display: none;
     font-size: var(--static-font-size);
     font-weight: 400;
     position: fixed 0 0 0 0;
+    transition: background-color 0.225s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: background-color;
     z-index: 11;
 
     @media (--sm-screen) {
@@ -12,18 +14,21 @@
     }
 
     @m active {
-        display: block;
+        opacity: 1;
+        background-color: color(var(--black-color) a(0.5));
+        transition: background-color 0.195s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @e panel {
         background: var(--white-color);
         position: absolute 0 * 0 -var(--sidebar-width);
-        transition: transform 0.3s;
+        transition: transform 0.225s cubic-bezier(0.4, 0, 1, 1);
         width: var(--sidebar-width);
         will-change: transform;
 
         @m active {
             transform: translateX(var(--sidebar-width));
+            transition: transform 0.195s cubic-bezier(0, 0, .2, 1);
         }
     }
 

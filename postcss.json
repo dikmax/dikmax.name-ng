@@ -43,5 +43,8 @@
     },
     "stylehacks": {
         "browsers": "> 5%"
+    },
+    "cssnano": {
+        "colormin": false
     }
 }
