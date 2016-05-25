@@ -45,6 +45,7 @@
         "browsers": "> 5%"
     },
     "cssnano": {
-        "colormin": false
+        "colormin": false,
+        "autoprefixer": false
     }
 }
