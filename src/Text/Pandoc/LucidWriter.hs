@@ -391,27 +391,41 @@ writeImage attr inline target = do
     inlines <- concatInlines inline
     options <- use writerOptions
 
-    return $ figure_
-        ([ id_ (extractId $ T.pack $ fst target)
-         , class_ $ "main__full-width post__block post__figure"
-            ++ if options ^. showFigureNumbers
-                then " post__figure_with-number"
-                else ""
-            ++ if options ^. responsiveFigures
-                then " post__figure_responsive"
-                else ""
-         ] ++ writeAttr attr) $
-        div_ [class_ $ "post__figure-outer"
+    return $ if options ^. renderType == RenderAMP
+        then figure_
+            ([ id_ (extractId $ T.pack $ fst target)
+             , class_ $ "main__full-width post__block post__figure"
+                ++ if options ^. showFigureNumbers
+                    then " post__figure_with-number"
+                    else ""
+             ] ++ writeAttr attr) $
+            div_ [class_ $ "post__figure-outer"] $
+                div_ [class_ $ "post__figure-inner"] $ do
+                    img options
+                    unless (null inline) $
+                      p_ [class_ "post__figure-description"] inlines
+        else figure_
+            ([ id_ (extractId $ T.pack $ fst target)
+             , class_ $ "main__full-width post__block post__figure"
+                ++ if options ^. showFigureNumbers
+                    then " post__figure_with-number"
+                    else ""
                 ++ if options ^. responsiveFigures
-                    then " post__figure-outer_responsive"
-                    else ""] $
-            div_ [class_ $ "post__figure-inner"
+                    then " post__figure_responsive"
+                    else ""
+             ] ++ writeAttr attr) $
+            div_ [class_ $ "post__figure-outer"
                     ++ if options ^. responsiveFigures
-                        then " post__figure-inner_responsive"
-                        else ""] $ do
-                img options
-                unless (null inline) $
-                  p_ [class_ "post__figure-description"] inlines
+                        then " post__figure-outer_responsive"
+                        else ""] $
+                div_ [class_ $ "post__figure-inner"
+                        ++ if options ^. responsiveFigures
+                            then " post__figure-inner_responsive"
+                            else ""] $ do
+                    img options
+                    unless (null inline) $
+                      p_ [class_ "post__figure-description"] inlines
+
 
     where
         -- http://dikmax.name/images/travel/2014-06-eurotrip/rome-santa-maria-maggiore-1.jpg -> rome-santa-maria-maggiore-1
@@ -421,7 +435,7 @@ writeImage attr inline target = do
         img options = do
             if options ^. renderType == RenderAMP
             then ampImg_
-                ([ class_ "post__figure-img"
+                ([ class_ "post__figure-img_amp"
                 , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                   (options ^. siteDomain)
                 , term "layout" "responsive"
