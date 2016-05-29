@@ -14,5 +14,5 @@ listPage :: (Html () -> Html ())
          -> [File]
          -> Html ()
 listPage layout cd olderPage newerPage posts = layout $ do
-    navigation
+    navigation False
     postList cd olderPage newerPage posts

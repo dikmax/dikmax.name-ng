@@ -127,6 +127,9 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         script_ [ async_ ""
                 , term "custom-element" "amp-analytics"
                 , src_ "https://cdn.ampproject.org/v0/amp-analytics-0.1.js"] ("" :: Text)
+        script_ [ async_ ""
+                , term "custom-element" "amp-sidebar"
+                , src_ "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js"] ("" :: Text)
 
         script_ [type_ "application/ld+json"] $
             "{\

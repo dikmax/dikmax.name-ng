@@ -38,7 +38,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                     , class_ "header__date"] $ toHtml $
                         formatTime timeLocale "%A, %-e %B %Y" time) $ post ^. fileMeta ^?! postDate
 
-    navigation
+    navigation isAmp
 
     div_ [class_ "main"] $ do
         div_ [class_ "post"] $ writeLucid opts $ post ^. fileContent

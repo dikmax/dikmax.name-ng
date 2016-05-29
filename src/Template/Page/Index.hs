@@ -21,6 +21,6 @@ indexPage layout cd welcome posts = layout $ do
         [ class_ "header_for-index dark-background"
         , coverToStyle welcome ] $ writeLucid def $ welcome ^. fileContent
 
-    navigation
+    navigation False
     subscribe
     postList cd (Just "/page/2/") Nothing posts

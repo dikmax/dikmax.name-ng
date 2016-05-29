@@ -31,3 +31,7 @@ ampAnalytics_ = term "amp-analytics"
 -- | @amp-img@ element
 ampImg_ :: Monad m => [Attribute] -> HtmlT m ()
 ampImg_ = with (makeElementNoEnd "amp-img")
+
+-- | @amp-sidebar@ element
+ampSidebar_ :: Term arg result => arg -> result
+ampSidebar_ = term "amp-sidebar"
