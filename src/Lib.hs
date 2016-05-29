@@ -179,7 +179,7 @@ extractString (MetaInlines inlines) = Just $ concatMap stringify inlines
 extractString _ = Nothing
 
 extractBool :: MetaValue -> Maybe Bool
-extractBool (MetaBool bool) = Just bool
+extractBool (MetaBool b) = Just b
 extractBool _ = Nothing
 
 -- Conversions

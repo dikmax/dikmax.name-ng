@@ -1,9 +1,21 @@
-module Server (server) where
+module Server (runServer) where
 
 import           BasicPrelude
+import           Config
 import           FileServe
 import           Snap.Core
 import           Snap.Http.Server
+import           System.Directory           (createDirectoryIfMissing, doesFileExist)
+
+runServer :: IO ()
+runServer = do
+    createDirectoryIfMissing True "log"
+    accessLog <- doesFileExist "log/access.log"
+    unless accessLog $ writeFile "log/access.log" ""
+    errorLog <- doesFileExist "log/error.log"
+    unless errorLog $ writeFile "log/error.log" ""
+
+    server siteDir
 
 server :: FilePath -> IO ()
 server = quickHttpServe . site

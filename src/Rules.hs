@@ -4,7 +4,6 @@ import           BasicPrelude
 import           Config
 import           Development.Shake
 import           Development.Shake.FilePath
-import           Server
 import           System.Directory           (createDirectoryIfMissing)
 import           System.Exit
 
@@ -26,17 +25,6 @@ deploy =
         command_ [] "rsync" ["--recursive", "--delete", "--force", "--compress",
             "--progress", "--delay-updates", "--iconv=UTF8-MAC,UTF-8",
             "_build/site/", "dikmax@dikmax.name:/home/dikmax/dikmax.name/"]
-
-runServer :: Rules ()
-runServer =
-    phony "server" $ do
-        liftIO $ createDirectoryIfMissing True "log"
-        accessLog <- doesFileExist "log/access.log"
-        unless accessLog $ liftIO $ writeFile "log/access.log" ""
-        errorLog <- doesFileExist "log/error.log"
-        unless errorLog $ liftIO $ writeFile "log/error.log" ""
-
-        liftIO $ server siteDir
 
 prerequisites :: Rules ()
 prerequisites =

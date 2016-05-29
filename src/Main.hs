@@ -22,6 +22,7 @@ import           Lucid                      hiding (command_)
 import           Map
 import           Rules
 import           System.Directory           (createDirectoryIfMissing)
+import           Server
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
@@ -35,24 +36,27 @@ readerOptions = def
     }
 
 main :: IO ()
-main = shakeArgs options $ do
-    usingConfigFile "build.cfg"
-    want ["build"]
-    clean
-    deploy
+main = do
+    args <- getArgs
+    if (head args == "server")
+    then runServer
+    else shakeArgs options $ do
+        usingConfigFile "build.cfg"
+        want ["build"]
+        clean
+        deploy
 
-    runServer
-    prerequisites
-    build
-    styles
-    scripts
-    imagesRules
-    blog
-    favicons
-    demos
+        prerequisites
+        build
+        styles
+        scripts
+        imagesRules
+        blog
+        favicons
+        demos
 
-    npmPackages
-    compress
+        npmPackages
+        compress
 
 
 build :: Rules ()
