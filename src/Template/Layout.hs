@@ -43,6 +43,10 @@ layout scripts cd meta content = doctypehtml_ $ do
         link_ [rel_ "preconnect", href_ "https://dikmax.disqus.com/"]
         link_ [rel_ "preconnect", href_ "https://ssl.google-analytics.com/"]
         link_ [rel_ "preconnect", href_ "https://a.disquscdn.com/"]
+
+        maybe mempty
+            (\_ -> link_ [rel_ "amphtml", href_ $ meta ^. postUrl ++ "amp/"])
+            (meta ^? postId)
         {-
         link_ [rel_ "dns-prefetch", href_ "//ajaxhttpheaders2.appspot.com/"]
         link_ [rel_ "dns-prefetch", href_ "//translate.google.com/"]
