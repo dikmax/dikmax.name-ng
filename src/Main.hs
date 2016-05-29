@@ -38,7 +38,7 @@ readerOptions = def
 main :: IO ()
 main = do
     args <- getArgs
-    if (head args == "server")
+    if (length args > 0 && head args == "server")
     then runServer
     else shakeArgs options $ do
         usingConfigFile "build.cfg"
