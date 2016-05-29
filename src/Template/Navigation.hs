@@ -32,7 +32,7 @@ navigation isAmp = do
     if isAmp
     then
         ampSidebar_ [id_ "sidebar", class_ "sidebar", term "layout" "nodisplay"] $
-            div_ [class_ "sidebar__panel sidebar__panel_active"] $ do
+            div_ [class_ "sidebar__panel sidebar__panel_active sidebar__panel_amp"] $ do
                 div_ [class_ "sidebar__brand", role_ "button",
                     tabindex_ "0", term "on" "tap:sidebar.close"] "[dikmax's name]"
                 nav_ [class_ "sidebar__links"] $
