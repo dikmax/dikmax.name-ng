@@ -73,7 +73,7 @@ executable dikmax.name
                      , lucid-svg >= 0.6 && < 0.7
                      , mtl >= 2.2 && < 2.3
                      , network-uri >= 2.6 && < 3
-                     , pandoc >= 1.16 && < 1.17
+                     , pandoc >= 1.17 && < 1.18
                      , pandoc-types >= 1.16 && < 1.17
                      , regex-posix >= 0.95 && < 1.0
                      , resourcet >= 1.1 && < 1.2
