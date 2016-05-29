@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables, MultiWayIf #-}
 
 module Text.Pandoc.LucidWriter (
     LucidWriterOptions(..),
@@ -305,47 +305,115 @@ writeInline (Link attr inline target) = do
         ) inlines
 
 writeInline (Image attr inline target) = do
+    if | "http://www.youtube.com/watch?v=" `isPrefixOf` fst target ||
+            "https://www.youtube.com/watch?v=" `isPrefixOf` fst target ->
+                -- Youtube video
+                writeYoutube attr inline target
+       | "iframe:" `isPrefixOf` fst target ->
+                writeIframe attr inline (drop 7 $ fst target, snd target)
+       | otherwise ->
+                -- Just image
+                writeImage attr inline target
+
+writeInline (Note block) = do   -- TODO there should be a link to footer
+    blocks <- concatBlocks block
+    n <- use notesList
+    options <- use writerOptions
+    notesList %= (++ [blocks])
+    let noteId = length n + 1
+    return $ sup_
+        [ id_ $ "note-" ++ (options ^. idPrefix) ++ show noteId
+        , class_ "note-link"
+        ] $ toHtml $ show noteId
+
+writeInline (Span attr inline) = do
+    inlines <- concatInlines inline
+    return $ span_ (writeAttr attr) inlines
+
+writeInline i = return $ toHtml (show (toConstr i) ++ " not implemented")
+
+writeYoutube :: Attr -> [Inline] -> Target -> WriterState (Html ())
+writeYoutube attr inline target = do
     inlines <- concatInlines inline
     options <- use writerOptions
 
-    return $ if "http://www.youtube.com/watch?v=" `isPrefixOf` fst target ||
-            "https://www.youtube.com/watch?v=" `isPrefixOf` fst target
-        -- Youtube video
+    return $ if options ^. renderType == RenderAMP
         then div_ (class_ "main__full-width post__block" : writeAttr attr) $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner post__embed"] $ do
-                    iframe_
-                        [ src_ $ "https://www.youtube.com/embed/" ++
-                            videoId (T.pack $ fst target) ++ "?wmode=transparent"
-                        , makeAttribute "allowfullscreen" "allowfullscreen"
+                    ampYoutube_
+                        [ data_ "videoid" (videoId $ T.pack $ fst target)
+                        , term "layout" "responsive"
+                        , width_ "480"
+                        , height_ "270"
                         ] mempty
                     unless (null inline) $
                         p_ [class_ "figure-description"] inlines
-        else figure_
-            ([ id_ (extractId $ T.pack $ fst target)
-             , class_ $ "main__full-width post__block post__figure"
-                ++ if options ^. showFigureNumbers
-                    then " post__figure_with-number"
-                    else ""
-                ++ if options ^. responsiveFigures
-                    then " post__figure_responsive"
-                    else ""
-             ] ++ writeAttr attr) $
-            div_ [class_ $ "post__figure-outer"
-                    ++ if options ^. responsiveFigures
-                        then " post__figure-outer_responsive"
-                        else ""] $
-                div_ [class_ $ "post__figure-inner"
-                        ++ if options ^. responsiveFigures
-                            then " post__figure-inner_responsive"
-                            else ""] $ do
-                    img options
-                    unless (null inline) $
-                      p_ [class_ "post__figure-description"] inlines
-
+        else div_ (class_ "main__full-width post__block" : writeAttr attr) $
+            div_ [class_ "post__figure-outer"] $
+                div_ [class_ "post__figure-inner post__embed"] $ do
+                iframe_
+                    [ src_ $ "https://www.youtube.com/embed/" ++
+                        videoId (T.pack $ fst target) ++ "?wmode=transparent"
+                    , makeAttribute "allowfullscreen" "allowfullscreen"
+                    ] mempty
+                unless (null inline) $
+                    p_ [class_ "figure-description"] inlines
     where
         videoId url = T.takeWhile (/= '&') $ T.replace "http://www.youtube.com/watch?v=" "" $
             T.replace "https://www.youtube.com/watch?v=" "" url
+
+writeIframe :: Attr -> [Inline] -> Target -> WriterState (Html ())
+writeIframe attr _ target = do
+    options <- use writerOptions
+
+    return $ if options ^. renderType == RenderAMP
+        then div_ (class_ "main__full-width post__block" : writeAttr attr) $
+            div_ [class_ "post__figure-outer"] $
+            div_ [class_ "post__figure-inner post__embed"] $
+            ampIframe_ [ src_ $ T.pack $ fst target
+                , term "frameborder" "0"
+                , term "allowfullscreen" "allowfullscreen"
+                , term "layout" "responsive"
+                , term "sandbox" "allow-scripts allow-same-origin allow-popups"
+                , width_ "480"
+                , height_ "270"
+                ] mempty
+        else div_ (class_ "main__full-width post__block" : writeAttr attr) $
+            div_ [class_ "post__figure-outer"] $
+            div_ [class_ "post__figure-inner post__embed"] $
+            iframe_ [ src_ $ T.pack $ fst target
+                    , term "allowfullscreen" "allowfullscreen"] mempty
+
+
+writeImage :: Attr -> [Inline] -> Target -> WriterState (Html ())
+writeImage attr inline target = do
+    inlines <- concatInlines inline
+    options <- use writerOptions
+
+    return $ figure_
+        ([ id_ (extractId $ T.pack $ fst target)
+         , class_ $ "main__full-width post__block post__figure"
+            ++ if options ^. showFigureNumbers
+                then " post__figure_with-number"
+                else ""
+            ++ if options ^. responsiveFigures
+                then " post__figure_responsive"
+                else ""
+         ] ++ writeAttr attr) $
+        div_ [class_ $ "post__figure-outer"
+                ++ if options ^. responsiveFigures
+                    then " post__figure-outer_responsive"
+                    else ""] $
+            div_ [class_ $ "post__figure-inner"
+                    ++ if options ^. responsiveFigures
+                        then " post__figure-inner_responsive"
+                        else ""] $ do
+                img options
+                unless (null inline) $
+                  p_ [class_ "post__figure-description"] inlines
+
+    where
         -- http://dikmax.name/images/travel/2014-06-eurotrip/rome-santa-maria-maggiore-1.jpg -> rome-santa-maria-maggiore-1
         extractId = T.init . fst . T.breakOnEnd "." . snd . T.breakOnEnd "/"
 
@@ -395,23 +463,6 @@ writeInline (Image attr inline target) = do
         fixImageTitle title
             | T.take 4 title == "fig:" = T.drop 4 title
             | otherwise = title
-
-writeInline (Note block) = do   -- TODO there should be a link to footer
-    blocks <- concatBlocks block
-    n <- use notesList
-    options <- use writerOptions
-    notesList %= (++ [blocks])
-    let noteId = length n + 1
-    return $ sup_
-        [ id_ $ "note-" ++ (options ^. idPrefix) ++ show noteId
-        , class_ "note-link"
-        ] $ toHtml $ show noteId
-
-writeInline (Span attr inline) = do
-    inlines <- concatInlines inline
-    return $ span_ (writeAttr attr) inlines
-
-writeInline i = return $ toHtml (show (toConstr i) ++ " not implemented")
 
 
 getFooter :: WriterState (Html ())

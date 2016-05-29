@@ -28,6 +28,10 @@ ampBoilerplate_ = do
 ampAnalytics_ :: Term arg result => arg -> result
 ampAnalytics_ = term "amp-analytics"
 
+-- | @amp-iframe@ element
+ampIframe_ :: Term arg result => arg -> result
+ampIframe_ = term "amp-iframe"
+
 -- | @amp-img@ element
 ampImg_ :: Monad m => [Attribute] -> HtmlT m ()
 ampImg_ = with (makeElementNoEnd "amp-img")
@@ -35,3 +39,7 @@ ampImg_ = with (makeElementNoEnd "amp-img")
 -- | @amp-sidebar@ element
 ampSidebar_ :: Term arg result => arg -> result
 ampSidebar_ = term "amp-sidebar"
+
+-- | @amp-youtube@ element
+ampYoutube_ :: Term arg result => arg -> result
+ampYoutube_ = term "amp-youtube"

@@ -115,13 +115,6 @@ cover:
 
 Маршрут:
 
-<div class="main__full-width post__block">
-<div class="post__figure-outer">
-<div class="post__figure-inner post__embed">
-<iframe src="https://www.komoot.de/tour/8402522/embed"
-allowfullscreen="allowfullscreen"></iframe>
-</div>
-</div>
-</div>
+![](iframe:https://www.komoot.de/tour/8402522/embed)
 
 [Komoot]: https://www.komoot.de/
