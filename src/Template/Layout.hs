@@ -155,9 +155,9 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
 
         script_ [type_ "application/ld+json"] $
             "{\
-              \\"@context\": \"http://schema.org\",\
-              \\"@type\": \"BlogPosting\",\
-              \\"headline\": \"" ++ pageTitle meta ++ "\"" ++ date ++ "\
+              \\"@context\":\"http://schema.org\",\
+              \\"@type\":\"BlogPosting\",\
+              \\"headline\":\"" ++ pageTitle meta ++ "\"" ++ date ++ "\
             \}"
 
         ogMeta meta
@@ -168,16 +168,16 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         ampAnalytics_ [type_ "googleanalytics"] $
             script_ [type_ "application/json"] $
                 ("{\
-                   \\"vars\": {\
-                     \\"account\": \"" ++ googleAnalyticsUA ++ "\"\
+                   \\"vars\":{\
+                     \\"account\":\"" ++ googleAnalyticsUA ++ "\"\
                    \},\
                    \\"triggers\": {\
                      \\"trackPageview\": {\
-                       \\"on\": \"visible\",\
-                       \\"request\": \"pageview\",\
-                       \\"vars\": {\
-                           \\"title\": \"" ++ pageTitle meta ++ "\",\
-                           \\"ampdocUrl\": \"" ++ (meta ^. postUrl) ++ "\"\
+                       \\"on\":\"visible\",\
+                       \\"request\":\"pageview\",\
+                       \\"vars\":{\
+                           \\"title\":\"" ++ pageTitle meta ++ "\",\
+                           \\"ampdocUrl\":\"" ++ (meta ^. postUrl) ++ "\"\
                        \}\
                      \}\
                    \}\
@@ -205,13 +205,16 @@ googleAnalytics :: Html ()
 googleAnalytics =
     toHtmlRaw $
         ("<script type=\"text/javascript\">\
-             \var _gaq = _gaq || [];\
-             \_gaq.push(['_setAccount', '" ++ googleAnalyticsUA ++ "']);\
-             \_gaq.push(['_setDomainName', 'dikmax.name']);\
+             \var _gaq=_gaq||[];\
+             \_gaq.push(['_setAccount','" ++ googleAnalyticsUA ++ "']);\
+             \_gaq.push(['_setDomainName','dikmax.name']);\
              \_gaq.push(['_trackPageview']);\
-             \(function() {\
-                 \var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\
-                 \ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\
-                 \var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\
+             \(function(){\
+                 \var ga=document.createElement('script');\
+                 \ga.type='text/javascript';\
+                 \ga.async=true;\
+                 \ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';\
+                 \var s=document.getElementsByTagName('script')[0];\
+                 \s.parentNode.insertBefore(ga,s);\
              \})();\
         \</script>" :: Text)
