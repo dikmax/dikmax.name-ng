@@ -11,6 +11,7 @@ import           Data.Default
 import qualified Data.Map.Lazy              as M
 import           Data.Time
 import           GHC.Generics               (Generic)
+import           JsonLD
 import           Text.Pandoc
 import           Text.Pandoc.Binary         ()
 
@@ -40,6 +41,7 @@ makeLenses ''PostCover
 data FileMeta =
     PostMeta
     { _postId               :: Text
+    , _postMeta             :: Metadata
     , _postTitle            :: Text
     , _postDate             :: Maybe UTCTime
     , _postCover            :: PostCover
@@ -129,17 +131,6 @@ instance Default CommonData where
 makeLenses ''CommonData
 
 --
-instance Binary UTCTime where
-    put (UTCTime a b) = put a >> put b
-    get = UTCTime <$> get <*> get
-
-instance Binary Day where
-    put (ModifiedJulianDay d) = put d
-    get = ModifiedJulianDay <$> get
-
-instance Binary DiffTime where
-    put = put . fromEnum
-    get = toEnum <$> get
 
 data Anything = Anything deriving (Eq)
 instance Hashable Anything where

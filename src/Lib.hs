@@ -22,6 +22,7 @@ import qualified Data.Text                  as T
 import           Data.Time
 import           Development.Shake
 import           Development.Shake.FilePath
+import           JsonLD
 import           Text.Pandoc
 import           Text.Pandoc.Lens
 import           Text.Pandoc.Shared
@@ -56,13 +57,14 @@ dropDirectory2 = dropDirectory1 . dropDirectory1
 dropDirectory3 :: FilePath -> FilePath
 dropDirectory3 = dropDirectory2 . dropDirectory1
 
-buildPost :: FilePath -> Pandoc -> File
-buildPost src pandoc = File m pandoc
+buildPost :: FilePath -> Images -> Pandoc -> File
+buildPost src images pandoc = File m pandoc
     where
         m :: FileMeta
         m
             | "posts/" `isPrefixOf` src = PostMeta
                 { _postId            = ""
+                , _postMeta          = m'
                 , _postTitle         = T.pack $ getMetaString
                                             (unMeta $ pandoc ^. meta)
                                             "title"
@@ -90,6 +92,42 @@ buildPost src pandoc = File m pandoc
                                     getMetaString' "" (unMeta $ pandoc ^. meta)
                                         "title"
                 }
+
+        m' :: Metadata
+        m' = toMetadata $ BlogPosting
+            { _blogPostingHeadline =
+                T.pack $ getMetaString (unMeta $ pandoc ^. meta) "title"
+            , _blogPostingDatePublished = fromMaybe (error "date not defined") $
+                parseDate $ getMetaString (unMeta $ pandoc ^. meta) "date"
+            , _blogPostingDateModified =
+                parseDate $ getMetaString' "" (unMeta $ pandoc ^. meta) "modified"
+            , _blogPostingAuthor = author
+            , _blogPostingImage = img
+            }
+
+        author :: Person
+        author = Person -- TODO more data to person
+            { _personName = T.pack $
+                getMetaString' "Maxim Dikun" (unMeta $ pandoc ^. meta) "author"
+            }
+
+        img :: ImageObject
+        img =
+            let cover = buildPostCover (pandoc ^. meta) in
+            maybe defImg (\ci ->
+                maybe defImg (\c -> ImageObject
+                    { _imageObjectUrl = domain ++ ci
+                    , _imageObjectWidth = c ^. imageWidth
+                    , _imageObjectHeight = c ^. imageHeight
+                    }) $ M.lookup (T.tail ci) images
+                ) $ cover ^. coverImg
+
+        defImg :: ImageObject
+        defImg = ImageObject
+            { _imageObjectUrl = domain ++ "/android-chrome-192x192.png"
+            , _imageObjectWidth = 192
+            , _imageObjectHeight = 192
+            }
 
 parseDate :: String -> Maybe UTCTime
 parseDate str =

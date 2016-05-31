@@ -3,8 +3,7 @@ module Template.Layout (defaultLayout, mapLayout, ampLayout) where
 import           BasicPrelude
 import           Config
 import           Control.Lens
-import qualified Data.Text                as T
-import           Data.Time
+import           JsonLD
 import           Lucid
 import           Lucid.AMP
 import           Types
@@ -153,17 +152,7 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
                 , term "custom-element" "amp-youtube"
                 , src_ "https://cdn.ampproject.org/v0/amp-youtube-0.1.js"] ("" :: Text)
 
-        script_ [type_ "application/ld+json"] $
-            "{\
-              \\"@context\":\"http://schema.org\",\
-              \\"@type\":\"BlogPosting\",\
-              \\"author\":{\
-                  \\"@type\":\"Person\",\
-                  \\"name\":\"Maxim Dikun\"\
-              \},\
-              \\"headline\":\"" ++ pageTitle meta ++ "\"" ++
-              image ++
-              date ++ "}"
+        ldMeta meta
 
         ogMeta meta
 
@@ -190,23 +179,10 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         content
         footer
 
-    where
-        date :: Text
-        date = maybe "" (\time ->
-           ",\"datePublished\":\"" ++
-           T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time) ++
-           "\",\"dateModified\":\"" ++
-           T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time) ++
-           "\""
-           ) $ meta ^?! postDate
 
-        image :: Text
-        image = maybe "" (\img ->
-            ",\"image\":{\
-                \\"@type\": \"ImageObject\",\
-                \\"url\":\"" ++ img ++ "\"\
-            \}"
-            ) $ meta ^. postCover ^. coverImg
+ldMeta :: FileMeta -> Html ()
+ldMeta meta =
+    script_ [type_ "application/ld+json"] $ toJsonLD $ meta ^?! postMeta
 
 
 footer :: Html ()

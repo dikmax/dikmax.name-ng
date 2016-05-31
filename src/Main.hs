@@ -344,10 +344,11 @@ blog = do
         need [src]
         file <- liftIO $ readFile src
 
-        let pandoc = handleError $ readMarkdown readerOptions (T.unpack file)
-        let post = buildPost src pandoc
-        let pCover = post ^. fileMeta ^. postCover
         imagesContent <- images Anything
+
+        let pandoc = handleError $ readMarkdown readerOptions (T.unpack file)
+        let post = buildPost src imagesContent pandoc
+        let pCover = post ^. fileMeta ^. postCover
         let color = mplus
                 (pCover ^. coverColor)
                 (maybe
