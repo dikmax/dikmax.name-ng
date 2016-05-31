@@ -46,9 +46,9 @@ layout scripts cd meta content = doctypehtml_ $ do
         link_ [rel_ "preconnect", href_ "https://ssl.google-analytics.com/"]
         link_ [rel_ "preconnect", href_ "https://a.disquscdn.com/"]
 
-        maybe mempty
+        {-maybe mempty
             (\_ -> link_ [rel_ "amphtml", href_ $ meta ^. postUrl ++ "amp/"])
-            (meta ^? postId)
+            (meta ^? postId)-}
         {-
         link_ [rel_ "dns-prefetch", href_ "//ajaxhttpheaders2.appspot.com/"]
         link_ [rel_ "dns-prefetch", href_ "//translate.google.com/"]
@@ -157,8 +157,13 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
             "{\
               \\"@context\":\"http://schema.org\",\
               \\"@type\":\"BlogPosting\",\
-              \\"headline\":\"" ++ pageTitle meta ++ "\"" ++ date ++ "\
-            \}"
+              \\"author\":{\
+                  \\"@type\":\"Person\",\
+                  \\"name\":\"Maxim Dikun\"\
+              \},\
+              \\"headline\":\"" ++ pageTitle meta ++ "\"" ++
+              image ++
+              date ++ "}"
 
         ogMeta meta
 
@@ -190,8 +195,18 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         date = maybe "" (\time ->
            ",\"datePublished\":\"" ++
            T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time) ++
+           "\",\"dateModified\":\"" ++
+           T.pack (formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) time) ++
            "\""
            ) $ meta ^?! postDate
+
+        image :: Text
+        image = maybe "" (\img ->
+            ",\"image\":{\
+                \\"@type\": \"ImageObject\",\
+                \\"url\":\"" ++ img ++ "\"\
+            \}"
+            ) $ meta ^. postCover ^. coverImg
 
 
 footer :: Html ()
