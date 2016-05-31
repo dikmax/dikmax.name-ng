@@ -26,7 +26,6 @@ import           Server
 import qualified Template                   as T
 import           Text.Pandoc
 import           Text.Pandoc.Error          (handleError)
-import           Text.Regex.Posix
 import           Types
 
 readerOptions :: ReaderOptions
@@ -356,12 +355,10 @@ blog = do
                     (\img -> (^. imageColor) <$> imageGetter imagesContent img)
                     (pCover ^. coverImg))
 
+        -- TODO move to build post
         let updatedPost = post & fileMeta %~ (\m -> m
-                & postId    .~ fromMaybe "" (idFromSrcFilePath src)
                 & postDate  %~ alterDate src
                 & postCover .~ (pCover & coverColor .~ color)
-                & postUrl   .~ maybe "" (\i -> domain ++ "/post/" ++ i
-                                    ++ "/") (idFromSrcFilePath src)
                 )
         liftIO $ createDirectoryIfMissing True (takeDirectory out)
         liftIO $ B.encodeFile out updatedPost -- TODO File
@@ -536,32 +533,6 @@ dateFromPost (Pandoc meta _) = maybe (terror "Post have no date") getDate $ look
     where
         getDate (MetaString s) = T.pack s
         getDate s = terror $ "Post date field have wrong value: " ++ show s
-
-idFromSrcFilePath :: FilePath -> Maybe Text
-idFromSrcFilePath filePath =
-    case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [v]) -> Just $ T.pack v
-        _              -> Nothing
-    where
-        pat :: String
-        pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
-
-idFromDestFilePath :: FilePath -> Text
-idFromDestFilePath filePath =
-    case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, v : _) -> T.pack v
-        _              -> error $ "Can't extract id from " ++ filePath
-    where
-        pat :: String
-        pat = "/([^/]*)(/amp)?/index\\.html$"
-
-tagAndPageFromDestFilePath :: FilePath -> (Text, Int)
-tagAndPageFromDestFilePath filePath =
-    case filePath =~ pat :: (String, String, String, [String]) of
-        (_, _, _, [tag, page]) -> (T.pack tag, read $ T.pack page)
-        _              -> error $ "Can't extract id from " ++ filePath
-    where
-        pat = tagDir ++ "/([^/]*)/" ++ pageDir ++ "/([^/]*)/index.html$"
 
 coverToStyle :: File -> Text
 coverToStyle file =

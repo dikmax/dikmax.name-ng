@@ -12,6 +12,9 @@ module Lib
     , postIdToUrl
     , splitAll
     , tagToUrl
+    , idFromSrcFilePath
+    , idFromDestFilePath
+    , tagAndPageFromDestFilePath
     ) where
 
 import           BasicPrelude
@@ -26,7 +29,7 @@ import           JsonLD
 import           Text.Pandoc
 import           Text.Pandoc.Lens
 import           Text.Pandoc.Shared
-import           Text.Regex.Posix ((=~~))
+import           Text.Regex.Posix ((=~~), (=~))
 import           Types
 
 
@@ -63,7 +66,7 @@ buildPost src images pandoc = File m pandoc
         m :: FileMeta
         m
             | "posts/" `isPrefixOf` src = PostMeta
-                { _postId            = ""
+                { _postId            = fromMaybe "" (idFromSrcFilePath src)
                 , _postMeta          = m'
                 , _postTitle         = T.pack $ getMetaString
                                             (unMeta $ pandoc ^. meta)
@@ -84,14 +87,18 @@ buildPost src images pandoc = File m pandoc
                 , _postFigureResponsive = getMetaBool True
                                             (unMeta $ pandoc ^. meta)
                                             "figure-responsive"
-                , _postUrl           = ""
+                , _postUrl           = url
                 }
             | otherwise = def
                 { _postCover = buildPostCover (pandoc ^. meta)
                 , _postTitle = T.pack $
                                     getMetaString' "" (unMeta $ pandoc ^. meta)
                                         "title"
+                , _postUrl = url
                 }
+
+        url :: Text
+        url = maybe "" (\i -> domain ++ "/post/" ++ i ++ "/") (idFromSrcFilePath src)
 
         m' :: Metadata
         m' = toMetadata $ BlogPosting
@@ -103,12 +110,14 @@ buildPost src images pandoc = File m pandoc
                 parseDate $ getMetaString' "" (unMeta $ pandoc ^. meta) "modified"
             , _blogPostingAuthor = author
             , _blogPostingImage = img
+            , _blogPostingPublisher = publisher
+            , _blogPostingMainEntityOfPage = url
             }
 
         author :: Person
         author = Person -- TODO more data to person
             { _personName = T.pack $
-                getMetaString' "Maxim Dikun" (unMeta $ pandoc ^. meta) "author"
+                getMetaString' "Максим Дикун" (unMeta $ pandoc ^. meta) "author"
             }
 
         img :: ImageObject
@@ -121,6 +130,16 @@ buildPost src images pandoc = File m pandoc
                     , _imageObjectHeight = c ^. imageHeight
                     }) $ M.lookup (T.tail ci) images
                 ) $ cover ^. coverImg
+
+        publisher :: Organization
+        publisher = Organization
+            { _organizationName = "[dikmax's blog]"
+            , _organizationLogo = ImageObject -- TODO create logo
+                { _imageObjectUrl = domain ++ "/apple-touch-icon-60x60.png"
+                , _imageObjectWidth = 60
+                , _imageObjectHeight = 60
+                }
+            }
 
         defImg :: ImageObject
         defImg = ImageObject
@@ -236,3 +255,29 @@ archiveMonths files =
             case f ^. fileMeta ^?! postDate of
                 Just time -> Just (T.pack $ formatTime timeLocale "%Y%m" time, [f])
                 Nothing -> Nothing
+
+idFromSrcFilePath :: FilePath -> Maybe Text
+idFromSrcFilePath filePath =
+    case filePath =~ pat :: (String, String, String, [String]) of
+        (_, _, _, [v]) -> Just $ T.pack v
+        _              -> Nothing
+    where
+        pat :: String
+        pat = "/[0-9]{4}/[0-9]{4}-[0-9]{2}-[0-9]{2}-(.*)\\.md$"
+
+idFromDestFilePath :: FilePath -> Text
+idFromDestFilePath filePath =
+    case filePath =~ pat :: (String, String, String, [String]) of
+        (_, _, _, v : _) -> T.pack v
+        _              -> error $ "Can't extract id from " ++ filePath
+    where
+        pat :: String
+        pat = "/([^/]*)(/amp)?/index\\.html$"
+
+tagAndPageFromDestFilePath :: FilePath -> (Text, Int)
+tagAndPageFromDestFilePath filePath =
+    case filePath =~ pat :: (String, String, String, [String]) of
+        (_, _, _, [tag, page]) -> (T.pack tag, read $ T.pack page)
+        _              -> error $ "Can't extract id from " ++ filePath
+    where
+        pat = tagDir ++ "/([^/]*)/" ++ pageDir ++ "/([^/]*)/index.html$"

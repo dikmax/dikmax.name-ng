@@ -2,6 +2,7 @@
 title: "Осень в Минске"
 date: 2015-11-09T09:40:00+03:00
 collections: [proofreaders-stories]
+author: "Анастасия Барбосова"
 published: true
 tags: [беларусь, гостевой пост, фотки]
 cover:
