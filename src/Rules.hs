@@ -4,6 +4,7 @@ import           BasicPrelude
 import           Config
 import           Development.Shake
 import           Development.Shake.FilePath
+import           Lib
 import           System.Directory           (createDirectoryIfMissing)
 import           System.Exit
 
@@ -48,3 +49,9 @@ demos = do
                 liftIO $ createDirectoryIfMissing True $ takeDirectory (demosDir </> file)
                 putNormal $ "Copying file " ++ (demosDir </> file)
                 copyFileChanged ("demos" </> file) (demosDir </> file)
+
+robotsTxt :: Rules ()
+robotsTxt = do
+    siteDir </> "robots.txt" %> \out -> do
+        let src = dropDirectory2 out
+        copyFileChanged src out

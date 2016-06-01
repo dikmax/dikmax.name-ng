@@ -53,6 +53,7 @@ main = do
         blog
         favicons
         demos
+        robotsTxt
 
         npmPackages
         compress
@@ -64,6 +65,7 @@ build =
         need ["prerequisites"]
         need ["sync-images"]
         need ["phony-images", "blogposts", "phony-favicons", "phony-demos",
+            siteDir </> "robots.txt",
             siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
 
 blog :: Rules ()
