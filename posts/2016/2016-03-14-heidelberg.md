@@ -2,6 +2,7 @@
 title: "Хайдельберг"
 date: "2016-03-14T08:05:00+01:00"
 collections: [latest-travel, proofreaders-stories]
+author: "Анастасия Барбосова"
 published: true
 tags: [путешествие, фотки, германия]
 cover:

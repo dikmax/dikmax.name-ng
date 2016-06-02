@@ -1,6 +1,12 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: ulm
+    name: Ульм
+
+  - id: ritter-sport-waldenbuch
+    name: Ritter Sport и Вальденбух
+
   - id: nuerenberg
     name: Нюрнберг
 

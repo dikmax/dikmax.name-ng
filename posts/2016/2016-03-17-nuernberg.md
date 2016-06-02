@@ -2,6 +2,7 @@
 title: "Нюрнберг"
 date: "2016-03-17T08:15:00+01:00"
 collections: [latest-travel, proofreaders-stories]
+author: "Анастасия Барбосова"
 published: true
 tags: [путешествие, фотки, германия]
 cover:
