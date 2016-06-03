@@ -205,10 +205,16 @@ blog = do
         let postsOnPage = getPostsForPage ps 1
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
-        let w = welcome & fileMeta %~ postUrl .~ domain ++ "/"
+        let w = welcome & fileMeta %~ (postUrl .~ domain ++ "/")
+        let meta = w ^. fileMeta & postMeta .~ (toMetadata $ WebPage
+                 { _webPageHeadline = "[dikmax's blog]"
+                 , _webPageCopyrightHolder = copyrightHolder
+                 , _webPageCopyrightYear = copyrightYear
+                 })
+
         liftIO $ renderToFile out $
             T.indexPage
-                (T.defaultLayout cd (w ^. fileMeta))
+                (T.defaultLayout cd meta)
                 cd w postsOnPage
 
 
@@ -220,12 +226,20 @@ blog = do
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage "/" ps page
         let newerPage = getNewerPage "/" ps page
-        let pageMeta = def {_postTitle = show page ++ "-я страница"}
+        let title = show page ++ "-я страница"
+        let pageMeta = def
+                { _postTitle = title
+                , _postUrl = domain ++ "/page/" ++ show page ++ "/"
+                , _postMeta  = toMetadata $ WebPage
+                      { _webPageHeadline = title
+                      , _webPageCopyrightHolder = copyrightHolder
+                      , _webPageCopyrightYear = copyrightYear
+                      }
+                }
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.listPage
-                (T.defaultLayout cd
-                    (pageMeta & postUrl .~ domain ++ "/page/" ++ show page ++ "/"))
+                (T.defaultLayout cd pageMeta)
                 cd olderPage newerPage postsOnPage
 
 
@@ -238,12 +252,20 @@ blog = do
         let ps = tags M.! tag
         let postsOnPage = getPostsForPage ps 1
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps 1
-        let pageMeta = def {_postTitle = "\"" ++ tag ++ "\""}
+        let title = "\"" ++ tag ++ "\""
+        let pageMeta = def
+                { _postTitle = title
+                , _postUrl = domain ++ "/tag/" ++ tag ++ "/"
+                , _postMeta  = toMetadata $ WebPage
+                      { _webPageHeadline = title
+                      , _webPageCopyrightHolder = copyrightHolder
+                      , _webPageCopyrightYear = copyrightYear
+                      }
+                }
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.listPage
-                (T.defaultLayout cd
-                    (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/"))
+                (T.defaultLayout cd pageMeta)
                 cd olderPage Nothing postsOnPage
 
 
@@ -257,12 +279,20 @@ blog = do
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps page
         let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
-        let pageMeta = def {_postTitle = "\"" ++ tag ++ "\", " ++ show page ++ "-я страница"}
+        let title = "\"" ++ tag ++ "\", " ++ show page ++ "-я страница"
+        let pageMeta = def
+                { _postTitle = title
+                , _postUrl = domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"
+                , _postMeta  = toMetadata $ WebPage
+                      { _webPageHeadline = title
+                      , _webPageCopyrightHolder = copyrightHolder
+                      , _webPageCopyrightYear = copyrightYear
+                      }
+                }
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.listPage
-                (T.defaultLayout cd
-                    (pageMeta & postUrl .~ domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"))
+                (T.defaultLayout cd pageMeta)
                 cd olderPage newerPage postsOnPage
 
 
@@ -284,9 +314,18 @@ blog = do
         cd <- commonData Anything
         let files = M.elems ps
         putNormal $ "Writing page " ++ out
+        let meta = def
+                { _postTitle = "Архив"
+                , _postUrl = domain ++ "/archive/"
+                , _postMeta  = toMetadata $ WebPage
+                      { _webPageHeadline = "Архив"
+                      , _webPageCopyrightHolder = copyrightHolder
+                      , _webPageCopyrightYear = copyrightYear
+                      }
+                }
         liftIO $ renderToFile out $
             T.archivePage
-                (T.defaultLayout cd def) files
+                (T.defaultLayout cd meta) files
 
 
     -- About page
@@ -313,11 +352,21 @@ blog = do
 
         mapJson <- liftIO $ LBS.readFile "data/map.json"
         let res = A.eitherDecode mapJson :: Either String MapCountries
+        let meta = def
+                { _postTitle = "Путешествия"
+                , _postUrl = domain ++ "/map/"
+                , _postMeta  = toMetadata $ WebPage
+                      { _webPageHeadline = "Путешествия"
+                      , _webPageCopyrightHolder = copyrightHolder
+                      , _webPageCopyrightYear = copyrightYear
+                      }
+                }
+
         either error (\countries -> do
             putNormal $ "Writing page " ++ out
             liftIO $ renderToFile out $
                 T.mapPage
-                    (T.defaultLayout cd def) countries
+                    (T.defaultLayout cd meta) countries
             ) res
 
 
