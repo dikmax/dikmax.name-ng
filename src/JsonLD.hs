@@ -90,6 +90,10 @@ data BlogPosting = BlogPosting
     , _blogPostingImage :: ImageObject
     , _blogPostingPublisher :: Organization
     , _blogPostingMainEntityOfPage :: Text
+    , _blogPostingCopyrightHolder :: Person
+    , _blogPostingCopyrightYear :: Int
+    , _blogPostingKeywords :: Text
+    , _blogPostingEditor :: Person
     } deriving (Generic, Show)
 
 makeLenses ''BlogPosting
@@ -105,6 +109,10 @@ instance ToJSON BlogPosting where
         , ("image", toJSON $ v ^. blogPostingImage)
         , ("publisher", toJSON $ v ^. blogPostingPublisher)
         , ("mainEntityOfPage", toJSON $ v ^. blogPostingMainEntityOfPage)
+        , ("copyrightHolder", toJSON $ v ^. blogPostingCopyrightHolder)
+        , ("copyrightYear", toJSON $ v ^. blogPostingCopyrightYear)
+        , ("keywords", toJSON $ v ^. blogPostingKeywords)
+        , ("editor", toJSON $ v ^. blogPostingEditor)
         ]
         where
             formatDate date =
@@ -114,15 +122,58 @@ instance ToJSON BlogPosting where
 
 instance Binary BlogPosting
 
-data Metadata = MPerson Person
-              | MOrganization Organization
+data WebPage = WebPage
+    { _webPageHeadline :: Text
+    , _webPageCopyrightHolder :: Person
+    , _webPageCopyrightYear :: Int
+    } deriving (Generic, Show)
+
+makeLenses ''WebPage
+
+instance ToJSON WebPage where
+    toJSON v = case genericToJSON (genericOptions 8) v of
+        Object o -> Object $ HM.insert "@type" "WebPage" o
+        _ -> error "Wrong type"
+
+instance Binary WebPage
+
+data AboutPage = AboutPage
+    { _aboutPageHeadline :: Text
+    , _aboutPageCopyrightHolder :: Person
+    , _aboutPageCopyrightYear :: Int
+    } deriving (Generic, Show)
+
+makeLenses ''AboutPage
+
+instance ToJSON AboutPage where
+    toJSON v = case genericToJSON (genericOptions 10) v of
+        Object o -> Object $ HM.insert "@type" "AboutPage" o
+        _ -> error "Wrong type"
+
+instance Binary AboutPage
+
+-- Metadata
+
+data Metadata = MAboutPage AboutPage
+              | MBlogPosting BlogPosting
               | MImageObject ImageObject
-              | MBlogPosting BlogPosting deriving (Generic, Show)
+              | MOrganization Organization
+              | MPerson Person
+              | MWebPage WebPage deriving (Generic, Show)
 
 instance Binary Metadata
 
 class ToMetadata a where
     toMetadata :: a -> Metadata
+
+instance ToMetadata AboutPage where
+    toMetadata = MAboutPage
+
+instance ToMetadata BlogPosting where
+    toMetadata = MBlogPosting
+
+instance ToMetadata ImageObject where
+    toMetadata = MImageObject
 
 instance ToMetadata Person where
     toMetadata = MPerson
@@ -130,20 +181,31 @@ instance ToMetadata Person where
 instance ToMetadata Organization where
     toMetadata = MOrganization
 
-instance ToMetadata ImageObject where
-    toMetadata = MImageObject
+instance ToMetadata WebPage where
+    toMetadata = MWebPage
 
-instance ToMetadata BlogPosting where
-    toMetadata = MBlogPosting
+-- Output
 
 toJsonLD :: Metadata -> Text
-toJsonLD (MPerson v) = toJsonLD' v
-toJsonLD (MOrganization v) = toJsonLD' v
-toJsonLD (MImageObject v) = toJsonLD' v
+toJsonLD (MAboutPage v) = toJsonLD' v
 toJsonLD (MBlogPosting v) = toJsonLD' v
+toJsonLD (MImageObject v) = toJsonLD' v
+toJsonLD (MOrganization v) = toJsonLD' v
+toJsonLD (MPerson v) = toJsonLD' v
+toJsonLD (MWebPage v) = toJsonLD' v
 
 toJsonLD' :: (ToJSON a) => a -> Text
 toJsonLD' v = case toJSON v of
     Object o -> toStrict $ toLazyText $ encodeToTextBuilder $
         Object $ HM.insert "@context" "http://schema.org" o
     _ -> ""
+
+copyrightHolder :: Person
+copyrightHolder = Person
+    { _personName = "Максим Дикун"
+    }
+
+editor :: Person
+editor = Person
+    { _personName = "Анастасия Барбосова"
+    }

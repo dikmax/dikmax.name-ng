@@ -135,3 +135,6 @@ archiveTimeLocale = timeLocale
 
 googleAnalyticsUA :: Text
 googleAnalyticsUA = "UA-32213724-1"
+
+copyrightYear :: Int
+copyrightYear = 2016

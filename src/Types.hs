@@ -5,6 +5,7 @@ module Types where
 
 import           BasicPrelude
 import           Collections
+import           Config
 import           Control.Lens
 import           Data.Binary
 import           Data.Default
@@ -53,6 +54,7 @@ data FileMeta =
     } |
     PageMeta
     { _postCover :: PostCover
+    , _postMeta  :: Metadata
     , _postTitle :: Text
     , _postTags  :: [Text]
     , _postUrl   :: Text
@@ -63,6 +65,11 @@ instance Binary FileMeta
 instance Default FileMeta where
     def = PageMeta
         { _postCover = def
+        , _postMeta  = toMetadata $ WebPage
+            { _webPageHeadline = ""
+            , _webPageCopyrightHolder = copyrightHolder
+            , _webPageCopyrightYear = copyrightYear
+            }
         , _postTitle = ""
         , _postTags  = ["Blog", "блог"]
         , _postUrl   = ""

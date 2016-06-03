@@ -89,11 +89,18 @@ buildPost src images pandoc = File m pandoc
                                             "figure-responsive"
                 , _postUrl           = url
                 }
-            | otherwise = def
+            | otherwise = PageMeta
                 { _postCover = buildPostCover (pandoc ^. meta)
-                , _postTitle = T.pack $
-                                    getMetaString' "" (unMeta $ pandoc ^. meta)
+                , _postMeta  = toMetadata $ WebPage
+                    { _webPageHeadline = T.pack $ getMetaString' ""
+                                (unMeta $ pandoc ^. meta) "title"
+                    , _webPageCopyrightHolder = copyrightHolder
+                    , _webPageCopyrightYear = copyrightYear
+                    }
+                , _postTitle = T.pack $ getMetaString' "" (unMeta $ pandoc ^. meta)
                                         "title"
+                , _postTags  = map T.pack $ getStringsList (unMeta $ pandoc ^. meta)
+                                        "tags"
                 , _postUrl = url
                 }
 
@@ -112,6 +119,12 @@ buildPost src images pandoc = File m pandoc
             , _blogPostingImage = img
             , _blogPostingPublisher = publisher
             , _blogPostingMainEntityOfPage = url
+            , _blogPostingCopyrightHolder = copyrightHolder
+            , _blogPostingCopyrightYear = copyrightYear
+            , _blogPostingKeywords = intercalate ", " $ map T.pack $ getStringsList
+                 (unMeta $ pandoc ^. meta)
+                 "tags"
+            , _blogPostingEditor = editor
             }
 
         author :: Person

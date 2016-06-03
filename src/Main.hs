@@ -17,6 +17,7 @@ import           Development.Shake
 import           Development.Shake.Config
 import           Development.Shake.FilePath
 import           Images
+import           JsonLD
 import           Lib
 import           Lucid                      hiding (command_)
 import           Map
@@ -294,6 +295,12 @@ blog = do
         about <- posts "about.md"
         putNormal $ "Writing page " ++ out
         let a = about & fileMeta %~ postUrl .~ domain ++ "/"
+                      & fileMeta %~ postMeta .~
+                        (toMetadata $ AboutPage
+                        { _aboutPageHeadline = "Обо мне"
+                        , _aboutPageCopyrightHolder = copyrightHolder
+                        , _aboutPageCopyrightYear = copyrightYear
+                        })
         liftIO $ renderToFile out $
             T.aboutPage
                 (T.defaultLayout cd (a ^. fileMeta)) cd a

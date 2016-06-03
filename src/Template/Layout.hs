@@ -71,11 +71,11 @@ layout scripts cd meta content = doctypehtml_ $ do
             \<![endif]-->" :: Text)
 
         meta_ [name_ "keywords", content_ keywordsString]
-        meta_ [itemprop_ "keywords", content_ keywordsString]
         meta_ [name_ "author", content_ "Maxim Dikun"]
         meta_ [term "property" "author", content_ "1201794820"]
         meta_ [name_ "title", content_ $ pageTitle meta]
-        meta_ [itemprop_ "title", content_ $ pageTitle meta]
+
+        ldMeta meta
 
         ogMeta meta
 
@@ -97,26 +97,6 @@ pageTitle :: FileMeta -> Text
 pageTitle meta = case meta ^. postTitle of
     "" -> "[dikmax's blog]"
     a  -> a ++ " :: [dikmax's blog]"
-
-ogMeta :: FileMeta -> Html ()
-ogMeta meta = do
-    meta_ [term "property" "og:site_name", content_ "[dikmax's blog]"]
-    meta_ [term "property" "og:title", content_ $ pageTitle meta]
-
-    meta_ [term "property" "og:url", content_ $ meta ^. postUrl]
-
-    maybe mempty
-        (\img -> meta_ [term "property" "og:image", content_ $ domain ++ img]) $
-        meta ^. postCover ^. coverImg
-
-    {- TODO
-    <meta property="og:description" content="$meta.description$" />
-    <meta name="description" content="$meta.description$" />
-    <meta itemprop="description" content="$meta.description$" />
-    -}
-    meta_ [term "property" "og:locale", content_ "ru_BY"]
-    meta_ [term "property" "fb:profile_id", content_ "1201794820"]
-
 
 
 defaultLayout :: CommonData -> FileMeta -> Html () -> Html ()
@@ -179,6 +159,25 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         content
         footer
 
+ogMeta :: FileMeta -> Html ()
+ogMeta meta = do
+    meta_ [term "property" "og:site_name", content_ "[dikmax's blog]"]
+    meta_ [term "property" "og:title", content_ $ pageTitle meta]
+
+    meta_ [term "property" "og:url", content_ $ meta ^. postUrl]
+
+    maybe mempty
+        (\img -> meta_ [term "property" "og:image", content_ $ domain ++ img]) $
+        meta ^. postCover ^. coverImg
+
+    {- TODO
+    <meta property="og:description" content="$meta.description$" />
+    <meta name="description" content="$meta.description$" />
+    <meta itemprop="description" content="$meta.description$" />
+    -}
+    meta_ [term "property" "og:locale", content_ "ru_BY"]
+    meta_ [term "property" "fb:profile_id", content_ "1201794820"]
+
 
 ldMeta :: FileMeta -> Html ()
 ldMeta meta =
@@ -189,8 +188,9 @@ footer :: Html ()
 footer =
     footer_ [class_ "footer"] $
         div_ [class_ "footer__container"] $
-            toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; 2016<br/>\
-                \Любимый корректор: Анастасия Барбосова" :: Text)
+            toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; " ++
+                show copyrightYear ++
+                "<br/>Любимый корректор: Анастасия Барбосова" :: Text)
 
 googleAnalytics :: Html ()
 googleAnalytics =

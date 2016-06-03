@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Holds required configs for build.",
   "repository": {
-      "type": "git",
-      "url": "git@github.com:dikmax/dikmax.name-ng.git"
+    "type": "git",
+    "url": "git@github.com:dikmax/dikmax.name-ng.git"
   },
   "dependencies": {
     "d3": "^3.5.17",
