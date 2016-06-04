@@ -148,8 +148,8 @@ buildPost src images pandoc = File m pandoc
         publisher = Organization
             { _organizationName = "[dikmax's blog]"
             , _organizationLogo = ImageObject -- TODO create logo
-                { _imageObjectUrl = domain ++ "/apple-touch-icon-60x60.png"
-                , _imageObjectWidth = 60
+                { _imageObjectUrl = domain ++ "/publisher_logo.png"
+                , _imageObjectWidth = 429
                 , _imageObjectHeight = 60
                 }
             }
