@@ -8,8 +8,14 @@ import           Map
 import           Template.Navigation
 import           Template.SvgFlags
 
-mapPage :: (Html () -> Html ()) -> MapCountries -> Html ()
-mapPage layout countries = layout $ do
+mapPage :: (Html () -> Html ()) -> Html ()
+mapPage layout = layout $ do
+    navigation False
+    div_ [class_ "main main_no-hero"] $
+        div_ [class_ "main__centered map__view"] $ mempty
+
+mapListPage :: (Html () -> Html ()) -> MapCountries -> Html ()
+mapListPage layout countries = layout $ do
     navigation False
     div_ [class_ "main main_no-hero"] $
         div_ [class_ "main__centered map__list"] $ do

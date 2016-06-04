@@ -1,7 +1,5 @@
 goog.provide('dikmax.App');
 
-/* global hljs */
-
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
@@ -13,15 +11,14 @@ goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.Timer');
 
-dikmax.App.init = function() {
+dikmax.App.init = function () {
   dikmax.App.setupNavigation_();
   dikmax.App.scrollAndResizeTracker_();
-  dikmax.App.setupHighlighting_();
   dikmax.App.setupPanoramas_();
   dikmax.App.setupLazyImages_();
 };
 
-dikmax.App.setupNavigation_ = function() {
+dikmax.App.setupNavigation_ = function () {
   const menuButton = goog.dom.getElementByClass('navbar__menu');
   const sidebar = goog.dom.getElementByClass('sidebar');
   const sidebarPanel = goog.dom.getElementByClass('sidebar__panel');
@@ -46,7 +43,7 @@ dikmax.App.setupNavigation_ = function() {
   });
 };
 
-dikmax.App.scrollAndResizeTracker_ = function() {
+dikmax.App.scrollAndResizeTracker_ = function () {
   // TODO calculate from center
   const blocks = goog.dom.getElementsByClass('post__block');
   let block = -1;
@@ -74,7 +71,7 @@ dikmax.App.scrollAndResizeTracker_ = function() {
       }
   );
 
-  var vsm = new goog.dom.ViewportSizeMonitor();
+  const vsm = new goog.dom.ViewportSizeMonitor();
   goog.events.listen(vsm, goog.events.EventType.RESIZE,
       () => {
         if (block < 0) {
@@ -87,11 +84,6 @@ dikmax.App.scrollAndResizeTracker_ = function() {
   );
 };
 
-dikmax.App.setupHighlighting_ = function() {
-  const blocks = document.querySelectorAll('pre > code.sourceCode');
-  goog.array.forEach(blocks, hljs.highlightBlock);
-};
-
 /**
  * @param {boolean} allowEnlarge allow making image bigger.
  * @param {?number} maxWidth Max width constrain if needed.
@@ -100,7 +92,7 @@ dikmax.App.setupHighlighting_ = function() {
  * @return {goog.math.Size} Resulting size.
  * @private
  */
-dikmax.App.constrainImage_ = function(
+dikmax.App.constrainImage_ = function (
     allowEnlarge, maxWidth, maxHeight, image) {
   let result = new goog.math.Size(parseInt(image.getAttribute('width'), 10),
       parseInt(image.getAttribute('height'), 10));
@@ -124,25 +116,25 @@ dikmax.App.constrainImage_ = function(
   return result;
 };
 
-dikmax.App.setupLazyImages_ = function() {
+dikmax.App.setupLazyImages_ = function () {
   let images = goog.dom.getElementsByClass('post__figure-img_lazy');
 
   const vsm = new goog.dom.ViewportSizeMonitor();
 
-  const resizeImages = function() {
+  const resizeImages = function () {
     const size = vsm.getSize();
     const imageMaxWidth = size.width - 32;
     const imageMaxHeight = size.height - 60;
 
     goog.array.forEach(images, image => {
-      const size = dikmax.App.constrainImage_(
+      const newSize = dikmax.App.constrainImage_(
           false, imageMaxWidth, imageMaxHeight, image);
-      goog.style.setWidth(image, size.width + 'px');
-      goog.style.setHeight(image, size.height + 'px');
+      goog.style.setWidth(image, `${newSize.width}px`);
+      goog.style.setHeight(image, `${newSize.height}px`);
     });
   };
 
-  var scrollHandler = () => {
+  const scrollHandler = () => {
     const scroll = goog.dom.getDocumentScroll();
     const size = vsm.getSize();
     const trackTop = scroll.y + size.height;
@@ -150,7 +142,8 @@ dikmax.App.setupLazyImages_ = function() {
 
     const newImages = [];
 
-    goog.array.forEach(images, image => {
+    goog.array.forEach(images, _image => {
+      const image = _image;
       const imageTop = goog.style.getPageOffsetTop(image);
       const imageBottom = imageTop +
           goog.style.getBorderBoxSize(image).height;
@@ -180,8 +173,8 @@ dikmax.App.setupLazyImages_ = function() {
   scrollHandler();
 };
 
-dikmax.App.setupPanoramas_ = function() {
-  let images = goog.dom.getElementsByClass('post__figure-img');
+dikmax.App.setupPanoramas_ = function () {
+  const images = goog.dom.getElementsByClass('post__figure-img');
 
   const vsm = new goog.dom.ViewportSizeMonitor();
   const size = vsm.getSize();
@@ -213,10 +206,12 @@ const PATH_TAG = 'path';
  * @return {!Element} icon.
  * @private
  */
-dikmax.App.getZoomInIcon_ = function() {
+dikmax.App.getZoomInIcon_ = function () {
   /*
    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-   <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+   <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5
+   3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49
+   19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
    <path d="M0 0h24v24H0V0z" fill="none"/>
    <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
    </svg>
@@ -248,10 +243,11 @@ dikmax.App.getZoomInIcon_ = function() {
 };
 
 /**
- * @param {!HTMLImageElement} image Element to setup pano.
+ * @param {!HTMLImageElement} _image Element to setup pano.
  * @private
  */
-dikmax.App.handlePanorama_ = function(image) {
+dikmax.App.handlePanorama_ = function (_image) {
+  const image = _image;
   let expanded = false;
   const inner = goog.dom.getParentElement(image);
   goog.style.setStyle(inner, 'cursor', 'zoom-in');

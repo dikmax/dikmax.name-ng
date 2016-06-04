@@ -58,6 +58,9 @@ demosDir = siteDir </> "demos"
 postcss :: FilePath
 postcss = nodeModulesBinDir </> "postcss"
 
+topojson :: FilePath
+topojson = nodeModulesBinDir </> "topojson"
+
 pageSize :: Int
 pageSize = 5
 

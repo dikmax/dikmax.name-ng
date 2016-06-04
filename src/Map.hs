@@ -66,3 +66,4 @@ makeLenses ''MapCountry
 
 
 type MapCountries = M.Map Text MapCountry
+

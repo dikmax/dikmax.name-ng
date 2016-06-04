@@ -2,6 +2,7 @@ module Rules where
 
 import           BasicPrelude
 import           Config
+import qualified Data.ByteString            as BS
 import           Development.Shake
 import           Development.Shake.FilePath
 import           Lib
@@ -31,7 +32,7 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "bro"]
+        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "bro", "ogr2ogr"]
     where
         check executable = do
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable
@@ -55,3 +56,65 @@ robotsTxt = do
     siteDir </> "robots.txt" %> \out -> do
         let src = dropDirectory2 out
         copyFileChanged src out
+
+-- Build scripts
+scripts :: Rules ()
+scripts = do
+    highlightJsPack %> \_ -> do
+        need ["scripts/highlight.js/package.json"]
+        command_ [Cwd "scripts/highlight.js/"] "npm" ["install"]
+        command_ [Cwd "scripts/highlight.js/"] "node" ("tools/build.js" : "-t" :
+            "browser" : includeHighlightingLanguages)
+
+    siteDir </> "scripts/main.js" %> \out -> do
+        files <- getDirectoryFiles "." ["scripts//*"]
+        need (postcss : highlightJsPack : files)
+        h <- liftIO $ BS.readFile highlightJsPack
+        my <- buildScript True False
+        liftIO $ BS.writeFile out (h ++ my)
+
+    siteDir </> "scripts/map.js" %> \out -> do
+        files <- getDirectoryFiles "." ["scripts//*"]
+        need (topojson : files)
+        l <- liftIO $ BS.readFile leaflet
+        t <- liftIO $ BS.readFile topojsonLib
+        my <- buildScript False True
+        liftIO $ BS.writeFile out (l ++ t ++ my)
+
+    where
+        highlightJsPack :: FilePath
+        highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
+
+        leaflet :: FilePath
+        leaflet = nodeModulesDir </> "leaflet/dist/leaflet.js"
+
+        topojsonLib :: FilePath
+        topojsonLib = nodeModulesDir </> "topojson/build/topojson.min.js"
+
+buildScript :: Bool -> Bool -> Action ByteString
+buildScript dHighlightJs dMap = do
+    Stdout my <- command [] "java"
+        ([ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
+        , "--entry_point", "goog:dikmax.main"
+        , "--only_closure_dependencies", "true"
+        , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
+        , "--warning_level", "VERBOSE"
+        , "--language_in", "ECMASCRIPT6_STRICT"
+        , "--language_out", "ECMASCRIPT5_STRICT"
+        {-, "--new_type_inf"-}] ++
+        defines ++
+        [ "--externs", "scripts/externs/highlight.js"
+        , "--externs", "scripts/externs/leaflet.js"
+        , "--externs", "scripts/externs/topojson.js"
+        , "--js", "node_modules/google-closure-library/closure/goog/**.js"
+        , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
+        -- , "--js", "node_modules/leaflet/dist/leaflet-src.js"
+        , "--js", "scripts/dikmax/*.js"
+        , "--js", "scripts/main.js"])
+
+    return my
+
+    where
+        defines =
+            (if dHighlightJs then ["--define", "HIGHLIGHT_JS"] else []) ++
+            (if dMap then ["--define", "MAP"] else [])

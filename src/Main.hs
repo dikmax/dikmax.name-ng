@@ -48,6 +48,7 @@ main = do
 
         prerequisites
         build
+        mapData
         styles
         scripts
         imagesRules
@@ -65,9 +66,13 @@ build =
     phony "build" $ do
         need ["prerequisites"]
         need ["sync-images"]
-        need ["phony-images", "blogposts", "phony-favicons", "phony-demos",
-            siteDir </> "robots.txt",
-            siteDir </> T.unpack rssFeedFile, siteDir </> "scripts/main.js"]
+        need ["phony-images", "blogposts", "phony-favicons", "phony-demos"
+            , siteDir </> "robots.txt"
+            , siteDir </> T.unpack rssFeedFile
+            , siteDir </> "scripts/main.js"
+            , siteDir </> "scripts/map.js"
+            , siteDir </> "data/world.json"
+            ]
 
 blog :: Rules ()
 blog = do
@@ -145,6 +150,7 @@ blog = do
             [ siteDir </> "about" </> indexHtml
             , siteDir </> "archive" </> indexHtml
             , siteDir </> "map" </> indexHtml
+            , siteDir </> "map/list/" </> indexHtml
             , siteDir </> "404" </> indexHtml
             , siteDir </> "sitemap.xml"
             ]
@@ -345,13 +351,12 @@ blog = do
                 (T.defaultLayout cd (a ^. fileMeta)) cd a
 
 
-    -- Map page
+    -- Map pages
     siteDir </> "map" </> indexHtml %> \out -> do
         cd <- commonData Anything
         need ["data/map.json"]
 
         mapJson <- liftIO $ LBS.readFile "data/map.json"
-        let res = A.eitherDecode mapJson :: Either String MapCountries
         let meta = def
                 { _postTitle = "Путешествия"
                 , _postUrl = domain ++ "/map/"
@@ -362,10 +367,30 @@ blog = do
                       }
                 }
 
+        putNormal $ "Writing page " ++ out
+        liftIO $ renderToFile out $
+            T.mapPage (T.mapLayout cd meta)
+
+    siteDir </> "map/list" </> indexHtml %> \out -> do
+        cd <- commonData Anything
+        need ["data/map.json"]
+
+        mapJson <- liftIO $ LBS.readFile "data/map.json"
+        let res = A.eitherDecode mapJson :: Either String MapCountries
+        let meta = def
+                { _postTitle = "Путешествия"
+                , _postUrl = domain ++ "/map/list/"
+                , _postMeta  = toMetadata $ WebPage
+                      { _webPageHeadline = "Путешествия"
+                      , _webPageCopyrightHolder = copyrightHolder
+                      , _webPageCopyrightYear = copyrightYear
+                      }
+                }
+
         either error (\countries -> do
             putNormal $ "Writing page " ++ out
             liftIO $ renderToFile out $
-                T.mapPage
+                T.mapListPage
                     (T.defaultLayout cd meta) countries
             ) res
 
@@ -497,6 +522,47 @@ blog = do
                 then M.lookup (T.tail filePath) imagesContent
                 else Nothing
 
+-- Build map data
+
+{-
+rm map/subunits.json
+rm map/countries.json
+rm map/regions.json
+ogr2ogr -f GeoJSON map/subunits.json -where "ADM0_A3 = 'FRA'" map/ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp
+ogr2ogr -f GeoJSON map/countries.json -where "ADM0_A3 != 'FRA' and ADM0_A3 != 'RUS' and ADM0_A3 != 'USA'" map/ne_10m_admin_0_countries_lakes/ne_10m_admin_0_countries_lakes.shp
+ogr2ogr -f GeoJSON map/regions.json -where "ADM0_A3 = 'RUS' or ADM0_A3 = 'USA'" map/ne_10m_admin_1_states_provinces_lakes/ne_10m_admin_1_states_provinces_lakes.shp
+topojson -o map/world.json --id-property ADM_A3,SU_A3,adm1_code --simplify 1e-6 -- map/countries.json map/subunits.json map/regions.json
+-}
+
+mapData :: Rules ()
+mapData =
+    siteDir </> "data/world.json" %> \out -> do
+        let subunitsSrc = "map/ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp"
+        let countriesSrc = "map/ne_10m_admin_0_countries_lakes/ne_10m_admin_0_countries_lakes.shp"
+        let regionsSrc = "map/ne_10m_admin_1_states_provinces_lakes/ne_10m_admin_1_states_provinces_lakes.shp"
+        let subunits = buildDir </> "map/subunits.json"
+        let countries = buildDir </> "map/countries.json"
+        let regions = buildDir </> "map/regions.json"
+
+        need [subunitsSrc, countriesSrc, regionsSrc, topojson]
+
+        liftIO $ createDirectoryIfMissing True (buildDir </> "map")
+
+        liftIO $ removeFiles "." [subunits, countries, regions]
+        command_ [] "ogr2ogr" ["-f", "GeoJSON", subunits,
+            "-where", "ADM0_A3 = 'FRA'", subunitsSrc]
+        command_ [] "ogr2ogr" ["-f", "GeoJSON", countries,
+            "-where", "ADM0_A3 != 'FRA' and ADM0_A3 != 'RUS' and ADM0_A3 != 'USA'", countriesSrc]
+        command_ [] "ogr2ogr" ["-f", "GeoJSON", regions,
+            "-where", "ADM0_A3 = 'RUS' or ADM0_A3 = 'USA'", regionsSrc]
+
+        liftIO $ createDirectoryIfMissing True (takeDirectory out)
+
+        command_ [] topojson ["-o", out,
+            "--id-property", "ADM_A3,SU_A3,adm1_code",
+            "--simplify", "1e-6", "--", countries, subunits, regions]
+
+
 
 -- Build styles
 styles :: Rules ()
@@ -507,62 +573,6 @@ styles =
         need (postcss : "postcss.json" : files)
         cmd (FileStdout out) postcss ("-c" :: FilePath) ("postcss.json" :: FilePath) src
 
--- Build scripts
-scripts :: Rules ()
-scripts = do
-    highlightJsPack %> \_ -> do
-        need ["scripts/highlight.js/package.json"]
-        command_ [Cwd "scripts/highlight.js/"] "npm" ["install"]
-        command_ [Cwd "scripts/highlight.js/"] "node" ("tools/build.js" : "-t" :
-            "browser" : includeHighlightingLanguages)
-
-    siteDir </> "scripts/main.js" %> \out -> do
-        let src = dropDirectory2 out
-        files <- getDirectoryFiles "." ["scripts//*"]
-        need (postcss : highlightJsPack : files)
-        h <- liftIO $ BS.readFile highlightJsPack
-        Stdout my <- command [] "java"
-            [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
-            , "--entry_point", "goog:dikmax.main"
-            , "--only_closure_dependencies", "true"
-            , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
-            , "--warning_level", "VERBOSE"
-            , "--language_in", "ECMASCRIPT6_STRICT"
-            , "--language_out", "ECMASCRIPT5_STRICT"
-            , "--externs", "scripts/externs/highlight.js"
-            , "--js", "node_modules/google-closure-library/closure/goog/**.js"
-            , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
-            , "--js", "scripts/dikmax/*.js"
-            , "--js", src]
-        liftIO $ BS.writeFile out (h ++ my)
-
-    siteDir </> "scripts/map.js" %> \out -> do
-        let src = dropDirectory2 out
-        -- let d3File = "node_modules/d3/d3.min.js"
-        -- let topojsonFile = "node_modules/topojson/build/topojson.min.js"
-        files <- getDirectoryFiles "." ["scripts//*"]
-        need (postcss : files)
-        -- d3 <- liftIO $ BS.readFile d3File
-        -- topojson <- liftIO $ BS.readFile topojsonFile
-        Stdout my <- command [] "java"
-            [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
-            , "--entry_point", "goog:dikmax.main"
-            , "--only_closure_dependencies", "true"
-            , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
-            , "--warning_level", "VERBOSE"
-            , "--language_in", "ECMASCRIPT6_STRICT"
-            , "--language_out", "ECMASCRIPT5_STRICT"
-            -- , "--externs", "scripts/externs/d3.js"
-            -- , "--externs", "scripts/externs/topojson.js"
-            , "--js", "node_modules/google-closure-library/closure/goog/**.js"
-            , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
-            , "--js", "scripts/dikmax/*.js"
-            , "--js", src]
-        liftIO $ BS.writeFile out my
-
-    where
-        highlightJsPack :: FilePath
-        highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
 
 favicons :: Rules ()
 favicons =
@@ -575,7 +585,7 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss, "node_modules/d3/d3.min.js"] &%> \_ -> do
+    [postcss, topojson, "node_modules/d3/d3.min.js"] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
 
