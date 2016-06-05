@@ -7,7 +7,6 @@ import           Config
 import           Control.Lens
 import qualified Data.Aeson                 as A
 import qualified Data.Binary                as B
-import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Lazy       as LBS
 import qualified Data.Map.Lazy              as M
 import qualified Data.Text                  as T
@@ -354,9 +353,9 @@ blog = do
     -- Map pages
     siteDir </> "map" </> indexHtml %> \out -> do
         cd <- commonData Anything
-        need ["data/map.json"]
 
-        mapJson <- liftIO $ LBS.readFile "data/map.json"
+        need [siteDir </> "data/map.json"]
+
         let meta = def
                 { _postTitle = "Путешествия"
                 , _postUrl = domain ++ "/map/"
@@ -373,6 +372,7 @@ blog = do
 
     siteDir </> "map/list" </> indexHtml %> \out -> do
         cd <- commonData Anything
+
         need ["data/map.json"]
 
         mapJson <- liftIO $ LBS.readFile "data/map.json"
@@ -535,7 +535,11 @@ topojson -o map/world.json --id-property ADM_A3,SU_A3,adm1_code --simplify 1e-6 
 -}
 
 mapData :: Rules ()
-mapData =
+mapData = do
+    siteDir </> "data/map.json" %> \out -> do
+        need ["data/map.json"]
+        copyFileChanged "data/map.json" out
+
     siteDir </> "data/world.json" %> \out -> do
         let subunitsSrc = "map/ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp"
         let countriesSrc = "map/ne_10m_admin_0_countries_lakes/ne_10m_admin_0_countries_lakes.shp"

@@ -77,16 +77,29 @@ scripts = do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (topojson : files)
         l <- liftIO $ BS.readFile leaflet
+        p <- liftIO $ BS.readFile proj4js
+        pl <- liftIO $ BS.readFile proj4leaflet
+        gh <- liftIO $ BS.readFile greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
-        liftIO $ BS.writeFile out (l ++ t ++ my)
+        liftIO $ BS.writeFile out (l ++ p ++ pl ++ gh ++ t ++ my)
 
     where
         highlightJsPack :: FilePath
         highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
 
+        greinerHormann :: FilePath
+        greinerHormann = nodeModulesDir </> "greiner-hormann/dist/greiner-hormann.js"
+
         leaflet :: FilePath
         leaflet = nodeModulesDir </> "leaflet/dist/leaflet.js"
+
+        proj4js :: FilePath
+        proj4js = nodeModulesDir </> "proj4/dist/proj4.js"
+
+        proj4leaflet :: FilePath
+        proj4leaflet = nodeModulesDir </> "proj4leaflet/src/proj4leaflet.js"
+
 
         topojsonLib :: FilePath
         topojsonLib = nodeModulesDir </> "topojson/build/topojson.min.js"
@@ -105,6 +118,7 @@ buildScript dHighlightJs dMap = do
         defines ++
         [ "--externs", "scripts/externs/highlight.js"
         , "--externs", "scripts/externs/leaflet.js"
+        , "--externs", "scripts/externs/greinerHormann.js"
         , "--externs", "scripts/externs/topojson.js"
         , "--js", "node_modules/google-closure-library/closure/goog/**.js"
         , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
