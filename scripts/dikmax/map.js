@@ -197,6 +197,7 @@ dikmax.Map.init = function () {
           }
         });
         layer.setLatLngs(result);
+        layer.setStyle(this.style(feature));
       }
     });
     topoLayer.addData(world);

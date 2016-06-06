@@ -151,7 +151,12 @@ L.LayerGroup = class extends L.Class {
 
 L.Marker = class extends L.Class {};
 
-L.Path = class extends L.Class {};
+L.Path = class extends L.Class {
+  /**
+   * @param {Object} style
+   */
+  setStyle(style) {};
+};
 
 L.Polyline = class extends L.Path {
   /**
