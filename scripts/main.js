@@ -25,7 +25,7 @@ dikmax.main = function () {
     dikmax.Higlight.init();
   }
   if (MAP) {
-    dikmax.Map.init();
+    new dikmax.Map();
   }
 };
 

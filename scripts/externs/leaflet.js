@@ -149,9 +149,17 @@ L.LayerGroup = class extends L.Class {
   addTo (map) {};
 };
 
+L.Popup = class extends L.Class {};
+
 L.Marker = class extends L.Class {};
 
 L.Path = class extends L.Class {
+
+  /**
+   * @param {String|HTMLElement|L.Popup} content
+   * @param {Object=} options
+     */
+  bindPopup(content, options) {};
   /**
    * @param {Object} style
    */
