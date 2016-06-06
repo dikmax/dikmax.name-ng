@@ -399,6 +399,10 @@
 }
 
 @b table {
+    display: block;
+    overflow-x: scroll;
+    width: 100%;
+
     td, th {
         text-align: center;
     }
@@ -413,5 +417,17 @@
 
     @m failure {
         background-color:#f4cccc;
+    }
+
+    @e tick {
+        size: 32px;
+        display: inline-block;
+        background: url(/images/tick.png);
+    }
+
+    @e cross {
+        size: 32px;
+        display: inline-block;
+        background: url(/images/cross.png);
     }
 }
