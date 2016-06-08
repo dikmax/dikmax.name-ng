@@ -22,6 +22,7 @@ executable dikmax.name
                      , Config
                      , FileServe
                      , Images
+                     , JsonLD
                      , Lib
                      , Lucid.AMP
                      , Lucid.Atom

@@ -4,6 +4,7 @@ goog.provide('dikmax.Map');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.object');
 goog.require('goog.Promise');
 goog.require('goog.net.XhrIo');
 
@@ -43,13 +44,17 @@ dikmax.Map = class {
     this.world = {};
     this.data = {};
 
+    L.Icon.Default.imagePath = '/images/';
+
     const crs = new L.Proj.CRS('ESRI:53009',
       '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs',
       {
         'resolutions': [65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256]
       });
-    this.map = L.map(goog.dom.getElementByClass('map__view'), {'crs': crs})
-      .fitWorld();
+    this.map = L.map(goog.dom.getElementByClass('map__view'), {
+      'crs': crs,
+      'maxZoom': 8
+    }).fitWorld();
 
     const frame = dikmax.graticule({
       sphere: true,
@@ -134,6 +139,54 @@ dikmax.Map = class {
       }
     });
     frame.addTo(this.map);
+
+    const markersLayer = new L.LayerGroup();
+
+    goog.object.forEach(this.data, (country) => {
+      const cities = country['cities'];
+      goog.array.forEach(cities, (city) => {
+        const marker = new L.Marker([city['lat'], city['lon']]);
+        marker.bindPopup(this.getCityLinks(city));
+        marker.addTo(markersLayer);
+      });
+    });
+
+    this.map.on('zoomend', () => {
+      const zoom = this.map.getZoom();
+      if (zoom > 3) {
+        this.map.addLayer(markersLayer);
+      } else {
+        this.map.removeLayer(markersLayer);
+      }
+    });
+  }
+
+  /**
+   * @param {Object} city
+   * @return {string}
+   */
+  getCityLinks(city) {
+    let result = city['name'];
+
+    if (!city['visits']) {
+      return result;
+    }
+
+    const links = [];
+    goog.array.forEach(city['visits'], (v) => {
+      if (v['link']) {
+        links.push(v['link']);
+      }
+    });
+
+    if (links.length === 0) {
+      return result;
+    }
+    if (links.length === 1) {
+      return `<a href="${links[0]}">${result}</a>`;
+    }
+    return goog.array.map(links,
+      (v, i) => `<a href="${v}">${result} (${i + 1})</a>`).join(', ');
   }
 
   countryStyle(feature) {
@@ -246,26 +299,37 @@ dikmax.Map = class {
     layer.setStyle(this.countryStyle(feature));
   }
 
+
   bindLayer(layer, feature) {
     let country = feature['id'];
-    let name = 'Неизведанная территория';
+    let content = 'Неизведанная территория';
+    let countryData;
     if (country.indexOf('-') !== -1) {
       const region = country;
       country = country.split('-')[0];
 
-      if (this.data[country]) {
-        name = this.data[country]['name'];
+      countryData = this.data[country];
+      if (countryData) {
+        content = countryData['name'];
 
-        if (this.data[country]['regions'] &&
-            this.data[country]['regions'][region]) {
-          name += ` — ${this.data[country]['regions'][region]}`;
+        if (countryData['regions'] &&
+            countryData['regions'][region]) {
+          content += ` — ${countryData['regions'][region]}`;
         }
       }
     } else {
-      if (this.data[country]) {
-        name = this.data[country]['name'];
+      countryData = this.data[country];
+      if (countryData) {
+        content = countryData['name'];
       }
     }
-    layer.bindPopup(name);
+
+    if (countryData) {
+      const cities = goog.array.map(countryData['cities'],
+        (city) => this.getCityLinks(city));
+      cities.sort();
+      content = `<h1>${content}</h1><p>${cities.join(', ')}</p>`;
+    }
+    layer.bindPopup(content);
   }
 };

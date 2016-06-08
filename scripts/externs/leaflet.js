@@ -2,6 +2,11 @@
 
 var L = {};
 
+/**
+ * @interface
+ */
+var ILayer = class {};
+
 L.Class = class {};
 /**
  * @type {Object}
@@ -137,13 +142,23 @@ L.Proj.CRS = class extends L.Class {
   constructor(a, b, c) {}
 };
 
+L.Icon = class {};
+
+L.Icon.Default = {
+  /**
+   * @type {string}
+   */
+  imagePath: ''
+};
+
 /**
- * @extends {L.Class}
- * @constructor
+ * @implements ILayer
  */
 L.LayerGroup = class extends L.Class {
+  constructor() {};
+
   /**
-   * @param {L.Map} map
+   * @param {ILayer} map
    * @return this
    */
   addTo (map) {};
@@ -151,15 +166,28 @@ L.LayerGroup = class extends L.Class {
 
 L.Popup = class extends L.Class {};
 
-L.Marker = class extends L.Class {};
+L.Marker = class extends L.Class {
+  /**
+   * @param {ILayer} map
+   * @return this
+   */
+  addTo(map) {};
+
+  /**
+   * @param {string|HTMLElement|L.Popup} content
+   * @param {Object=} options
+   */
+  bindPopup(content, options) {};
+};
 
 L.Path = class extends L.Class {
 
   /**
-   * @param {String|HTMLElement|L.Popup} content
+   * @param {string|HTMLElement|L.Popup} content
    * @param {Object=} options
      */
   bindPopup(content, options) {};
+
   /**
    * @param {Object} style
    */
@@ -174,13 +202,13 @@ L.Polyline = class extends L.Path {
   getBounds() {}
 
   /**
-   * @return {Array<L.LatLng>}
+   * @return {Array<Array<L.LatLng>>}
    * @nosideeffects
    */
   getLatLngs() {}
 
   /**
-   * @param {Array<L.LatLng>} latlngs
+   * @param {Array<Array<L.LatLng>>} latlngs
    */
   setLatLngs(latlngs) {}
 };
@@ -222,6 +250,9 @@ L.GeoJSON.prototype.options = {
   onEachFeature(feature, layer) {}
 };
 
+/**
+ * @implements ILayer
+ */
 L.Map = class extends L.Class {
   /**
    * @param {string|Element} id
@@ -240,6 +271,27 @@ L.Map = class extends L.Class {
    * @return this
    */
   fitWorld() {};
+
+  /**
+   * @return {number}
+   */
+  getZoom() {};
+
+  /**
+   * @param {L.LayerGroup} layer
+   */
+  addLayer(layer) {};
+
+  /**
+   * @param {L.LayerGroup} layer
+   */
+  removeLayer(layer) {};
+
+  /**
+   * @param {string} event
+   * @param {function()} handler
+   */
+  on(event, handler) {};
 };
 
 

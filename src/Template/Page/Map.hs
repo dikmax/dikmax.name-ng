@@ -12,7 +12,7 @@ mapPage :: (Html () -> Html ()) -> Html ()
 mapPage layout = layout $ do
     navigation False
     div_ [class_ "main main_no-hero"] $
-        div_ [class_ "main__centered map__view"] $ mempty
+        div_ [class_ "main__full-width map__view"] $ mempty
 
 mapListPage :: (Html () -> Html ()) -> MapCountries -> Html ()
 mapListPage layout countries = layout $ do
@@ -23,7 +23,7 @@ mapListPage layout countries = layout $ do
                 div_ [class_ "map__subheader", data_ "code" code] $ do
                     maybe noIcon icon $
                         M.lookup code svgFlags
-                    div_ [class_ "map__subheader-text"] $
+                    div_ [id_ $ "country-" ++ code, class_ "map__subheader-text"] $
                         toHtml (country ^. countryName)
 
                 forM_ (sortCities $ country ^. countryCities) $ \city -> do
