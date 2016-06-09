@@ -301,3 +301,9 @@ L.Map = class extends L.Class {
  * @return {L.Map}
  */
 L.map = function (id, options) {};
+
+/**
+ * @param {string} content
+ * @param {function()} handler
+ */
+L.easyButton = function (content, handler) {};

@@ -11,6 +11,7 @@
     "google-closure-library": "*",
     "greiner-hormann": "^1.3.0",
     "leaflet": "^0.7.7",
+    "leaflet-easybutton": "^1.2.0",
     "proj4": "^2.3.14",
     "proj4leaflet": "^0.7.2",
     "topojson": "^1.6.26"
@@ -112,7 +113,10 @@
         "WithStatement"
       ],
       "no-underscore-dangle": 0,
-      "object-curly-spacing": [2, "never"],
+      "object-curly-spacing": [
+        2,
+        "never"
+      ],
       "object-shorthand": 0,
       "quote-props": 0
     }

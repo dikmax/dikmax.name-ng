@@ -79,6 +79,10 @@ dikmax.Map = class {
     });
     graticule.addTo(this.map);
 
+    L.easyButton('<strong style="font-size:1.5em;position:relative;top:-2px">A</strong>', () => {
+      document.location = '/map/list/';
+    }).addTo(this.map);
+
     this.loadData();
   }
 
@@ -166,7 +170,7 @@ dikmax.Map = class {
    * @return {string}
    */
   getCityLinks(city) {
-    let result = city['name'];
+    const result = city['name'];
 
     if (!city['visits']) {
       return result;
@@ -325,9 +329,10 @@ dikmax.Map = class {
     }
 
     if (countryData) {
+      goog.array.sort(countryData['cities'],
+        (a, b) => goog.array.defaultCompare(a['name'], b['name']));
       const cities = goog.array.map(countryData['cities'],
         (city) => this.getCityLinks(city));
-      cities.sort();
       content = `<h1>${content}</h1><p>${cities.join(', ')}</p>`;
     }
     layer.bindPopup(content);

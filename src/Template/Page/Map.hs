@@ -19,6 +19,8 @@ mapListPage layout countries = layout $ do
     navigation False
     div_ [class_ "main main_no-hero"] $
         div_ [class_ "main__centered map__list"] $ do
+            p_ [] $ do
+                a_ [href_ "/map/"] "Показать карту"
             forM_ (sortCountries $ M.toList countries) $ \(code, country) -> do
                 div_ [class_ "map__subheader", data_ "code" code] $ do
                     maybe noIcon icon $

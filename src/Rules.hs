@@ -77,14 +77,18 @@ scripts = do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (topojson : files)
         l <- liftIO $ BS.readFile leaflet
+        eb <- compressScriptSimple easyButton
         p <- liftIO $ BS.readFile proj4js
-        pl <- liftIO $ BS.readFile proj4leaflet
+        pl <- compressScriptSimple proj4leaflet
         gh <- liftIO $ BS.readFile greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
-        liftIO $ BS.writeFile out (l ++ p ++ pl ++ gh ++ t ++ my)
+        liftIO $ BS.writeFile out (l ++ eb ++ p ++ pl ++ gh ++ t ++ my)
 
     where
+        easyButton :: FilePath
+        easyButton = nodeModulesDir </> "leaflet-easybutton/src/easy-button.js"
+
         highlightJsPack :: FilePath
         highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
 
@@ -100,9 +104,18 @@ scripts = do
         proj4leaflet :: FilePath
         proj4leaflet = nodeModulesDir </> "proj4leaflet/src/proj4leaflet.js"
 
-
         topojsonLib :: FilePath
         topojsonLib = nodeModulesDir </> "topojson/build/topojson.min.js"
+
+compressScriptSimple :: FilePath -> Action ByteString
+compressScriptSimple path = do
+    Stdout my <- command [] "java"
+        ([ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
+        , "--compilation_level", "WHITESPACE_ONLY"
+        , "--warning_level", "VERBOSE"
+        , "--js", path])
+
+    return my
 
 buildScript :: Bool -> Bool -> Action ByteString
 buildScript dHighlightJs dMap = do
