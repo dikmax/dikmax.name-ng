@@ -65,7 +65,7 @@ instance Binary FileMeta
 instance Default FileMeta where
     def = PageMeta
         { _postCover = def
-        , _postMeta  = toMetadata $ WebPage
+        , _postMeta  = toMetadata WebPage
             { _webPageHeadline = ""
             , _webPageCopyrightHolder = copyrightHolder
             , _webPageCopyrightYear = copyrightYear

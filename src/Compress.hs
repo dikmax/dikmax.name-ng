@@ -29,9 +29,9 @@ compress = do
             , siteDir <//> "*.txt"
             , siteDir <//> "*.xml"
             ]
-        need $ (map (++ ".webp") webpFiles) ++
-            (map (++ ".gz") gzFiles) ++
-            (map (++ ".br") gzFiles)
+        need $ map (++ ".webp") webpFiles ++
+            map (++ ".gz") gzFiles ++
+            map (++ ".br") gzFiles
 
     siteDir <//> "*.jpg.webp" %> \out -> do
         let src = take (length out - 5) out
@@ -60,9 +60,8 @@ compress = do
             let h = T.unpack $ hashToPath $
                     show (hashlazy file :: Digest SHA3_256)
             exists <- liftIO $ D.doesFileExist $ cacheDir </> h
-            if (exists)
-                then do
-                    liftIO $ D.copyFile (cacheDir </> h) out
+            if exists
+                then liftIO $ D.copyFile (cacheDir </> h) out
                 else do
                     () <- exec
                     liftIO $ D.copyFile out (cacheDir </> h)
@@ -76,7 +75,7 @@ hashToPath h = T.take 2 h ++ "/" ++ T.drop 2 h
 
 createCacheDirectory :: FilePath -> IO ()
 createCacheDirectory cacheDir = do
-    D.createDirectoryIfMissing True (cacheDir)
+    D.createDirectoryIfMissing True cacheDir
     forM_ hex $ \a ->
         forM_ hex $ \b ->
             D.createDirectoryIfMissing False (cacheDir </> [a, b])

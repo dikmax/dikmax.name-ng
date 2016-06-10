@@ -12,5 +12,5 @@ notFoundPage :: (Html () -> Html ()) -> File -> Html ()
 notFoundPage layout notFound = layout $ do
     navigation False
 
-    div_ [class_ "main main_no-hero"] $ do
+    div_ [class_ "main main_no-hero"] $
         div_ [class_ "post"] $ writeLucid def $ notFound ^. fileContent

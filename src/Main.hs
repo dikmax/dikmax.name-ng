@@ -37,7 +37,7 @@ readerOptions = def
 main :: IO ()
 main = do
     args <- getArgs
-    if (length args > 0 && head args == "server")
+    if not (null args) && head args == "server"
     then runServer
     else shakeArgs options $ do
         usingConfigFile "build.cfg"
@@ -163,11 +163,11 @@ blog = do
         let post = ps M.! idFromDestFilePath out
         let postIndex = M.findIndex (dateKey $ post ^. fileMeta ^?! postDate) psd
         let prevPage =
-                if (postIndex == 0)
+                if postIndex == 0
                 then Nothing
                 else Just $ snd $ M.elemAt (postIndex - 1) psd
         let nextPage =
-                if (postIndex == M.size psd - 1)
+                if postIndex == M.size psd - 1
                 then Nothing
                 else Just $ snd $ M.elemAt (postIndex + 1) psd
         let postCd = cd & dataCss %~
@@ -187,11 +187,11 @@ blog = do
         let post = ps M.! idFromDestFilePath out
         let postIndex = M.findIndex (dateKey $ post ^. fileMeta ^?! postDate) psd
         let prevPage =
-                if (postIndex == 0)
+                if postIndex == 0
                 then Nothing
                 else Just $ snd $ M.elemAt (postIndex - 1) psd
         let nextPage =
-                if (postIndex == M.size psd - 1)
+                if postIndex == M.size psd - 1
                 then Nothing
                 else Just $ snd $ M.elemAt (postIndex + 1) psd
 
@@ -211,11 +211,11 @@ blog = do
         welcome <- posts "index.md"
         putNormal $ "Writing page " ++ out
         let w = welcome & fileMeta %~ (postUrl .~ domain ++ "/")
-        let meta = w ^. fileMeta & postMeta .~ (toMetadata $ WebPage
+        let meta = w ^. fileMeta & postMeta .~ toMetadata WebPage
                  { _webPageHeadline = "[dikmax's blog]"
                  , _webPageCopyrightHolder = copyrightHolder
                  , _webPageCopyrightYear = copyrightYear
-                 })
+                 }
 
         liftIO $ renderToFile out $
             T.indexPage
@@ -235,7 +235,7 @@ blog = do
         let pageMeta = def
                 { _postTitle = title
                 , _postUrl = domain ++ "/page/" ++ show page ++ "/"
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = title
                       , _webPageCopyrightHolder = copyrightHolder
                       , _webPageCopyrightYear = copyrightYear
@@ -261,7 +261,7 @@ blog = do
         let pageMeta = def
                 { _postTitle = title
                 , _postUrl = domain ++ "/tag/" ++ tag ++ "/"
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = title
                       , _webPageCopyrightHolder = copyrightHolder
                       , _webPageCopyrightYear = copyrightYear
@@ -288,7 +288,7 @@ blog = do
         let pageMeta = def
                 { _postTitle = title
                 , _postUrl = domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = title
                       , _webPageCopyrightHolder = copyrightHolder
                       , _webPageCopyrightYear = copyrightYear
@@ -322,7 +322,7 @@ blog = do
         let meta = def
                 { _postTitle = "Архив"
                 , _postUrl = domain ++ "/archive/"
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = "Архив"
                       , _webPageCopyrightHolder = copyrightHolder
                       , _webPageCopyrightYear = copyrightYear
@@ -340,11 +340,11 @@ blog = do
         putNormal $ "Writing page " ++ out
         let a = about & fileMeta %~ postUrl .~ domain ++ "/"
                       & fileMeta %~ postMeta .~
-                        (toMetadata $ AboutPage
-                        { _aboutPageHeadline = "Обо мне"
-                        , _aboutPageCopyrightHolder = copyrightHolder
-                        , _aboutPageCopyrightYear = copyrightYear
-                        })
+                        toMetadata AboutPage
+                            { _aboutPageHeadline = "Обо мне"
+                            , _aboutPageCopyrightHolder = copyrightHolder
+                            , _aboutPageCopyrightYear = copyrightYear
+                            }
         liftIO $ renderToFile out $
             T.aboutPage
                 (T.defaultLayout cd (a ^. fileMeta)) cd a
@@ -359,7 +359,7 @@ blog = do
         let meta = def
                 { _postTitle = "Путешествия"
                 , _postUrl = domain ++ "/map/"
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = "Путешествия"
                       , _webPageCopyrightHolder = copyrightHolder
                       , _webPageCopyrightYear = copyrightYear
@@ -380,7 +380,7 @@ blog = do
         let meta = def
                 { _postTitle = "Путешествия"
                 , _postUrl = domain ++ "/map/list/"
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = "Путешествия"
                       , _webPageCopyrightHolder = copyrightHolder
                       , _webPageCopyrightYear = copyrightYear

@@ -91,7 +91,7 @@ buildPost src images pandoc = File m pandoc
                 }
             | otherwise = PageMeta
                 { _postCover = buildPostCover (pandoc ^. meta)
-                , _postMeta  = toMetadata $ WebPage
+                , _postMeta  = toMetadata WebPage
                     { _webPageHeadline = T.pack $ getMetaString' ""
                                 (unMeta $ pandoc ^. meta) "title"
                     , _webPageCopyrightHolder = copyrightHolder
@@ -108,7 +108,7 @@ buildPost src images pandoc = File m pandoc
         url = maybe "" (\i -> domain ++ "/post/" ++ i ++ "/") (idFromSrcFilePath src)
 
         m' :: Metadata
-        m' = toMetadata $ BlogPosting
+        m' = toMetadata BlogPosting
             { _blogPostingHeadline =
                 T.pack $ getMetaString (unMeta $ pandoc ^. meta) "title"
             , _blogPostingDatePublished = fromMaybe (error "date not defined") $

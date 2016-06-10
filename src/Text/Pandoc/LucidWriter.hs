@@ -212,8 +212,8 @@ writeBlock (Div (identifier, classes, others) blocks) = do
     items <- concatBlocks blocks
     let mapAttrs =
             writeAttr (identifier,
-                if length classes == 0
-                    then [(T.unpack cl), "post__block_div"]
+                if null classes
+                    then [T.unpack cl, "post__block_div"]
                     else classes,
                 others)
 
@@ -304,7 +304,7 @@ writeInline (Link attr inline target) = do
             ]
         ) inlines
 
-writeInline (Image attr inline target) = do
+writeInline (Image attr inline target) =
     if | "http://www.youtube.com/watch?v=" `isPrefixOf` fst target ||
             "https://www.youtube.com/watch?v=" `isPrefixOf` fst target ->
                 -- Youtube video
@@ -399,8 +399,8 @@ writeImage attr inline target = do
                     then " post__figure_with-number"
                     else ""
              ] ++ writeAttr attr) $
-            div_ [class_ $ "post__figure-outer"] $
-                div_ [class_ $ "post__figure-inner"] $ do
+            div_ [class_ "post__figure-outer"] $
+                div_ [class_ "post__figure-inner"] $ do
                     img options
                     unless (null inline) $
                       p_ [class_ "post__figure-description"] inlines
@@ -432,7 +432,7 @@ writeImage attr inline target = do
         extractId = T.init . fst . T.breakOnEnd "." . snd . T.breakOnEnd "/"
 
         img :: LucidWriterOptions -> Html ()
-        img options = do
+        img options =
             if options ^. renderType == RenderAMP
             then ampImg_
                 ([ class_ "post__figure-img_amp"

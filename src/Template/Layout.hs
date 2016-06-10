@@ -143,7 +143,7 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
 
     body_ $ do
         ampAnalytics_ [type_ "googleanalytics"] $
-            script_ [type_ "application/json"] $
+            script_ [type_ "application/json"]
                 ("{\
                    \\"vars\":{\
                      \\"account\":\"" ++ googleAnalyticsUA ++ "\"\
@@ -197,7 +197,7 @@ footer =
 
 googleAnalytics :: Html ()
 googleAnalytics =
-    toHtmlRaw $
+    toHtmlRaw
         ("<script type=\"text/javascript\">\
              \var _gaq=_gaq||[];\
              \_gaq.push(['_setAccount','" ++ googleAnalyticsUA ++ "']);\

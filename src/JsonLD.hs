@@ -117,7 +117,7 @@ instance ToJSON BlogPosting where
         where
             formatDate date =
                 String $ T.pack $
-                    formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z")) $
+                    formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z"))
                     date
 
 instance Binary BlogPosting

@@ -38,11 +38,11 @@ getSafePath = do
     p <- maybe pass (return . U.toString) mp
 
     -- relative paths only!
-    when (not $ isRelative p) pass
+    unless (isRelative p) pass
 
     -- check that we don't have any sneaky .. paths
     let dirs = splitDirectories p
-    when (elem ".." dirs) pass
+    when (".." `elem` dirs) pass
 
     return $! joinPath dirs
 
@@ -181,7 +181,7 @@ serveDirectoryWith :: MonadSnap m
                    -> m ()
 serveDirectoryWith cfg base = do
     b <- directory <|> file <|> redir
-    when (not b) pass
+    unless b pass
 
   where
 

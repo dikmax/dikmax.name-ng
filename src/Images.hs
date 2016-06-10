@@ -54,7 +54,7 @@ getImageMeta path = withTempFile $ \temp -> do
 
     thumb <- liftIO $ BS.readFile temp
     let result = meta & imageThumbnail .~ ("data:image/jpeg;base64," ++
-            (T.pack $ map (toEnum . fromEnum) $ BS.unpack $ BS.encode thumb))
+            T.pack (map (toEnum . fromEnum) $ BS.unpack $ BS.encode thumb))
 
     return result
     where

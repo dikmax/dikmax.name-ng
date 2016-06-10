@@ -40,7 +40,7 @@ prerequisites =
                 executable ++ "' is not available"
 
 demos :: Rules ()
-demos = do
+demos =
     phony "phony-demos" $ do
         command_ [] "git" ["submodule", "update"]
         files <- getDirectoryFiles "demos" ["//*"]
@@ -52,7 +52,7 @@ demos = do
                 copyFileChanged ("demos" </> file) (demosDir </> file)
 
 robotsTxt :: Rules ()
-robotsTxt = do
+robotsTxt =
     siteDir </> "robots.txt" %> \out -> do
         let src = dropDirectory2 out
         copyFileChanged src out
@@ -110,10 +110,10 @@ scripts = do
 compressScriptSimple :: FilePath -> Action ByteString
 compressScriptSimple path = do
     Stdout my <- command [] "java"
-        ([ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
+        [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
         , "--compilation_level", "WHITESPACE_ONLY"
         , "--warning_level", "VERBOSE"
-        , "--js", path])
+        , "--js", path]
 
     return my
 

@@ -12,14 +12,14 @@ mapPage :: (Html () -> Html ()) -> Html ()
 mapPage layout = layout $ do
     navigation False
     div_ [class_ "main main_no-hero"] $
-        div_ [class_ "main__full-width map__view"] $ mempty
+        div_ [class_ "main__full-width map__view"] mempty
 
 mapListPage :: (Html () -> Html ()) -> MapCountries -> Html ()
 mapListPage layout countries = layout $ do
     navigation False
     div_ [class_ "main main_no-hero"] $
         div_ [class_ "main__centered map__list"] $ do
-            p_ [] $ do
+            p_ [] $
                 a_ [href_ "/map/"] "Показать карту"
             forM_ (sortCountries $ M.toList countries) $ \(code, country) -> do
                 div_ [class_ "map__subheader", data_ "code" code] $ do
@@ -32,21 +32,21 @@ mapListPage layout countries = layout $ do
                     let links = visitLinks (city ^. cityVisits)
                     if null links
                     then
-                        span_ [class_ "map__item map__item_empty"] $ do
+                        span_ [class_ "map__item map__item_empty"] $
                             span_ [class_ "map__item-text"] $
                                 toHtml (city ^. cityName)
                     else
                         if length links == 1
                         then
-                            a_ [class_ "map__item", href_ $ head links] $ do
+                            a_ [class_ "map__item", href_ $ head links] $
                                 span_ [class_ "map__item-text"] $
                                     toHtml (city ^. cityName)
                         else
                             forM_ (withIndexes links) $ \(i, link) ->
-                                a_ [class_ "map__item", href_ link] $ do
+                                a_ [class_ "map__item", href_ link] $
                                     span_ [class_ "map__item-text"] $
                                         toHtml (city ^. cityName ++ " (" ++
-                                            (show $ i + 1) ++ ")")
+                                            show (i + 1) ++ ")")
 
 
     where
@@ -62,10 +62,10 @@ mapListPage layout countries = layout $ do
         noIcon = div_ [class_ "map__subheader-icon map__subheader-icon_none"] mempty
 
         icon :: Html () -> Html ()
-        icon = div_ [class_ $ "map__subheader-icon"]
+        icon = div_ [class_ "map__subheader-icon"]
 
         visitLinks :: [Visit] -> [Text]
-        visitLinks = catMaybes . map (^. visitLink)
+        visitLinks = mapMaybe (^. visitLink)
 
         withIndexes :: [a] -> [(Int, a)]
         withIndexes = withIndexes' 0
