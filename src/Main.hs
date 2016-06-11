@@ -317,6 +317,10 @@ blog = do
     siteDir </> "archive" </> indexHtml %> \out -> do
         ps <- postsList PostsCacheByDate
         cd <- commonData Anything
+
+        need [siteDir </> "css/archive.css"]
+        archiveCss <- liftIO $ readFile $ siteDir </> "css/archive.css"
+
         let files = M.elems ps
         putNormal $ "Writing page " ++ out
         let meta = def
@@ -330,13 +334,17 @@ blog = do
                 }
         liftIO $ renderToFile out $
             T.archivePage
-                (T.defaultLayout cd meta) files
+                (T.defaultLayout (cd & dataCss .~ archiveCss) meta) files
 
 
     -- About page
     siteDir </> "about" </> indexHtml %> \out -> do
         cd <- commonData Anything
         about <- posts "about.md"
+
+        need [siteDir </> "css/about.css"]
+        aboutCss <- liftIO $ readFile $ siteDir </> "css/about.css"
+
         putNormal $ "Writing page " ++ out
         let a = about & fileMeta %~ postUrl .~ domain ++ "/"
                       & fileMeta %~ postMeta .~
@@ -347,14 +355,15 @@ blog = do
                             }
         liftIO $ renderToFile out $
             T.aboutPage
-                (T.defaultLayout cd (a ^. fileMeta)) cd a
+                (T.defaultLayout (cd & dataCss .~ aboutCss) (a ^. fileMeta)) cd a
 
 
     -- Map pages
     siteDir </> "map" </> indexHtml %> \out -> do
         cd <- commonData Anything
 
-        need [siteDir </> "data/map.json"]
+        need [siteDir </> "data/map.json", siteDir </> "css/map.css"]
+        mapCss <- liftIO $ readFile $ siteDir </> "css/map.css"
 
         let meta = def
                 { _postTitle = "Путешествия"
@@ -368,12 +377,13 @@ blog = do
 
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
-            T.mapPage (T.mapLayout cd meta)
+            T.mapPage (T.mapLayout (cd & dataCss .~ mapCss) meta)
 
     siteDir </> "map/list" </> indexHtml %> \out -> do
         cd <- commonData Anything
 
-        need ["data/map.json"]
+        need [siteDir </> "data/map.json", siteDir </> "css/maplist.css"]
+        mapListCss <- liftIO $ readFile $ siteDir </> "css/maplist.css"
 
         mapJson <- liftIO $ LBS.readFile "data/map.json"
         let res = A.eitherDecode mapJson :: Either String MapCountries
@@ -391,7 +401,7 @@ blog = do
             putNormal $ "Writing page " ++ out
             liftIO $ renderToFile out $
                 T.mapListPage
-                    (T.defaultLayout cd meta) countries
+                    (T.defaultLayout (cd & dataCss .~ mapListCss) meta) countries
             ) res
 
 
