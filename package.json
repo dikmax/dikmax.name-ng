@@ -11,7 +11,7 @@
     "google-closure-library": "*",
     "greiner-hormann": "^1.3.0",
     "leaflet": "^0.7.7",
-    "leaflet-easybutton": "^1.2.0",
+    "leaflet-easybutton": "^1.3.0",
     "proj4": "^2.3.14",
     "proj4leaflet": "^0.7.2",
     "topojson": "^1.6.26"
@@ -20,17 +20,14 @@
     "colorguard": "^1.2.0",
     "css-mqpacker": "^4.0.1",
     "cssnano": "^3.6.2",
-    "eslint": "^2.10.2",
+    "eslint": "^2.12.0",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-config-google": "^0.4.0",
-    "eslint-plugin-import": "^1.8.1",
-    "eslint-plugin-jsx-a11y": "^1.2.3",
+    "eslint-plugin-import": "^1.9.0",
+    "eslint-plugin-jsx-a11y": "^1.4.2",
     "eslint-plugin-react": "^5.1.1",
     "google-closure-compiler": "*",
-    "gulp": "^3.9.0",
-    "gulp-postcss": "^6.1.1",
-    "gulp-rename": "^1.2.2",
-    "lost": "^6.8.0",
+    "lost": "^6.8.1",
     "postcss": "^5.0.21",
     "postcss-bem": "^0.4.1",
     "postcss-bem-linter": "^2.5.1",
@@ -45,14 +42,12 @@
     "postcss-responsive-type": "^0.3.3",
     "postcss-short": "^1.4.0",
     "stylehacks": "^2.3.1",
-    "stylelint": "^4.5.1",
-    "stylelint-config-cssrecipes": "^2.0.1",
-    "stylelint-config-standard": "^3.0.0",
-    "stylelint-config-suitcss": "^4.0.0",
-    "topojson": "^1.6.26"
+    "stylelint": "^6.5.1",
+    "stylelint-config-standard": "^8.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "node_modules/.bin/stylelint styles/*.pcss"
   },
   "author": "Maxim Dikun",
   "license": "BSD-3-Clause",
@@ -72,7 +67,7 @@
     }
   },
   "stylelint": {
-    "extends": "stylelint-config-suitcss",
+    "extends": "stylelint-config-standard",
     "rules": {
       "at-rule-empty-line-before": null,
       "block-no-empty": null,

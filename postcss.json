@@ -1,7 +1,6 @@
 {
     "use": [
         "postcss-import",
-        "stylelint",
         "postcss-mixins",
         "postcss-cssnext",
         "colorguard",
