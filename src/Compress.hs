@@ -37,7 +37,7 @@ compress = do
         let src = take (length out - 5) out
         process webpCacheDir src out $
             command_ [EchoStdout False, EchoStderr False] "cwebp"
-                [src, "-q", "90", "-m", "6", "-o", out]
+                [src, "-jpeg_like", "-q", "75", "-m", "6", "-o", out]
     siteDir <//> "*.png.webp" %> \out -> do
         let src = take (length out - 5) out
         process webpCacheDir src out $
