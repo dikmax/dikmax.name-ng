@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: strasbourg
+    name: Страсбург
+
   - id: ulm
     name: Ульм
 
