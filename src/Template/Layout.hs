@@ -17,22 +17,12 @@ layout scripts cd meta content = doctypehtml_ $ do
         meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0, ya-title=fade, ya-dock=fade"]
 
         -- Favicons
-        link_ [rel_ "apple-touch-icon", sizes_ "57x57", href_ "/apple-touch-icon-57x57.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "60x60", href_ "/apple-touch-icon-60x60.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "72x72", href_ "/apple-touch-icon-72x72.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "76x76", href_ "/apple-touch-icon-76x76.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "114x114", href_ "/apple-touch-icon-114x114.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "120x120", href_ "/apple-touch-icon-120x120.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "144x144", href_ "/apple-touch-icon-144x144.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "152x152", href_ "/apple-touch-icon-152x152.png?v=NmYO8WoKWA"]
-        link_ [rel_ "apple-touch-icon", sizes_ "180x180", href_ "/apple-touch-icon-180x180.png?v=NmYO8WoKWA"]
-        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-32x32.png?v=NmYO8WoKWA", sizes_ "32x32"]
-        link_ [rel_ "icon", type_ "image/png", href_ "/android-chrome-192x192.png?v=NmYO8WoKWA", sizes_ "192x192"]
-        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-96x96.png?v=NmYO8WoKWA", sizes_ "96x96"]
-        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-16x16.png?v=NmYO8WoKWA", sizes_ "16x16"]
-        link_ [rel_ "manifest", href_ "/manifest.json?v=NmYO8WoKWA"]
-        meta_ [name_ "msapplication-TileColor", content_ "#474747"]
-        meta_ [name_ "msapplication-TileImage", content_ "/mstile-144x144.png?v=NmYO8WoKWA"]
+        link_ [rel_ "apple-touch-icon", sizes_ "180x180", href_ "/apple-touch-icon.png?v=yyyEB94O8G"]
+        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-32x32.png?v=yyyEB94O8G", sizes_ "32x32"]
+        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-16x16.png?v=yyyEB94O8G", sizes_ "16x16"]
+        link_ [rel_ "manifest", href_ "/manifest.json?v=yyyEB94O8G"]
+        link_ [rel_ "mask-icon", href_ "/safari-pinned-tab.svg?v=yyyEB94O8G", term "color" "#474747"]
+        link_ [rel_ "shortcut icon", href_ "/favicon.ico?v=yyyEB94O8G"]
         meta_ [name_ "theme-color", content_ "#474747"]
 
         -- Yandex
