@@ -26,6 +26,7 @@ compress = do
             , siteDir <//> "*.json"
             , siteDir <//> "*.html"
             , siteDir <//> "*.rss"
+            , siteDir <//> "*.svg"
             , siteDir <//> "*.txt"
             , siteDir <//> "*.xml"
             ]
