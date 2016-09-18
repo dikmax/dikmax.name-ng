@@ -1,4 +1,4 @@
-module Images where
+module Images (getImageMeta, imagesRules) where
 
 import           BasicPrelude
 import           Config
@@ -16,7 +16,9 @@ import           Graphics.ImageMagick.MagickWand
 import           Lib
 import           Numeric
 import           System.Directory                (createDirectoryIfMissing)
+import           Text.Regex.Posix
 import           Types
+
 
 getImageMeta :: FilePath -> Action ImageMeta
 getImageMeta path = withTempFile $ \temp -> do
@@ -83,7 +85,7 @@ imagesRules = do
             -- TODO delete no more existent files
             forM_ files (\file -> do
                 exists <- doesFileExist (imagesDir </> file)
-                unless exists $ do
+                unless (exists || isDuplicateImage file) $ do
                     liftIO $ createDirectoryIfMissing True $ takeDirectory (imagesDir </> file)
                     putNormal $ "Copying file " ++ (imagesDir </> file)
                     copyFileChanged (dir </> file) (imagesDir </> file)
@@ -94,3 +96,7 @@ imagesRules = do
         need [siteDir </> x | x <- imageFiles]
 
     forM_ imagesPatterns buildStatic
+
+-- Check for Google Drive duplicates
+isDuplicateImage :: FilePath -> Bool
+isDuplicateImage = (=~ (" \\([0-9]+\\)\\.[a-zA-Z0-9]+$" :: String))
