@@ -523,7 +523,7 @@ blog = do
             where
                 (d,m) = M.size ps `divMod` pageSize
                 listFilePaths =
-                    [ prefix </> pageDir </> (show p) </> suffix |
+                    [ prefix </> pageDir </> show p </> suffix |
                         p <- [2 .. d + (if m == 0 then 2 else 1)] ]
 
         imageGetter :: Images -> Text -> Maybe ImageMeta
