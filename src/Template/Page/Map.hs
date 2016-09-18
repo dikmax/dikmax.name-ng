@@ -46,7 +46,7 @@ mapListPage layout countries = layout $ do
                                 a_ [class_ "map__item", href_ link] $
                                     span_ [class_ "map__item-text"] $
                                         toHtml (city ^. cityName ++ " (" ++
-                                            show (i + 1) ++ ")")
+                                            tshow (i + 1) ++ ")")
 
 
     where

@@ -182,8 +182,8 @@ footer =
     footer_ [class_ "footer"] $
         div_ [class_ "footer__container"] $
             toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; " ++
-                show copyrightYear ++
-                "<br/>Любимый корректор: Анастасия Барбосова" :: Text)
+                tshow copyrightYear ++
+                "<br/>Любимый корректор: Анастасия Барбосова")
 
 googleAnalytics :: Html ()
 googleAnalytics =

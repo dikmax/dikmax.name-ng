@@ -113,7 +113,7 @@ writeBlock (Para inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     return $ case inline of
         [Image{}] -> inlines
-        _ -> p_ [class_ $ cl ++ "post__block_para", id_ $ "p-" ++ show c] inlines
+        _ -> p_ [class_ $ cl ++ "post__block_para", id_ $ "p-" ++ tshow c] inlines
 
 writeBlock (CodeBlock (identifier, classes, others) code) = do
     cl <- getMainBlockClass
@@ -149,15 +149,15 @@ writeBlock (OrderedList (startNum, numStyle, _) listItems) = withCountBlocksIncr
             UpperRoman -> "I"
             _          -> "1"
         attributes :: Int -> [Attribute]
-        attributes s = [type_ char, id_ $ "p-" ++ show (s + 1)] ++
-            [ start_ $ show startNum | startNum /= 1 ]
+        attributes s = [type_ char, id_ $ "p-" ++ tshow (s + 1)] ++
+            [ start_ $ tshow startNum | startNum /= 1 ]
 
 writeBlock (BulletList listItems) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     items <- mapM processListItems listItems
     return $ ul_
         [ class_ $ cl ++ "post__block_unordered-list"
-        , id_ $ "p-" ++ show c
+        , id_ $ "p-" ++ tshow c
         ] $ mconcat items
 
 writeBlock (Header 1 attr inline) = withCountBlocksIncrement $ \c -> do
@@ -165,42 +165,42 @@ writeBlock (Header 1 attr inline) = withCountBlocksIncrement $ \c -> do
     inlines <- concatInlines inline
     return $ h1_
         ( class_ (cl ++ "post__block_header-1")
-        : id_ ("p-" ++ show c)
+        : id_ ("p-" ++ tshow c)
         : writeAttr attr) inlines
 writeBlock (Header 2 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h2_
         ( class_ (cl ++ "post__block_header-2")
-        : id_ ("p-" ++ show c)
+        : id_ ("p-" ++ tshow c)
         : writeAttr attr) inlines
 writeBlock (Header 3 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h3_
         ( class_ (cl ++ "post__block_header-3")
-        : id_ ("p-" ++ show c)
+        : id_ ("p-" ++ tshow c)
         : writeAttr attr) inlines
 writeBlock (Header 4 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h4_
         ( class_ (cl ++ "post__block_header-4")
-        : id_ ("p-" ++ show c)
+        : id_ ("p-" ++ tshow c)
         : writeAttr attr) inlines
 writeBlock (Header 5 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h5_
         ( class_ (cl ++ "post__block_header-5")
-        : id_ ("p-" ++ show c)
+        : id_ ("p-" ++ tshow c)
         : writeAttr attr) inlines
 writeBlock (Header _ attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h6_
         ( class_ (cl ++ "post__block_header-6")
-        : id_ ("p-" ++ show c)
+        : id_ ("p-" ++ tshow c)
         : writeAttr attr) inlines
 
 writeBlock HorizontalRule = do
@@ -322,9 +322,9 @@ writeInline (Note block) = do   -- TODO there should be a link to footer
     notesList %= (++ [blocks])
     let noteId = length n + 1
     return $ sup_
-        [ id_ $ "note-" ++ (options ^. idPrefix) ++ show noteId
+        [ id_ $ "note-" ++ (options ^. idPrefix) ++ tshow noteId
         , class_ "note-link"
-        ] $ toHtml $ show noteId
+        ] $ toHtml $ tshow noteId
 
 writeInline (Span attr inline) = do
     inlines <- concatInlines inline
@@ -466,10 +466,10 @@ writeImage attr inline target = do
         imgAttrs :: LucidWriterOptions -> [Attribute]
         imgAttrs options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
             Just meta ->
-                [ width_ $ show $ meta ^. imageWidth
-                , height_ $ show $ meta ^. imageHeight
+                [ width_ $ tshow $ meta ^. imageWidth
+                , height_ $ tshow $ meta ^. imageHeight
                 , data_ "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                    (options ^. siteDomain) ++ " " ++ show (meta ^. imageWidth) ++ "w")
+                    (options ^. siteDomain) ++ " " ++ tshow (meta ^. imageWidth) ++ "w")
                 , sizes_ "100vw" ] :: [Attribute]
             Nothing -> []
 
@@ -493,7 +493,7 @@ getFooter = do
     where
         transformNotes :: [Html ()] -> Int -> Text -> Html ()
         transformNotes (n:ns) i prefix = do
-            li_ [data_ "for" (prefix ++ show i)] n
+            li_ [data_ "for" (prefix ++ tshow i)] n
             transformNotes ns (i+1) prefix
         transformNotes [] _ _ = mempty
 

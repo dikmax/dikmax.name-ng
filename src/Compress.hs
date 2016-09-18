@@ -59,7 +59,7 @@ compress = do
             need [normalizeSrc src]
             file <- liftIO $ BSL.readFile src
             let h = T.unpack $ hashToPath $
-                    show (hashlazy file :: Digest SHA3_256)
+                    tshow (hashlazy file :: Digest SHA3_256)
             exists <- liftIO $ D.doesFileExist $ cacheDir </> h
             if exists
                 then liftIO $ D.copyFile (cacheDir </> h) out

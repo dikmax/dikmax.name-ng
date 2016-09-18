@@ -231,10 +231,10 @@ blog = do
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage "/" ps page
         let newerPage = getNewerPage "/" ps page
-        let title = show page ++ "-я страница"
+        let title = tshow page ++ "-я страница"
         let pageMeta = def
                 { _postTitle = title
-                , _postUrl = domain ++ "/page/" ++ show page ++ "/"
+                , _postUrl = domain ++ "/page/" ++ tshow page ++ "/"
                 , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = title
                       , _webPageCopyrightHolder = copyrightHolder
@@ -284,10 +284,10 @@ blog = do
         let postsOnPage = getPostsForPage ps page
         let olderPage = getOlderPage ("/tag/" ++ tag ++ "/") ps page
         let newerPage = getNewerPage ("/tag/" ++ tag ++ "/") ps page
-        let title = "\"" ++ tag ++ "\", " ++ show page ++ "-я страница"
+        let title = "\"" ++ tag ++ "\", " ++ tshow page ++ "-я страница"
         let pageMeta = def
                 { _postTitle = title
-                , _postUrl = domain ++ "/tag/" ++ tag ++ "/page" ++ show page ++ "/"
+                , _postUrl = domain ++ "/tag/" ++ tag ++ "/page" ++ tshow page ++ "/"
                 , _postMeta  = toMetadata WebPage
                       { _webPageHeadline = title
                       , _webPageCopyrightHolder = copyrightHolder
@@ -501,14 +501,14 @@ blog = do
 
         getOlderPage prefix ps page
             | page * pageSize - 1 >= listLast = Nothing
-            | otherwise = Just $ prefix ++ "page/" ++ show (page + 1) ++ "/"
+            | otherwise = Just $ prefix ++ "page/" ++ tshow (page + 1) ++ "/"
             where
                 listLast = M.size ps - 1
 
         getNewerPage prefix _ page
             | page == 1 = Nothing
             | page == 2 = Just prefix
-            | otherwise = Just $ prefix ++ "page/" ++ show (page - 1) ++ "/"
+            | otherwise = Just $ prefix ++ "page/" ++ tshow (page - 1) ++ "/"
 
         alterDate :: FilePath -> Maybe UTCTime -> Maybe UTCTime
         alterDate filePath Nothing = dateFromFilePath filePath
@@ -523,7 +523,7 @@ blog = do
             where
                 (d,m) = M.size ps `divMod` pageSize
                 listFilePaths =
-                    [ prefix </> pageDir </> T.unpack (show p) </> suffix |
+                    [ prefix </> pageDir </> (show p) </> suffix |
                         p <- [2 .. d + (if m == 0 then 2 else 1)] ]
 
         imageGetter :: Images -> Text -> Maybe ImageMeta
@@ -608,13 +608,13 @@ idFromPost :: Pandoc -> Text
 idFromPost (Pandoc meta _) = maybe (terror "Post have no id") getId $ lookupMeta "id" meta
     where
         getId (MetaString s) = T.pack s
-        getId s = terror $ "Post id field have wrong value: " ++ show s
+        getId s = terror $ "Post id field have wrong value: " ++ tshow s
 
 dateFromPost :: Pandoc -> Text
 dateFromPost (Pandoc meta _) = maybe (terror "Post have no date") getDate $ lookupMeta "date" meta
     where
         getDate (MetaString s) = T.pack s
-        getDate s = terror $ "Post date field have wrong value: " ++ show s
+        getDate s = terror $ "Post date field have wrong value: " ++ tshow s
 
 coverToStyle :: File -> Text
 coverToStyle file =
