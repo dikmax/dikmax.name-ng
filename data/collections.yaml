@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: hamburg
+    name: Гамбург
+
   - id: strasbourg
     name: Страсбург
 
@@ -112,6 +115,18 @@ eurotrip-2014:
 proofreaders-stories:
   name: Колонка корректора
   items:
+  - id: hamburg
+    name: Гамбург
+
+  - id: ulm
+    name: Ульм
+
+  - id: nuerenberg
+    name: Нюрнберг
+
+  - id: heidelberg
+    name: Хайдельберг
+
   - id: autumn-in-minsk
     name: Осень в Минске
 
