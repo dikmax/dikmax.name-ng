@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: konstanz
+    name: Констанс
+
   - id: hamburg
     name: Гамбург
 
