@@ -23,7 +23,7 @@ dikmax.App.setupNavigation_ = function () {
   const sidebar = goog.dom.getElementByClass('sidebar');
   const sidebarPanel = goog.dom.getElementByClass('sidebar__panel');
 
-  goog.events.listen(menuButton, goog.events.EventType.CLICK, event => {
+  goog.events.listen(menuButton, goog.events.EventType.CLICK, (event) => {
     event.preventDefault();
     goog.style.setStyle(sidebar, 'display', 'block');
     goog.Timer.callOnce(() => {
@@ -52,7 +52,7 @@ dikmax.App.scrollAndResizeTracker_ = function () {
       () => {
         const scroll = goog.dom.getDocumentScroll();
         let index = goog.array.binarySelect(
-            blocks, el => {
+            blocks, (el) => {
               const pageOffsetTop = goog.style.getPageOffsetTop(el);
               return scroll.y - pageOffsetTop;
             }
@@ -93,7 +93,8 @@ dikmax.App.scrollAndResizeTracker_ = function () {
  * @private
  */
 dikmax.App.constrainImage_ = function (
-    allowEnlarge, maxWidth, maxHeight, image) {
+  allowEnlarge, maxWidth, maxHeight, image
+) {
   let result = new goog.math.Size(parseInt(image.getAttribute('width'), 10),
       parseInt(image.getAttribute('height'), 10));
   if (allowEnlarge) {
@@ -126,7 +127,7 @@ dikmax.App.setupLazyImages_ = function () {
     const imageMaxWidth = size.width - 32;
     const imageMaxHeight = size.height - 60;
 
-    goog.array.forEach(images, image => {
+    goog.array.forEach(images, (image) => {
       const newSize = dikmax.App.constrainImage_(
           false, imageMaxWidth, imageMaxHeight, image);
       goog.style.setWidth(image, `${newSize.width}px`);
@@ -142,7 +143,7 @@ dikmax.App.setupLazyImages_ = function () {
 
     const newImages = [];
 
-    goog.array.forEach(images, _image => {
+    goog.array.forEach(images, (_image) => {
       const image = _image;
       const imageTop = goog.style.getPageOffsetTop(image);
       const imageBottom = imageTop +
@@ -181,7 +182,7 @@ dikmax.App.setupPanoramas_ = function () {
   const imageMaxWidth = size.width - 32;
   const imageMaxHeight = size.height - 60;
 
-  goog.array.forEach(images, image => {
+  goog.array.forEach(images, (image) => {
     if (!(image instanceof HTMLImageElement)) {
       return;
     }

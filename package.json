@@ -21,10 +21,8 @@
     "css-mqpacker": "^5.0.1",
     "cssnano": "^3.7.4",
     "eslint": "^3.4.0",
-    "eslint-config-airbnb": "^10.0.1",
-    "eslint-plugin-import": "^1.14.0",
-    "eslint-plugin-jsx-a11y": "^2.2.1",
-    "eslint-plugin-react": "^6.2.0",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
     "google-closure-compiler": "*",
     "lost": "^7.1.0",
     "postcss": "~5.0.0",
@@ -89,7 +87,6 @@
   },
   "eslintConfig": {
     "globals": {
-      "d3": false,
       "dikmax": false,
       "goog": false
     },
@@ -97,7 +94,7 @@
       "browser": true,
       "es6": true
     },
-    "extends": "airbnb",
+    "extends": "airbnb-base",
     "rules": {
       "comma-dangle": 0,
       "dot-notation": 0,

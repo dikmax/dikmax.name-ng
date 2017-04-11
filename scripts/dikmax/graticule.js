@@ -1,6 +1,8 @@
 goog.provide('dikmax.Graticule');
 goog.provide('dikmax.graticule');
 
+goog.require('goog.object');
+
 /* global L */
 
 /*
@@ -11,10 +13,10 @@ goog.provide('dikmax.graticule');
 dikmax.Graticule = class extends L.GeoJSON {
 
   /**
-   * @param {Object=} options
+   * @param {Object=} opts
    */
-  constructor(options) {
-    this.options = {
+  constructor(opts) {
+    const options = {
       style: {
         color: '#333',
         weight: 1
@@ -22,6 +24,7 @@ dikmax.Graticule = class extends L.GeoJSON {
       interval: 20,
       sphere: false
     };
+    goog.object.extend(options, opts);
 
     super(null, options);
 

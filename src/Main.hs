@@ -599,7 +599,7 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss, topojson, "node_modules/d3/d3.min.js"] &%> \_ -> do
+    [postcss, topojson] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
 
