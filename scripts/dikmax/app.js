@@ -138,8 +138,8 @@ dikmax.App.setupLazyImages_ = function () {
   const scrollHandler = () => {
     const scroll = goog.dom.getDocumentScroll();
     const size = vsm.getSize();
-    const trackTop = scroll.y + size.height;
-    const trackBottom = scroll.y;
+    const trackTop = scroll.y + size.height * 1.5;
+    const trackBottom = scroll.y - size.height * 0.5;
 
     const newImages = [];
 
