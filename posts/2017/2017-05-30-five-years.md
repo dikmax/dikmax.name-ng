@@ -37,10 +37,12 @@ cover:
 
 Адрес:
 
-Maksim Dzikun\
-Mülbergerstr. 67\
-73728 Esslingen\
+~~~~~
+Maksim Dzikun
+Mülbergerstr. 67
+73728 Esslingen
 Germany
+~~~~~
 
 Мы\ будем с\ нетерпением ждать!
 
