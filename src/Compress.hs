@@ -51,9 +51,8 @@ compress = do
     siteDir <//> "*.br" %> \out -> do
         let src = take (length out - 3) out
         process brotliCacheDir src out $
-            command_ [] "bro"
-                [ "--input", src, "--output", out
-                , "--quality", "10", "--force"]
+            command_ [] "brotli"
+                [ "-o", out, "--best", "--force", "--", src]
     where
         process cacheDir src out exec = do
             need [normalizeSrc src]

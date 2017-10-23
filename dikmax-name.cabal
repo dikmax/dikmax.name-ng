@@ -57,7 +57,7 @@ executable dikmax.name
                      , Types
   ghc-options:         -Wall -threaded -rtsopts "-with-rtsopts=-N -I0 -qg -qb"
   build-depends:       base
-                     , aeson >= 1 && < 1.1
+                     , aeson >= 1.1 && < 1.2
                      , base64-bytestring >= 1 && < 2
                      , basic-prelude >= 0.6 && < 0.7
                      , binary >= 0.7 && < 0.9
@@ -85,7 +85,7 @@ executable dikmax.name
                      , time >= 1.6 && < 1.7
                      , unordered-containers >= 0.2 && < 0.3
                      , utf8-string >= 1.0 && < 1.1
-                     , vector >= 0.11 && < 0.12
+                     , vector >= 0.12 && < 0.13
                      , yaml >= 0.8 && < 0.9
   default-language:    Haskell2010
 
