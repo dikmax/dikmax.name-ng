@@ -40,7 +40,7 @@ getImageMeta path = withTempFile $ \temp -> do
             , _imageHeight = P.imageHeight img
             }
 
-    command_ [] "guetzli" [temp, temp]
+    command_ [] "guetzli" ["--quality", "84", temp, temp]
 
     thumb <- liftIO $ BS.readFile temp
     let result = meta & imageThumbnail .~ ("data:image/jpeg;base64," ++
