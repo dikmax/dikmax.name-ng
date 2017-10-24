@@ -32,7 +32,7 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "brotli", "ogr2ogr"]
+        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "brotli", "guetzli", "ogr2ogr"]
     where
         check executable = do
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable

@@ -1,7 +1,0 @@
-flags:
-  imagemagick:
-    buildexamples: false
-packages:
-- '.'
-extra-deps: []
-resolver: lts-3.6

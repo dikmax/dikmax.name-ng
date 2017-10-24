@@ -7,7 +7,7 @@ import           BasicPrelude
 import           Config
 import           Control.Lens
 import           Data.Aeson.Types
-import           Data.Aeson.Encode
+import           Data.Aeson.Text
 import           Data.Binary
 import           Data.Char
 import qualified Data.HashMap.Strict    as HM

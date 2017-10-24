@@ -6,12 +6,9 @@ resolver: lts-9.10
 # Local packages, usually specified by relative directory name
 packages:
 - '.'
-- 'packages/imagemagick'
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
-extra-deps:
-# - ./packages/imagemagick
-# - imagemagick-0.0.4.2
+extra-deps: []
 
 # Override default flag values for local packages and extra-deps
 flags: {}
@@ -33,8 +30,8 @@ local-bin-path: .
 # arch: x86_64
 
 # Extra directories used by stack for building
-extra-include-dirs:
-    - '/usr/local/include/ImageMagick-6'
+# extra-include-dirs:
+#    - '/usr/local/include/ImageMagick-6'
 # extra-lib-dirs:
 #    - '/usr/local/opt/imagemagick@6/lib'
 

@@ -1,18 +1,17 @@
 module Images (getImageMeta, imagesRules) where
 
 import           BasicPrelude
+import qualified Codec.Picture                   as P
+import qualified Codec.Picture.Extra             as P
 import           Config
 import           Control.Lens
-import           Control.Monad.Trans.Resource    (release)
 import qualified Data.Binary                     as B
 import qualified Data.ByteString                 as BS
 import qualified Data.ByteString.Base64          as BS
 import qualified Data.Text                       as T
-import           Data.Vector.Storable            ((!))
 import           Development.Shake
 import           Development.Shake.Config
 import           Development.Shake.FilePath
-import           Graphics.ImageMagick.MagickWand
 import           Lib
 import           Numeric
 import           System.Directory                (createDirectoryIfMissing)
@@ -22,42 +21,30 @@ import           Types
 
 getImageMeta :: FilePath -> Action ImageMeta
 getImageMeta path = withTempFile $ \temp -> do
-    meta <- liftIO $ withMagickWandGenesis $ do
-        (_, w1) <- magickWand
-        -- Read the image
-        readImage w1 $ T.pack path
-        width <- getImageWidth w1
-        height <- getImageHeight w1
+    meta <- liftIO $ do
+        eimg <- P.readImage path
+        let dimg = either error id eimg
+        let img = P.convertRGB8 dimg
+        let scaled1 = P.scaleBilinear 1 1 img
+        let scaled2 = P.scaleBilinear 32 32 img
 
-        (_, w2) <- cloneMagickWand w1
-
-        resizeImage w1 1 1 triangleFilter 1
-        resizeImage w2 32 32 triangleFilter 1
-
-        (iterator_key,iterator) <- pixelIterator w1
-        pixelRows <- pixelIterateList iterator
-        color <- getMagickColor $ head pixelRows ! 0 -- TODO css string
-        red <- getPixelRed color
-        green <- getPixelGreen color
-        blue <- getPixelBlue color
-        release iterator_key
-
-        setImageCompressionQuality w2 75
-        writeImage w2 $ Just $ T.pack temp
+        let (P.PixelRGB8 red green blue) = P.pixelAt scaled1 0 0
+        P.writePng temp scaled2
 
         return ImageMeta
-            { _imageColor = (T.pack . showChar '#' . hex (truncate $ red / 256 :: Integer)
-                . hex (truncate $ green / 256 :: Integer)
-                . hex (truncate $ blue / 256 :: Integer)) ""
+            { _imageColor = (T.pack . showChar '#' . hex red
+                . hex green
+                . hex blue) ""
             , _imageThumbnail = ""
-            , _imageWidth = width
-            , _imageHeight = height
+            , _imageWidth = P.imageWidth img
+            , _imageHeight = P.imageHeight img
             }
+
+    command_ [] "guetzli" [temp, temp]
 
     thumb <- liftIO $ BS.readFile temp
     let result = meta & imageThumbnail .~ ("data:image/jpeg;base64," ++
             T.pack (map (toEnum . fromEnum) $ BS.unpack $ BS.encode thumb))
-
     return result
     where
         hex a
