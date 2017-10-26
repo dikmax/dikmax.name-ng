@@ -9,75 +9,77 @@ import           Lucid.AMP
 import           Types
 
 layout :: Html () -> CommonData -> FileMeta -> Html () -> Html ()
-layout scripts cd meta content = doctypehtml_ $ do
-    head_ [lang_ "ru"] $ do
-        title_ $ toHtml $ pageTitle meta
-        meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
-        meta_ [httpEquiv_ "X-UA-Compatible", content_ "IE=edge"]
-        meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0, ya-title=fade, ya-dock=fade"]
+layout scripts cd meta content = do
+    doctype_
+    html_ [lang_ "ru"] $ do
+        head_ $ do
+            title_ $ toHtml $ pageTitle meta
+            meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
+            meta_ [httpEquiv_ "X-UA-Compatible", content_ "IE=edge"]
+            meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0, ya-title=fade, ya-dock=fade"]
 
-        -- Favicons
-        link_ [rel_ "apple-touch-icon", sizes_ "180x180", href_ "/apple-touch-icon.png?v=yyyEB94O8G"]
-        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-32x32.png?v=yyyEB94O8G", sizes_ "32x32"]
-        link_ [rel_ "icon", type_ "image/png", href_ "/favicon-16x16.png?v=yyyEB94O8G", sizes_ "16x16"]
-        link_ [rel_ "manifest", href_ "/manifest.json?v=yyyEB94O8G"]
-        link_ [rel_ "mask-icon", href_ "/safari-pinned-tab.svg?v=yyyEB94O8G", term "color" "#474747"]
-        link_ [rel_ "shortcut icon", href_ "/favicon.ico?v=yyyEB94O8G"]
-        meta_ [name_ "theme-color", content_ "#474747"]
+            -- Favicons
+            link_ [rel_ "apple-touch-icon", sizes_ "180x180", href_ "/apple-touch-icon.png?v=yyyEB94O8G"]
+            link_ [rel_ "icon", type_ "image/png", href_ "/favicon-32x32.png?v=yyyEB94O8G", sizes_ "32x32"]
+            link_ [rel_ "icon", type_ "image/png", href_ "/favicon-16x16.png?v=yyyEB94O8G", sizes_ "16x16"]
+            link_ [rel_ "manifest", href_ "/manifest.json?v=yyyEB94O8G"]
+            link_ [rel_ "mask-icon", href_ "/safari-pinned-tab.svg?v=yyyEB94O8G", term "color" "#474747"]
+            link_ [rel_ "shortcut icon", href_ "/favicon.ico?v=yyyEB94O8G"]
+            meta_ [name_ "theme-color", content_ "#474747"]
 
-        -- Yandex
-        link_ [rel_ "yandex-tableau-widget", href_ "/yandex-widget-manifest.json"]
+            -- Yandex
+            link_ [rel_ "yandex-tableau-widget", href_ "/yandex-widget-manifest.json"]
 
-        -- Resource hints
-        link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com/"]
-        link_ [rel_ "preconnect", href_ "https://www.gstatic.com/"]
-        link_ [rel_ "preconnect", href_ "https://dikmax.disqus.com/"]
-        link_ [rel_ "preconnect", href_ "https://ssl.google-analytics.com/"]
-        link_ [rel_ "preconnect", href_ "https://a.disquscdn.com/"]
+            -- Resource hints
+            link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com/"]
+            link_ [rel_ "preconnect", href_ "https://www.gstatic.com/"]
+            link_ [rel_ "preconnect", href_ "https://dikmax.disqus.com/"]
+            link_ [rel_ "preconnect", href_ "https://ssl.google-analytics.com/"]
+            link_ [rel_ "preconnect", href_ "https://a.disquscdn.com/"]
 
-        maybe mempty
-            (\_ -> link_ [rel_ "amphtml", href_ $ meta ^. postUrl ++ "amp/"])
-            (meta ^? postId)
+            maybe mempty
+                (\_ -> link_ [rel_ "amphtml", href_ $ meta ^. postUrl ++ "amp/"])
+                (meta ^? postId)
 
-        {-
-        link_ [rel_ "dns-prefetch", href_ "//ajaxhttpheaders2.appspot.com/"]
-        link_ [rel_ "dns-prefetch", href_ "//translate.google.com/"]
-        link_ [rel_ "dns-prefetch", href_ "//translate.googleapis.com/"]
-        -}
+            {-
+            link_ [rel_ "dns-prefetch", href_ "//ajaxhttpheaders2.appspot.com/"]
+            link_ [rel_ "dns-prefetch", href_ "//translate.google.com/"]
+            link_ [rel_ "dns-prefetch", href_ "//translate.googleapis.com/"]
+            -}
 
-        link_
-            [ rel_ "stylesheet"
-            , type_ "text/css"
-            , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
-        style_ [type_ "text/css"] (cd ^. dataCss)
-        {-
-        <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-        -}
-        link_ [rel_ "alternate", type_ "application/rss+xml", title_ "Лента",
-            href_ "/feed.rss"]
+            link_
+                [ rel_ "stylesheet"
+                , type_ "text/css"
+                , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
+            style_ [type_ "text/css"] (cd ^. dataCss)
+            {-
+            <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
+            -}
+            link_ [rel_ "alternate", type_ "application/rss+xml", title_ "Лента",
+                href_ "/feed.rss"]
 
-        {-
-        toHtmlRaw ("<!--[if lt IE 9]>\
-            \<script src=\"/js/html5shiv.js\"></script>\
-            \<script src=\"/js/respond.min.js\"></script>\
-            \<![endif]-->" :: Text)
-        -}
+            {-
+            toHtmlRaw ("<!--[if lt IE 9]>\
+                \<script src=\"/js/html5shiv.js\"></script>\
+                \<script src=\"/js/respond.min.js\"></script>\
+                \<![endif]-->" :: Text)
+            -}
 
-        meta_ [name_ "keywords", content_ keywordsString]
-        meta_ [name_ "author", content_ "Maxim Dikun"]
-        meta_ [term "property" "author", content_ "1201794820"]
-        meta_ [name_ "title", content_ $ pageTitle meta]
+            meta_ [name_ "keywords", content_ keywordsString]
+            meta_ [name_ "author", content_ "Maxim Dikun"]
+            meta_ [term "property" "author", content_ "1201794820"]
+            meta_ [name_ "title", content_ $ pageTitle meta]
 
-        ldMeta meta
+            ldMeta meta
 
-        ogMeta meta
+            ogMeta meta
 
-        googleAnalytics
+            googleAnalytics
 
-    body_ $ do
-        content
-        footer
-        scripts
+        body_ $ do
+            content
+            footer
+            scripts
 
     where
         keywords :: [Text]
