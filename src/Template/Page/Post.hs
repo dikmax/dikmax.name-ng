@@ -41,7 +41,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
     navigation isAmp
 
     div_ [class_ "main"] $ do
-        div_ [class_ "post"] $ writeLucid opts $ post ^. fileContent
+        main_ [class_ "post"] $ writeLucid opts $ post ^. fileContent
         unless (null (post ^. fileMeta ^. postTags)) $ div_ [class_ "main__centered post__meta"] $
             p_ [class_ "post__meta-tags"] $
                 mapM_ (\tag -> do

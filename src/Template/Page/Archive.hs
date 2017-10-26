@@ -17,7 +17,7 @@ import           Types
 archivePage :: (Html () -> Html ()) -> [File] -> Html ()
 archivePage layout files = layout $ do
     navigation False
-    div_ [class_ "main main_no-hero"] $
+    main_ [class_ "main main_no-hero"] $
         div_ [class_ "main__centered archive__list"] $
             forM_ sectionsKeys $ \month -> do
                 div_ [class_ "archive__subheader"] $

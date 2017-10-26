@@ -28,7 +28,7 @@ buttons =
 aboutPage :: (Html () -> Html ()) -> CommonData -> File -> Html ()
 aboutPage layout cd about = layout $ do
     navigation False
-    div_ [class_ "main main_no-hero"] $ do
+    main_ [class_ "main main_no-hero"] $ do
         writeLucid opts $ about ^. fileContent
 
         h1_ [class_ "main__centered post__block post__block_header-1"] $

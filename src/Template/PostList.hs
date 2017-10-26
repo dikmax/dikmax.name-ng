@@ -11,7 +11,7 @@ import           Types
 
 postList :: CommonData -> Maybe Text -> Maybe Text -> [File] -> Html ()
 postList cd olderPage newerPage posts =
-    div_ [class_ "main main_no-hero"] $ do
+    main_ [class_ "main main_no-hero"] $ do
         mconcat $ map (postSingle cd) posts
 
         when (isJust olderPage || isJust newerPage) $
