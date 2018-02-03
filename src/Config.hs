@@ -61,6 +61,9 @@ postcss = nodeModulesBinDir </> "postcss"
 topojson :: FilePath
 topojson = nodeModulesBinDir </> "topojson"
 
+json :: FilePath
+json = nodeModulesBinDir </> "json"
+
 pageSize :: Int
 pageSize = 5
 

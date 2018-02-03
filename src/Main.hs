@@ -7,6 +7,7 @@ import           Config
 import           Control.Lens
 import qualified Data.Aeson                 as A
 import qualified Data.Binary                as B
+import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Lazy       as LBS
 import qualified Data.Map.Lazy              as M
 import qualified Data.Text                  as T
@@ -547,8 +548,11 @@ topojson -o map/world.json --id-property ADM_A3,SU_A3,adm1_code --simplify 1e-6 
 mapData :: Rules ()
 mapData = do
     siteDir </> "data/map.json" %> \out -> do
-        need ["data/map.json"]
-        copyFileChanged "data/map.json" out
+        need [json, "data/map.json"]
+        Stdout my <- command [] json
+            ["-f", "data/map.json", "-0"]
+
+        liftIO $ BS.writeFile out my
 
     siteDir </> "data/world.json" %> \out -> do
         let subunitsSrc = "map/ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp"
@@ -599,7 +603,7 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss, topojson] &%> \_ -> do
+    [postcss, topojson, json] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
 
