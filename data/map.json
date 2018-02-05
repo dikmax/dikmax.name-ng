@@ -1769,7 +1769,8 @@
                 "lon": -9.416667,
                 "visits": [
                     {
-                        "date": "2016-09-24"
+                        "date": "2016-09-24",
+                        "link": "/post/europas-edge/#cascais"
                     }
                 ]
             },
@@ -1801,7 +1802,8 @@
                 "lon": -9.498333,
                 "visits": [
                     {
-                        "date": "2016-09-24"
+                        "date": "2016-09-24",
+                        "link": "/post/europas-edge/"
                     }
                 ]
             },

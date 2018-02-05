@@ -119,10 +119,10 @@ writeBlock (CodeBlock (identifier, classes, others) code) = do
     cl <- getMainBlockClass
     let mapAttrs =
             writeAttr (identifier,
-                T.unpack cl : "post__block_code sourceCode" : classes, others)
+                T.unpack cl : "post__block_code sourceCode" : classes, others) ""
     let mapAttrs2 =
             writeAttr (identifier,
-                "sourceCode" : classes, others)
+                "sourceCode" : classes, others) ""
     return $ pre_ mapAttrs $ code_ mapAttrs2 $ toHtml code
 
 
@@ -165,43 +165,37 @@ writeBlock (Header 1 attr inline) = withCountBlocksIncrement $ \c -> do
     inlines <- concatInlines inline
     return $ h1_
         ( class_ (cl ++ "post__block_header-1")
-        : id_ ("p-" ++ tshow c)
-        : writeAttr attr) inlines
+        : writeAttr attr ("p-" ++ tshow c)) inlines
 writeBlock (Header 2 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h2_
         ( class_ (cl ++ "post__block_header-2")
-        : id_ ("p-" ++ tshow c)
-        : writeAttr attr) inlines
+        : writeAttr attr ("p-" ++ tshow c)) inlines
 writeBlock (Header 3 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h3_
         ( class_ (cl ++ "post__block_header-3")
-        : id_ ("p-" ++ tshow c)
-        : writeAttr attr) inlines
+        : writeAttr attr ("p-" ++ tshow c)) inlines
 writeBlock (Header 4 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h4_
         ( class_ (cl ++ "post__block_header-4")
-        : id_ ("p-" ++ tshow c)
-        : writeAttr attr) inlines
+        : writeAttr attr ("p-" ++ tshow c)) inlines
 writeBlock (Header 5 attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h5_
         ( class_ (cl ++ "post__block_header-5")
-        : id_ ("p-" ++ tshow c)
-        : writeAttr attr) inlines
+        : writeAttr attr ("p-" ++ tshow c)) inlines
 writeBlock (Header _ attr inline) = withCountBlocksIncrement $ \c -> do
     cl <- getMainBlockClass
     inlines <- concatInlines inline
     return $ h6_
         ( class_ (cl ++ "post__block_header-6")
-        : id_ ("p-" ++ tshow c)
-        : writeAttr attr) inlines
+        : writeAttr attr ("p-" ++ tshow c)) inlines
 
 writeBlock HorizontalRule = do
     cl <- getMainBlockClass
@@ -215,7 +209,7 @@ writeBlock (Div (identifier, classes, others) blocks) = do
                 if null classes
                     then [T.unpack cl, "post__block_div"]
                     else classes,
-                others)
+                others) ""
 
     return $ div_ mapAttrs items
 
@@ -228,9 +222,10 @@ processListItems blocks = do
     items <- concatBlocks blocks
     return $ li_ items
 
-writeAttr :: Attr -> [Attribute]
-writeAttr (identifier, classes, others) =
+writeAttr :: Attr -> Text -> [Attribute]
+writeAttr (identifier, classes, others) defaultId =
     [id_ $ T.pack identifier | identifier /= ""] ++
+    [id_ defaultId | identifier == "" && defaultId /= ""] ++
     [class_ classesString | classesString /= ""] ++
     map (\(k, v) -> makeAttribute (T.pack k) (T.pack v)) others
     where
@@ -276,7 +271,7 @@ writeInline (Quoted DoubleQuote inline) = do
     inlines <- concatInlines inline
     return $ do {"«"; inlines; "»"}
 
-writeInline (Code attr code) = return $ code_ (writeAttr attr) (toHtml code)
+writeInline (Code attr code) = return $ code_ (writeAttr attr "") (toHtml code)
 
 writeInline Space = return " "
 
@@ -297,7 +292,7 @@ writeInline (Link attr inline target) = do
     inlines <- concatInlines inline
     options <- use writerOptions
     return $ a_
-        (writeAttr attr ++
+        (writeAttr attr "" ++
             [ href_ $ linkToAbsolute (options ^. renderType)
                 (T.pack $ fst target) (options ^. siteDomain)
             , title_ $ T.pack $ snd target
@@ -328,7 +323,7 @@ writeInline (Note block) = do   -- TODO there should be a link to footer
 
 writeInline (Span attr inline) = do
     inlines <- concatInlines inline
-    return $ span_ (writeAttr attr) inlines
+    return $ span_ (writeAttr attr "") inlines
 
 writeInline i = return $ toHtml (show (toConstr i) ++ " not implemented")
 
@@ -338,7 +333,7 @@ writeYoutube attr inline target = do
     options <- use writerOptions
 
     return $ if options ^. renderType == RenderAMP
-        then div_ (class_ "main__full-width post__block" : writeAttr attr) $
+        then div_ (class_ "main__full-width post__block" : writeAttr attr "") $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner post__embed"] $ do
                     ampYoutube_
@@ -349,7 +344,7 @@ writeYoutube attr inline target = do
                         ] mempty
                     unless (null inline) $
                         p_ [class_ "figure-description"] inlines
-        else div_ (class_ "main__full-width post__block" : writeAttr attr) $
+        else div_ (class_ "main__full-width post__block" : writeAttr attr "") $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner post__embed"] $ do
                 iframe_
@@ -368,7 +363,7 @@ writeIframe attr _ target = do
     options <- use writerOptions
 
     return $ if options ^. renderType == RenderAMP
-        then div_ (class_ "main__full-width post__block" : writeAttr attr) $
+        then div_ (class_ "main__full-width post__block" : writeAttr attr "") $
             div_ [class_ "post__figure-outer"] $
             div_ [class_ "post__figure-inner post__embed"] $
             ampIframe_ [ src_ $ T.pack $ fst target
@@ -379,7 +374,7 @@ writeIframe attr _ target = do
                 , width_ "480"
                 , height_ "270"
                 ] mempty
-        else div_ (class_ "main__full-width post__block" : writeAttr attr) $
+        else div_ (class_ "main__full-width post__block" : writeAttr attr "") $
             div_ [class_ "post__figure-outer"] $
             div_ [class_ "post__figure-inner post__embed"] $
             iframe_ [ src_ $ T.pack $ fst target
@@ -398,7 +393,7 @@ writeImage attr inline target = do
                 ++ if options ^. showFigureNumbers
                     then " post__figure_with-number"
                     else ""
-             ] ++ writeAttr attr) $
+             ] ++ writeAttr attr "") $
             div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner"] $ do
                     img options
@@ -413,7 +408,7 @@ writeImage attr inline target = do
                 ++ if options ^. responsiveFigures
                     then " post__figure_responsive"
                     else ""
-             ] ++ writeAttr attr) $
+             ] ++ writeAttr attr "") $
             div_ [class_ $ "post__figure-outer"
                     ++ if options ^. responsiveFigures
                         then " post__figure-outer_responsive"
