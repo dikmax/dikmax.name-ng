@@ -102,6 +102,6 @@ cover:
 
 ![](/images/travel/2016-09-portugal/cascais-nice-6.jpg)
 
-Продолжение следует...
+Читать далее: [Ещё порту](/post/porto-2/)
 
 [sintra]: /post/sintra/
