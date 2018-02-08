@@ -104,4 +104,12 @@ cover:
 
 Читать далее: [Ещё порту](/post/porto-2/)
 
+Португалия:
+[Порту](/post/porto-1/),
+[Коимбра](/post/coimbra/),
+[Лиссабон](/post/lisbon/),
+[Синтра](/post/sintra/),
+**На краю Европы**,
+[Ещё Порту](/post/porto-2/).
+
 [sintra]: /post/sintra/
