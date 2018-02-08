@@ -1,6 +1,24 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: porto-2
+    name: Ещё Порту
+
+  - id: europas-edge
+    name: На краю Европы
+
+  - id: sintra
+    name: Синтра
+
+  - id: lisbon
+    name: Лиссабон
+
+  - id: coimbra
+    name: Коимбра
+
+  - id: porto-1
+    name: Порту
+
   - id: konstanz
     name: Констанс
 
@@ -174,3 +192,25 @@ usa-2014:
 
   - id: washington-dc-2014
     name: Вашингтон
+
+portugal-2016:
+  name: Португалия
+  items:
+  - id: porto-2
+    name: Ещё Порту
+
+  - id: europas-edge
+    name: На краю Европы
+
+  - id: sintra
+    name: Синтра
+
+  - id: lisbon
+    name: Лиссабон
+
+  - id: coimbra
+    name: Коимбра
+
+  - id: porto-1
+    name: Порту
+
