@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: blaubeuren
+    name: Блаубойрен
+
   - id: porto-2
     name: Ещё Порту
 
