@@ -6,7 +6,7 @@ published: true
 tags: [путешествие, фотки, германия]
 cover:
     img: /images/travel/2016-07-bad-urach/cover.jpg
-    hcenter: 50%
+    hcenter: 63%
     vcenter: 50%
 ---
 
