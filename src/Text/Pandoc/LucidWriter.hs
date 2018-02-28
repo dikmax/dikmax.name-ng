@@ -17,7 +17,7 @@ module Text.Pandoc.LucidWriter (
 
 import           BasicPrelude
 import           Control.Monad.State
-import           Control.Lens
+import           Control.Lens        hiding (lazy)
 import           Data.Data
 import           Data.Default
 import qualified Data.Text           as T
@@ -435,7 +435,7 @@ writeImage attr inline target = do
                   (options ^. siteDomain)
                 , term "layout" "responsive"
                 , alt_ $ fixImageTitle $ T.pack $ snd target
-                ] ++ imgAttrs options)
+                ] ++ imgAttrs False options)
             else do
                 img_ ([ class_ $ "post__figure-img post__figure-img_lazy"
                         ++ if options ^. responsiveFigures
@@ -445,26 +445,28 @@ writeImage attr inline target = do
                     , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                         (options ^. siteDomain)
                     , alt_ $ fixImageTitle $ T.pack $ snd target
-                    ] ++ imgAttrs options)
+                    ] ++ imgAttrs True options)
                 noscript_ $
                     img_ ([ class_ "post__figure-img"
                         , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
                             (options ^. siteDomain)
                         , alt_ $ fixImageTitle $ T.pack $ snd target
-                        ] ++ imgAttrs options)
+                        ] ++ imgAttrs False options)
 
         imgSrc :: LucidWriterOptions -> Text
         imgSrc options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
             Just meta -> meta ^. imageThumbnail
             Nothing -> blankImage
 
-        imgAttrs :: LucidWriterOptions -> [Attribute]
-        imgAttrs options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
+        imgAttrs :: Bool -> LucidWriterOptions -> [Attribute]
+        imgAttrs lazy options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
             Just meta ->
                 [ width_ $ tshow $ meta ^. imageWidth
                 , height_ $ tshow $ meta ^. imageHeight
-                , data_ "srcset" (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                    (options ^. siteDomain) ++ " " ++ tshow (meta ^. imageWidth) ++ "w")
+                , makeAttribute
+                    (if lazy then "data-srcset" else "srcset")
+                    (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                        (options ^. siteDomain) ++ " " ++ tshow (meta ^. imageWidth) ++ "w")
                 , sizes_ "100vw" ] :: [Attribute]
             Nothing -> []
 

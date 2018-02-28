@@ -3,6 +3,7 @@ module Template.Layout (defaultLayout, mapLayout, ampLayout) where
 import           BasicPrelude
 import           Config
 import           Control.Lens
+import qualified Data.Text                as T
 import           JsonLD
 import           Lucid
 import           Lucid.AMP
@@ -52,6 +53,8 @@ layout scripts cd meta content = do
                 , type_ "text/css"
                 , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
             style_ [type_ "text/css"] (cd ^. dataCss)
+            noscript_ $
+                style_ [type_ "text/css"] (".post__figure-img_lazy{display:none}" :: T.Text)
             {-
             <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
             -}
