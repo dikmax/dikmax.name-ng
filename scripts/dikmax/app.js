@@ -16,7 +16,6 @@ goog.require('goog.Timer');
 
 dikmax.App.init = function () {
   dikmax.App.setupNavigation_();
-  dikmax.App.scrollAndResizeTracker_();
   dikmax.App.setupPanoramas_();
   dikmax.App.setupLazyImages_();
   dikmax.App.loadDisqus_();
@@ -45,47 +44,6 @@ dikmax.App.setupNavigation_ = function () {
         }
     );
   });
-};
-
-dikmax.App.scrollAndResizeTracker_ = function () {
-  // TODO calculate from center
-  const blocks = goog.dom.getElementsByClass('post__block');
-  let block = -1;
-  let offset = 0;
-  goog.events.listen(window, goog.events.EventType.SCROLL,
-      () => {
-        const scroll = goog.dom.getDocumentScroll();
-        let index = goog.array.binarySelect(
-            blocks, (el) => {
-              const pageOffsetTop = goog.style.getPageOffsetTop(el);
-              return scroll.y - pageOffsetTop;
-            }
-        );
-        if (index < 0) {
-          index = -index - 2;
-        }
-
-        block = index;
-        if (index >= 0) {
-          const pageOffsetTop = goog.style.getPageOffsetTop(blocks[index]);
-          offset = scroll.y - pageOffsetTop;
-        } else {
-          offset = scroll.y;
-        }
-      }
-  );
-
-  const vsm = new goog.dom.ViewportSizeMonitor();
-  goog.events.listen(vsm, goog.events.EventType.RESIZE,
-      () => {
-        if (block < 0) {
-          return;
-        }
-        const blockOffset = goog.style.getPageOffsetTop(blocks[block]);
-        const newOffset = blockOffset + offset;
-        window.scrollTo(0, newOffset);
-      }
-  );
 };
 
 /**
@@ -134,48 +92,36 @@ dikmax.App.setupLazyImages_ = function () {
     goog.array.forEach(images, (image) => {
       const newSize = dikmax.App.constrainImage_(
           false, imageMaxWidth, imageMaxHeight, image);
-      goog.style.setWidth(image, `${newSize.width}px`);
-      goog.style.setHeight(image, `${newSize.height}px`);
+      goog.style.setSize(image, `${newSize.width}px`, `${newSize.height}px`);
     });
   };
 
-  const scrollHandler = () => {
-    const scroll = goog.dom.getDocumentScroll();
-    const size = vsm.getSize();
-    const trackTop = scroll.y + (size.height * 1.5);
-    const trackBottom = scroll.y - (size.height * 0.5);
+  const observer = new IntersectionObserver((entries) => {
+    goog.array.forEach(entries, (entry) => {
+      if (entry.isIntersecting) {
+        const image = entry.target;
+        images = goog.array.filter(images, i => i !== image);
+        observer.unobserve(image);
 
-    const newImages = [];
-
-    goog.array.forEach(images, (_image) => {
-      const image = _image;
-      const imageTop = goog.style.getPageOffsetTop(image);
-      const imageBottom = imageTop +
-          goog.style.getBorderBoxSize(image).height;
-
-      if (imageTop < trackTop && imageBottom > trackBottom) {
+        // Load
         goog.events.listenOnce(image, goog.events.EventType.LOAD, () => {
-          goog.style.setWidth(image, '');
-          goog.style.setHeight(image, '');
+          goog.style.setSize(image, '', '');
         });
         image.src = goog.dom.dataset.get(image, 'src');
         image.srcset = goog.dom.dataset.get(image, 'srcset');
         goog.dom.dataset.remove(image, 'src');
         goog.dom.dataset.remove(image, 'srcset');
-      } else {
-        newImages.push(image);
       }
     });
-    images = newImages;
-  };
+  });
+  goog.array.forEach(images, (image) => {
+    observer.observe(image);
+  });
 
-  goog.events.listen(window, goog.events.EventType.SCROLL, scrollHandler);
   goog.events.listen(vsm, goog.events.EventType.RESIZE, () => {
     resizeImages();
-    scrollHandler();
   });
   resizeImages();
-  scrollHandler();
 };
 
 dikmax.App.setupPanoramas_ = function () {
@@ -313,13 +259,6 @@ dikmax.App.loadDisqus_ = function () {
         observer.disconnect();
         // Load script.
         goog.net.jsloader.safeLoad(DISQUS_URL);
-        /*
-        const d = document;
-        const s = d.createElement('script');
-        s.src = '//dikmax.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-        */
       }
     });
   });
