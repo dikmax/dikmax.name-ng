@@ -151,13 +151,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                          \this.page.url='" ++ escapeJsString url ++ "';\
                          \this.page.identifier='" ++ escapeJsString pId ++ "';\
                          \this.page.title='" ++ escapeJsString title ++ "';\
-                     \};\
-                     \(function(){\
-                         \var d=document,s=d.createElement('script');\
-                         \s.src='//dikmax.disqus.com/embed.js';\
-                         \s.setAttribute('data-timestamp',+new Date());\
-                         \(d.head||d.body).appendChild(s);\
-                     \})();"
+                     \}"
 
                  noscript_ $ do
                      "Please enable JavaScript to view the "

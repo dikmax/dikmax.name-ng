@@ -69,17 +69,18 @@ scripts = do
     siteDir </> "scripts/main.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (postcss : highlightJsPack : files)
+        io <- compressScriptSimple intersectionObserver
         h <- liftIO $ BS.readFile highlightJsPack
         my <- buildScript True False
-        liftIO $ BS.writeFile out (h ++ my)
+        liftIO $ BS.writeFile out (io ++ h ++ my)
 
     siteDir </> "scripts/map.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (topojson : files)
         l <- liftIO $ BS.readFile leaflet
-        eb <- compressScriptSimple easyButton
+        eb <- compressScriptWhitespaceOnly easyButton
         p <- liftIO $ BS.readFile proj4js
-        pl <- compressScriptSimple proj4leaflet
+        pl <- compressScriptWhitespaceOnly proj4leaflet
         gh <- liftIO $ BS.readFile greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
@@ -95,6 +96,9 @@ scripts = do
         greinerHormann :: FilePath
         greinerHormann = nodeModulesDir </> "greiner-hormann/dist/greiner-hormann.js"
 
+        intersectionObserver :: FilePath
+        intersectionObserver = nodeModulesDir </> "intersection-observer/intersection-observer.js"
+
         leaflet :: FilePath
         leaflet = nodeModulesDir </> "leaflet/dist/leaflet.js"
 
@@ -109,6 +113,16 @@ scripts = do
 
 compressScriptSimple :: FilePath -> Action ByteString
 compressScriptSimple path = do
+    Stdout my <- command [] "java"
+        [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
+        , "--compilation_level", "SIMPLE_OPTIMIZATIONS"
+        , "--warning_level", "VERBOSE"
+        , "--js", path]
+
+    return my
+
+compressScriptWhitespaceOnly :: FilePath -> Action ByteString
+compressScriptWhitespaceOnly path = do
     Stdout my <- command [] "java"
         [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
         , "--compilation_level", "WHITESPACE_ONLY"
@@ -135,6 +149,8 @@ buildScript dHighlightJs dMap = do
         , "--externs", "scripts/externs/topojson.js"
         , "--js", "node_modules/google-closure-library/closure/goog/**.js"
         , "--js", "!node_modules/google-closure-library/closure/goog/**_test.js"
+        , "--js", "node_modules/google-closure-library/third_party/closure/goog/mochikit/async/**.js"
+        , "--js", "!node_modules/google-closure-library/third_party/closure/goog/mochikit/async/**_test.js"
         -- , "--js", "node_modules/leaflet/dist/leaflet-src.js"
         , "--js", "scripts/dikmax/*.js"
         , "--js", "scripts/main.js"])

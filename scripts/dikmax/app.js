@@ -6,8 +6,11 @@ goog.require('goog.dom.classlist');
 goog.require('goog.dom.dataset');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.events');
+goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.math.Size');
+goog.require('goog.net.jsloader');
 goog.require('goog.string');
+goog.require('goog.string.Const');
 goog.require('goog.style');
 goog.require('goog.Timer');
 
@@ -16,6 +19,7 @@ dikmax.App.init = function () {
   dikmax.App.scrollAndResizeTracker_();
   dikmax.App.setupPanoramas_();
   dikmax.App.setupLazyImages_();
+  dikmax.App.loadDisqus_();
 };
 
 dikmax.App.setupNavigation_ = function () {
@@ -138,8 +142,8 @@ dikmax.App.setupLazyImages_ = function () {
   const scrollHandler = () => {
     const scroll = goog.dom.getDocumentScroll();
     const size = vsm.getSize();
-    const trackTop = scroll.y + size.height * 1.5;
-    const trackBottom = scroll.y - size.height * 0.5;
+    const trackTop = scroll.y + (size.height * 1.5);
+    const trackBottom = scroll.y - (size.height * 0.5);
 
     const newImages = [];
 
@@ -296,4 +300,31 @@ dikmax.App.handlePanorama_ = function (_image) {
       }
     }
   });
+};
+
+const DISQUS_URL =
+  goog.html.TrustedResourceUrl.fromConstant(
+    goog.string.Const.from('//dikmax.disqus.com/embed.js'));
+
+dikmax.App.loadDisqus_ = function () {
+  const observer = new IntersectionObserver((entries) => {
+    goog.array.forEach(entries, (entry) => {
+      if (entry.isIntersecting) {
+        observer.disconnect();
+        // Load script.
+        goog.net.jsloader.safeLoad(DISQUS_URL);
+        /*
+        const d = document;
+        const s = d.createElement('script');
+        s.src = '//dikmax.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+        */
+      }
+    });
+  });
+  const element = goog.dom.getElement('disqus_thread');
+  if (element) {
+    observer.observe(element);
+  }
 };
