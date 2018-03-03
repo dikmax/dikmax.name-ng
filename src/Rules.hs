@@ -81,7 +81,7 @@ scripts = do
         eb <- compressScriptWhitespaceOnly easyButton
         p <- liftIO $ BS.readFile proj4js
         pl <- compressScriptWhitespaceOnly proj4leaflet
-        gh <- liftIO $ BS.readFile greinerHormann
+        gh <- compressScriptWhitespaceOnly greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
         liftIO $ BS.writeFile out (l ++ eb ++ p ++ pl ++ gh ++ t ++ my)

@@ -16,12 +16,10 @@ class TopoJSON extends L.GeoJSON {
   }
   addData(jsonData) {
     if (jsonData['type'] === 'Topology') {
-      for (const key in jsonData['objects']) {
-        if (jsonData['objects'].hasOwnProperty(key)) {
-          const geojson = topojson.feature(jsonData, jsonData['objects'][key]);
-          super.addData(geojson);
-        }
-      }
+      goog.object.forEach(jsonData['objects'], (data) => {
+        const geojson = topojson.feature(jsonData, data);
+        super.addData(geojson);
+      });
     } else {
       super.addData(jsonData);
     }
@@ -38,6 +36,34 @@ const colors = {
   'turquoise': '#aadb78',
   'yellow': '#fae364'
 };
+
+/**
+ * @param {Object} city
+ * @return {string}
+ */
+function getCityLinks(city) {
+  const result = city['name'];
+
+  if (!city['visits']) {
+    return result;
+  }
+
+  const links = [];
+  goog.array.forEach(city['visits'], (v) => {
+    if (v['link']) {
+      links.push(v['link']);
+    }
+  });
+
+  if (links.length === 0) {
+    return result;
+  }
+  if (links.length === 1) {
+    return `<a href="${links[0]}">${result}</a>`;
+  }
+  return goog.array.map(links,
+    (v, i) => `<a href="${v}">${result} (${i + 1})</a>`).join(', ');
+}
 
 dikmax.Map = class {
   constructor() {
@@ -150,7 +176,7 @@ dikmax.Map = class {
       const cities = country['cities'];
       goog.array.forEach(cities, (city) => {
         const marker = new L.Marker([city['lat'], city['lon']]);
-        marker.bindPopup(this.getCityLinks(city));
+        marker.bindPopup(getCityLinks(city));
         marker.addTo(markersLayer);
       });
     });
@@ -165,34 +191,6 @@ dikmax.Map = class {
     });
   }
 
-  /**
-   * @param {Object} city
-   * @return {string}
-   */
-  getCityLinks(city) {
-    const result = city['name'];
-
-    if (!city['visits']) {
-      return result;
-    }
-
-    const links = [];
-    goog.array.forEach(city['visits'], (v) => {
-      if (v['link']) {
-        links.push(v['link']);
-      }
-    });
-
-    if (links.length === 0) {
-      return result;
-    }
-    if (links.length === 1) {
-      return `<a href="${links[0]}">${result}</a>`;
-    }
-    return goog.array.map(links,
-      (v, i) => `<a href="${v}">${result} (${i + 1})</a>`).join(', ');
-  }
-
   countryStyle(feature) {
     let country = feature['id'];
     let region = null;
@@ -201,7 +199,7 @@ dikmax.Map = class {
       country = country.split('-')[0];
     }
     if (this.data[country]) {
-      if (region && this.data[country]['regions'][region] || !region) {
+      if ((region && this.data[country]['regions'][region]) || !region) {
         return {
           'fillColor': colors[this.data[country]['color']],
           'color': '#226688',
@@ -244,11 +242,11 @@ dikmax.Map = class {
       goog.array.forEach(latlngs, (shape) => {
         const s = shape;
         if (360 - Math.abs(s[0].lng - s[s.length - 1].lng) < 5) {
-          for (let l = s[0].lat; l > -90; --l) {
+          for (let l = s[0].lat; l > -90; l -= 1) {
             s.unshift(new L.LatLng(l, s[0].lng < 0 ? -179.9999 : 179.9999));
           }
           s.unshift(new L.LatLng(-90, s[0].lng < 0 ? -179.9999 : 179.9999));
-          for (let l = s[s.length - 1].lat; l > -90; --l) {
+          for (let l = s[s.length - 1].lat; l > -90; l -= 1) {
             s.push(new L.LatLng(l, s[s.length - 1].lng < 0 ? -179.9999 : 179.9999));
           }
           s.push(new L.LatLng(-90, s[s.length - 1].lng < 0 ? -179.9999 : 179.9999));
@@ -270,11 +268,11 @@ dikmax.Map = class {
         result.push(shape);
         return;
       }
-      const pointsA = goog.array.map(shape, (latlng) => ({
+      const pointsA = goog.array.map(shape, latlng => ({
         x: latlng.lng < 0 ? latlng.lng + 360 : latlng.lng,
         y: latlng.lat
       }));
-      const pointsB = goog.array.map(shape, (latlng) => ({
+      const pointsB = goog.array.map(shape, latlng => ({
         x: latlng.lng > 0 ? latlng.lng - 360 : latlng.lng,
         y: latlng.lat
       }));
@@ -290,12 +288,12 @@ dikmax.Map = class {
           {x: 0, y: -90}]);
       if (!goog.isNull(resA)) {
         goog.array.forEach(resA, (i) => {
-          result.push(goog.array.map(i, (point) => new L.LatLng(point.y, point.x)));
+          result.push(goog.array.map(i, point => new L.LatLng(point.y, point.x)));
         });
       }
       if (!goog.isNull(resB)) {
         goog.array.forEach(resB, (i) => {
-          result.push(goog.array.map(i, (point) => new L.LatLng(point.y, point.x)));
+          result.push(goog.array.map(i, point => new L.LatLng(point.y, point.x)));
         });
       }
     });
@@ -331,8 +329,7 @@ dikmax.Map = class {
     if (countryData) {
       goog.array.sort(countryData['cities'],
         (a, b) => goog.array.defaultCompare(a['name'], b['name']));
-      const cities = goog.array.map(countryData['cities'],
-        (city) => this.getCityLinks(city));
+      const cities = goog.array.map(countryData['cities'], getCityLinks);
       content = `<h1>${content}</h1><p>${cities.join(', ')}</p>`;
     }
     layer.bindPopup(content);
