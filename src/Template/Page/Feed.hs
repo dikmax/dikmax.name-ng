@@ -18,14 +18,14 @@ feedPage now posts = atomHeader_ $
     channel_ mempty $ do
         title_ "[dikmax's blog]"
         description_ "Мой персональный блог"
-        link_ "http://dikmax.name/"
+        link_ "https://dikmax.name/"
         language_ "ru"
         lastBuildDate_ $ toHtml (formatTime defaultTimeLocale rfc822DateFormat now)
         maybe mempty
             (pubDate_ . toHtml . formatTime defaultTimeLocale rfc822DateFormat) $
             head posts ^. fileMeta ^?! postDate
         ttl_ "180"
-        atomLink_ [href_ "http://dikmax.name/feed.rss", rel_ "self", type_ "application/rss+xml"] mempty
+        atomLink_ [href_ "https://dikmax.name/feed.rss", rel_ "self", type_ "application/rss+xml"] mempty
 
         forM_ posts $ \post -> item_ $ do
             title_ $ toHtml $ post ^. fileMeta ^. postTitle
