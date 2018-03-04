@@ -4,12 +4,14 @@ import           BasicPrelude
 import           Config
 import           Control.Lens
 import           Data.Default
-import           Data.Time
+import           Data.Time               hiding (rfc822DateFormat)
 import           Lucid.Atom
 import qualified Lucid.Html5             as H
 import           Text.Pandoc.LucidWriter
 import           Types
 
+rfc822DateFormat :: String
+rfc822DateFormat = "%a, %d %b %Y %H:%M:%S %z"
 
 feedPage :: UTCTime -> [File] -> Html ()
 feedPage now posts = atomHeader_ $
@@ -52,7 +54,7 @@ renderSingle file = do
 
     where
         url :: Text -> Text -- TODO extract to Config
-        url id' = "/post/" ++ id' ++ "/"
+        url id' = domain ++ "/post/" ++ id' ++ "/"
 
         opts :: LucidWriterOptions
         opts = def

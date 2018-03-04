@@ -362,23 +362,31 @@ writeIframe :: Attr -> [Inline] -> Target -> WriterState (Html ())
 writeIframe attr _ target = do
     options <- use writerOptions
 
-    return $ if options ^. renderType == RenderAMP
-        then div_ (class_ "main__full-width post__block" : writeAttr attr "") $
-            div_ [class_ "post__figure-outer"] $
-            div_ [class_ "post__figure-inner post__embed"] $
-            ampIframe_ [ src_ $ T.pack $ fst target
-                , term "frameborder" "0"
-                , term "allowfullscreen" "allowfullscreen"
-                , term "layout" "responsive"
-                , term "sandbox" "allow-scripts allow-same-origin allow-popups"
-                , width_ "480"
-                , height_ "270"
-                ] mempty
-        else div_ (class_ "main__full-width post__block" : writeAttr attr "") $
-            div_ [class_ "post__figure-outer"] $
-            div_ [class_ "post__figure-inner post__embed"] $
-            iframe_ [ src_ $ T.pack $ fst target
-                    , term "allowfullscreen" "allowfullscreen"] mempty
+    return $
+        case (options ^. renderType) of
+            RenderAMP ->
+                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                    div_ [class_ "post__figure-outer"] $
+                    div_ [class_ "post__figure-inner post__embed"] $
+                    ampIframe_ [ src_ $ T.pack $ fst target
+                        , term "frameborder" "0"
+                        , term "allowfullscreen" "allowfullscreen"
+                        , term "layout" "responsive"
+                        , term "sandbox" "allow-scripts allow-same-origin allow-popups"
+                        , width_ "480"
+                        , height_ "270"
+                        ] mempty
+
+            RenderRSS ->
+                p_ (class_ "main__centered post__block post__block_para" : writeAttr attr "") $
+                    a_ [href_ $ T.pack $ fst target] (toHtml $ T.pack $ fst target)
+
+            RenderNormal ->
+                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                    div_ [class_ "post__figure-outer"] $
+                    div_ [class_ "post__figure-inner post__embed"] $
+                    iframe_ [ src_ $ T.pack $ fst target
+                            , term "allowfullscreen" "allowfullscreen"] mempty
 
 
 writeImage :: Attr -> [Inline] -> Target -> WriterState (Html ())
@@ -386,40 +394,54 @@ writeImage attr inline target = do
     inlines <- concatInlines inline
     options <- use writerOptions
 
-    return $ if options ^. renderType == RenderAMP
-        then figure_
-            ([ id_ (extractId $ T.pack $ fst target)
-             , class_ $ "main__full-width post__block post__figure"
-                ++ if options ^. showFigureNumbers
-                    then " post__figure_with-number"
-                    else ""
-             ] ++ writeAttr attr "") $
-            div_ [class_ "post__figure-outer"] $
-                div_ [class_ "post__figure-inner"] $ do
-                    img options
-                    unless (null inline) $
-                      p_ [class_ "post__figure-description"] inlines
-        else figure_
-            ([ id_ (extractId $ T.pack $ fst target)
-             , class_ $ "main__full-width post__block post__figure"
-                ++ if options ^. showFigureNumbers
-                    then " post__figure_with-number"
-                    else ""
-                ++ if options ^. responsiveFigures
-                    then " post__figure_responsive"
-                    else ""
-             ] ++ writeAttr attr "") $
-            div_ [class_ $ "post__figure-outer"
-                    ++ if options ^. responsiveFigures
-                        then " post__figure-outer_responsive"
-                        else ""] $
-                div_ [class_ $ "post__figure-inner"
+    return $
+        case (options ^. renderType) of
+            RenderAMP ->
+                figure_
+                    ([ id_ (extractId $ T.pack $ fst target)
+                     , class_ $ "main__full-width post__block post__figure"
+                        ++ if options ^. showFigureNumbers
+                            then " post__figure_with-number"
+                            else ""
+                     ] ++ writeAttr attr "") $
+                    div_ [class_ "post__figure-outer"] $
+                        div_ [class_ "post__figure-inner"] $ do
+                            img options
+                            unless (null inline) $
+                              p_ [class_ "post__figure-description"] inlines
+            RenderRSS ->
+                figure_
+                    ([ id_ (extractId $ T.pack $ fst target)
+                     , class_ $ "main__full-width post__block post__figure"
+                     ] ++ writeAttr attr "") $
+                    div_ [class_ "post__figure-outer"] $
+                        div_ [class_ "post__figure-inner"] $ do
+                            img options
+                            unless (null inline) $
+                              p_ [class_ "post__figure-description"] inlines
+
+            RenderNormal ->
+                figure_
+                    ([ id_ (extractId $ T.pack $ fst target)
+                     , class_ $ "main__full-width post__block post__figure"
+                        ++ if options ^. showFigureNumbers
+                            then " post__figure_with-number"
+                            else ""
                         ++ if options ^. responsiveFigures
-                            then " post__figure-inner_responsive"
-                            else ""] $ do
-                    img options
-                    unless (null inline) $
-                      p_ [class_ "post__figure-description"] inlines
+                            then " post__figure_responsive"
+                            else ""
+                     ] ++ writeAttr attr "") $
+                    div_ [class_ $ "post__figure-outer"
+                            ++ if options ^. responsiveFigures
+                                then " post__figure-outer_responsive"
+                                else ""] $
+                        div_ [class_ $ "post__figure-inner"
+                                ++ if options ^. responsiveFigures
+                                    then " post__figure-inner_responsive"
+                                    else ""] $ do
+                            img options
+                            unless (null inline) $
+                              p_ [class_ "post__figure-description"] inlines
 
 
     where
@@ -428,30 +450,37 @@ writeImage attr inline target = do
 
         img :: LucidWriterOptions -> Html ()
         img options =
-            if options ^. renderType == RenderAMP
-            then ampImg_
-                ([ class_ "post__figure-img_amp"
-                , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                  (options ^. siteDomain)
-                , term "layout" "responsive"
-                , alt_ $ fixImageTitle $ T.pack $ snd target
-                ] ++ imgAttrs False options)
-            else do
-                img_ ([ class_ $ "post__figure-img post__figure-img_lazy"
-                        ++ if options ^. responsiveFigures
-                            then " post__figure-img_responsive"
-                            else ""
-                    , src_ $ imgSrc options
-                    , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                        (options ^. siteDomain)
-                    , alt_ $ fixImageTitle $ T.pack $ snd target
-                    ] ++ imgAttrs True options)
-                noscript_ $
-                    img_ ([ class_ "post__figure-img"
+            case (options ^. renderType) of
+                RenderAMP ->
+                    ampImg_
+                        ([ class_ "post__figure-img_amp"
                         , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
-                            (options ^. siteDomain)
+                          (options ^. siteDomain)
+                        , term "layout" "responsive"
                         , alt_ $ fixImageTitle $ T.pack $ snd target
                         ] ++ imgAttrs False options)
+                RenderRSS ->
+                    img_ ([ class_ $ "post__figure-img"
+                        , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                          (options ^. siteDomain)
+                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        ] ++ imgAttrs False options)
+                RenderNormal -> do
+                    img_ ([ class_ $ "post__figure-img post__figure-img_lazy"
+                            ++ if options ^. responsiveFigures
+                                then " post__figure-img_responsive"
+                                else ""
+                        , src_ $ imgSrc options
+                        , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                            (options ^. siteDomain)
+                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        ] ++ imgAttrs True options)
+                    noscript_ $
+                        img_ ([ class_ "post__figure-img"
+                            , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                                (options ^. siteDomain)
+                            , alt_ $ fixImageTitle $ T.pack $ snd target
+                            ] ++ imgAttrs False options)
 
         imgSrc :: LucidWriterOptions -> Text
         imgSrc options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
