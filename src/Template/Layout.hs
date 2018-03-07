@@ -48,10 +48,6 @@ layout scripts cd meta content = do
             link_ [rel_ "dns-prefetch", href_ "//translate.googleapis.com/"]
             -}
 
-            link_
-                [ rel_ "stylesheet"
-                , type_ "text/css"
-                , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
             style_ [type_ "text/css"] (cd ^. dataCss)
             noscript_ $
                 style_ [type_ "text/css"] (".post__figure-img_lazy{display:none}" :: T.Text)
@@ -83,6 +79,10 @@ layout scripts cd meta content = do
             content
             footer
             scripts
+            link_
+                [ rel_ "stylesheet"
+                , type_ "text/css"
+                , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
 
     where
         keywords :: [Text]
@@ -98,11 +98,21 @@ pageTitle meta = case meta ^. postTitle of
 
 
 defaultLayout :: CommonData -> FileMeta -> Html () -> Html ()
-defaultLayout = layout (script_ [type_ "text/javascript", src_ "/scripts/main.js"] ("" :: Text))
+defaultLayout = layout (script_
+    [ type_ "text/javascript"
+    , src_ "/scripts/main.js"
+    , async_ ""
+    , defer_ ""
+    ] ("" :: Text))
 
 
 mapLayout :: CommonData -> FileMeta -> Html () -> Html ()
-mapLayout = layout (script_ [type_ "text/javascript", src_ "/scripts/map.js"] ("" :: Text))
+mapLayout = layout (script_
+    [ type_ "text/javascript"
+    , src_ "/scripts/map.js"
+    , async_ ""
+    , defer_ ""
+    ] ("" :: Text))
 
 
 ampLayout :: CommonData -> FileMeta -> Html () -> Html ()

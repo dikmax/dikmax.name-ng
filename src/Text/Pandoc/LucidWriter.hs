@@ -332,31 +332,45 @@ writeYoutube attr inline target = do
     inlines <- concatInlines inline
     options <- use writerOptions
 
-    return $ if options ^. renderType == RenderAMP
-        then div_ (class_ "main__full-width post__block" : writeAttr attr "") $
-            div_ [class_ "post__figure-outer"] $
+    return $
+        case (options ^. renderType) of
+            RenderAMP ->
+                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                    div_ [class_ "post__figure-outer"] $
+                        div_ [class_ "post__figure-inner post__embed"] $ do
+                            ampYoutube_
+                                [ data_ "videoid" (videoId $ T.pack $ fst target)
+                                , term "layout" "responsive"
+                                , width_ "480"
+                                , height_ "270"
+                                ] mempty
+                            unless (null inline) $
+                                p_ [class_ "figure-description"] inlines
+            RenderRSS ->
+                p_ (class_ "main__centered post__block post__block_para" : writeAttr attr "") $
+                    a_ [href_ fullSrc] "[Ссылка на Youtube]"
+
+            RenderNormal ->
+                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner post__embed"] $ do
-                    ampYoutube_
-                        [ data_ "videoid" (videoId $ T.pack $ fst target)
-                        , term "layout" "responsive"
-                        , width_ "480"
-                        , height_ "270"
+                    iframe_
+                        [ class_ "post__embed-lazy"
+                        , data_ "src" embedSrc
+                        , makeAttribute "allowfullscreen" "allowfullscreen"
                         ] mempty
+                    noscript_ $
+                        iframe_ [ src_ embedSrc
+                                , term "allowfullscreen" "allowfullscreen"] mempty
                     unless (null inline) $
                         p_ [class_ "figure-description"] inlines
-        else div_ (class_ "main__full-width post__block" : writeAttr attr "") $
-            div_ [class_ "post__figure-outer"] $
-                div_ [class_ "post__figure-inner post__embed"] $ do
-                iframe_
-                    [ src_ $ "https://www.youtube.com/embed/" ++
-                        videoId (T.pack $ fst target) ++ "?wmode=transparent"
-                    , makeAttribute "allowfullscreen" "allowfullscreen"
-                    ] mempty
-                unless (null inline) $
-                    p_ [class_ "figure-description"] inlines
     where
         videoId url = T.takeWhile (/= '&') $ T.replace "http://www.youtube.com/watch?v=" "" $
             T.replace "https://www.youtube.com/watch?v=" "" url
+        embedSrc = "https://www.youtube.com/embed/" ++
+            videoId (T.pack $ fst target) ++ "?wmode=transparent"
+        fullSrc = "https://www.youtube.com/watch?v=" ++
+            videoId (T.pack $ fst target)
 
 writeIframe :: Attr -> [Inline] -> Target -> WriterState (Html ())
 writeIframe attr _ target = do
@@ -384,9 +398,13 @@ writeIframe attr _ target = do
             RenderNormal ->
                 div_ (class_ "main__full-width post__block" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
-                    div_ [class_ "post__figure-inner post__embed"] $
-                    iframe_ [ src_ $ T.pack $ fst target
-                            , term "allowfullscreen" "allowfullscreen"] mempty
+                    div_ [class_ "post__figure-inner post__embed"] $ do
+                        iframe_ [ class_ "post__embed-lazy"
+                                , data_ "src" $ T.pack $ fst target
+                                , term "allowfullscreen" "allowfullscreen"] mempty
+                        noscript_ $
+                            iframe_ [ src_ $ T.pack $ fst target
+                                    , term "allowfullscreen" "allowfullscreen"] mempty
 
 
 writeImage :: Attr -> [Inline] -> Target -> WriterState (Html ())

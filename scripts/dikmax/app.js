@@ -18,6 +18,7 @@ dikmax.App.init = function () {
   dikmax.App.setupNavigation_();
   dikmax.App.setupPanoramas_();
   dikmax.App.setupLazyImages_();
+  dikmax.App.setupLazyIframes_();
   dikmax.App.loadDisqus_();
 };
 
@@ -122,6 +123,26 @@ dikmax.App.setupLazyImages_ = function () {
     resizeImages();
   });
   resizeImages();
+};
+
+dikmax.App.setupLazyIframes_ = function () {
+  const iframes = goog.dom.getElementsByClass('post__embed-lazy');
+
+  const observer = new IntersectionObserver((entries) => {
+    goog.array.forEach(entries, (entry) => {
+      if (entry.isIntersecting) {
+        const iframe = entry.target;
+        observer.unobserve(iframe);
+
+        // Load
+        iframe.src = goog.dom.dataset.get(iframe, 'src');
+        goog.dom.dataset.remove(iframe, 'src');
+      }
+    });
+  });
+  goog.array.forEach(iframes, (image) => {
+    observer.observe(image);
+  });
 };
 
 dikmax.App.setupPanoramas_ = function () {
