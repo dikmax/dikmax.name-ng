@@ -14,6 +14,8 @@ goog.require('goog.string.Const');
 goog.require('goog.style');
 goog.require('goog.Timer');
 
+const LOAD_DELAY = 100;
+
 dikmax.App.init = function () {
   dikmax.App.setupNavigation_();
   dikmax.App.setupPanoramas_();
@@ -81,7 +83,11 @@ dikmax.App.constrainImage_ = function (
 };
 
 dikmax.App.setupLazyImages_ = function () {
-  let images = goog.dom.getElementsByClass('post__figure-img_lazy');
+  /** @type {[HTMLImageElement, boolean]} */
+  let images = goog.array.map(
+    goog.dom.getElementsByClass('post__figure-img_lazy'),
+    image => [image, false]
+  );
 
   const vsm = new goog.dom.ViewportSizeMonitor();
 
@@ -92,31 +98,48 @@ dikmax.App.setupLazyImages_ = function () {
 
     goog.array.forEach(images, (image) => {
       const newSize = dikmax.App.constrainImage_(
-          false, imageMaxWidth, imageMaxHeight, image);
-      goog.style.setSize(image, `${newSize.width}px`, `${newSize.height}px`);
+          false, imageMaxWidth, imageMaxHeight, image[0]);
+      goog.style.setSize(image[0], `${newSize.width}px`, `${newSize.height}px`);
     });
   };
 
   const observer = new IntersectionObserver((entries) => {
     goog.array.forEach(entries, (entry) => {
-      if (entry.isIntersecting) {
-        const image = entry.target;
-        images = goog.array.filter(images, i => i !== image);
-        observer.unobserve(image);
+      const image = entry.target;
+      let pair;
+      goog.array.forEach(images, (i) => {
+        if (i[0] === image) {
+          // eslint-disable-next-line no-param-reassign
+          i[1] = entry.isIntersecting;
+          pair = i;
+        }
+      });
 
-        // Load
-        goog.events.listenOnce(image, goog.events.EventType.LOAD, () => {
-          goog.style.setSize(image, '', '');
-        });
-        image.src = goog.dom.dataset.get(image, 'src');
-        image.srcset = goog.dom.dataset.get(image, 'srcset');
-        goog.dom.dataset.remove(image, 'src');
-        goog.dom.dataset.remove(image, 'srcset');
+      if (entry.isIntersecting) {
+        // Delay image load for small time in case of fast scroll.
+        setTimeout(() => {
+          if (!pair[1]) {
+            return;
+          }
+
+          images = goog.array.filter(images, i => i !== pair);
+          observer.unobserve(image);
+
+          // Load
+          goog.events.listenOnce(image, goog.events.EventType.LOAD, () => {
+            goog.style.setSize(image, '', '');
+          });
+          image.src = goog.dom.dataset.get(image, 'src');
+          image.srcset = goog.dom.dataset.get(image, 'srcset');
+          goog.dom.dataset.remove(image, 'src');
+          goog.dom.dataset.remove(image, 'srcset');
+        }, LOAD_DELAY);
       }
     });
   });
+
   goog.array.forEach(images, (image) => {
-    observer.observe(image);
+    observer.observe(image[0]);
   });
 
   goog.events.listen(vsm, goog.events.EventType.RESIZE, () => {
