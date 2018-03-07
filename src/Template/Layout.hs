@@ -50,7 +50,8 @@ layout scripts cd meta content = do
 
             style_ [type_ "text/css"] (cd ^. dataCss)
             noscript_ $
-                style_ [type_ "text/css"] (".post__figure-img_lazy{display:none}" :: T.Text)
+                style_ [type_ "text/css"]
+                    (".post__figure-img_lazy,.post__embed-lazy{display:none}" :: T.Text)
             {-
             <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
             -}
