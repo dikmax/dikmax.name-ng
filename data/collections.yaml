@@ -1,6 +1,18 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: gdansk
+    name: Гданьск
+
+  - id: fuellinsdorf
+    name: Фюллинсдорф
+
+  - id: bad-urach-winter
+    name: Бад-Урах зимой
+
+  - id: bad-urach-summer
+    name: Бад-Урах летом
+
   - id: blaubeuren
     name: Блаубойрен
 
