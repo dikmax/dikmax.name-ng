@@ -3,7 +3,7 @@ title: "Фюллинсдорф"
 date: "2018-04-04T08:20:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, швейцария]
+tags: [komoot, путешествие, фотки, швейцария, хайкинг]
 cover:
     img: /images/travel/2016-10-fuellinsdorf/cover.jpg
     hcenter: 50%

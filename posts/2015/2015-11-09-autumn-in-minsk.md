@@ -4,7 +4,7 @@ date: 2015-11-09T09:40:00+03:00
 collections: [proofreaders-stories]
 author: "Анастасия Барбосова"
 published: true
-tags: [беларусь, гостевой пост, фотки]
+tags: [беларусь, гостевой пост, фотки, хайкинг]
 cover:
     img: /images/travel/2015-10-minsk/cover.jpg
     vcenter: 33%

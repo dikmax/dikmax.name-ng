@@ -3,7 +3,7 @@ title: "Блаубойрен"
 date: "2018-02-12T08:20:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, германия]
+tags: [komoot, путешествие, фотки, германия, хайкинг]
 cover:
     img: /images/travel/2016-10-blaubeuren/blaubeuren-cover.jpg
     hcenter: 50%

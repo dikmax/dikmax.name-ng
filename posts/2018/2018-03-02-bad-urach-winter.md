@@ -3,7 +3,7 @@ title: "Бад-Урах зимой"
 date: "2018-03-02T08:20:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, германия]
+tags: [komoot, путешествие, фотки, германия, хайкинг]
 cover:
     img: /images/travel/2017-01-bad-urach/cover.jpg
     hcenter: 33%
