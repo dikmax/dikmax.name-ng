@@ -77,6 +77,7 @@ scripts = do
     siteDir </> "scripts/map.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (topojson : files)
+        io <- compressScriptSimple intersectionObserver
         l <- liftIO $ BS.readFile leaflet
         eb <- compressScriptWhitespaceOnly easyButton
         p <- liftIO $ BS.readFile proj4js
@@ -84,7 +85,7 @@ scripts = do
         gh <- compressScriptWhitespaceOnly greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
-        liftIO $ BS.writeFile out (l ++ eb ++ p ++ pl ++ gh ++ t ++ my)
+        liftIO $ BS.writeFile out (l ++ eb ++ p ++ pl ++ gh ++ t ++ io ++ my)
 
     where
         easyButton :: FilePath
