@@ -18,10 +18,12 @@ const LOAD_DELAY = 100;
 
 dikmax.App.init = function () {
   dikmax.App.setupNavigation_();
-  dikmax.App.setupPanoramas_();
-  dikmax.App.setupLazyImages_();
-  dikmax.App.setupLazyIframes_();
-  dikmax.App.loadDisqus_();
+  if (!MAP) {
+    dikmax.App.setupPanoramas_();
+    dikmax.App.setupLazyImages_();
+    dikmax.App.setupLazyIframes_();
+    dikmax.App.loadDisqus_();
+  }
 };
 
 dikmax.App.setupNavigation_ = function () {
