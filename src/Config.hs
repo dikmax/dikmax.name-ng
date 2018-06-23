@@ -79,6 +79,9 @@ ndjsonMap = nodeModulesBinDir </> "ndjson-map"
 json :: FilePath
 json = nodeModulesBinDir </> "json"
 
+uglifyJs :: FilePath
+uglifyJs = nodeModulesBinDir </> "uglifyjs"
+
 pageSize :: Int
 pageSize = 5
 

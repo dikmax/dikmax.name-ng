@@ -83,10 +83,10 @@ scripts = do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (proj4JsPack : files)
         l <- liftIO $ BS.readFile leaflet
-        eb <- compressScriptWhitespaceOnly easyButton
+        eb <- compressUglifyJs easyButton
         p <- liftIO $ BS.readFile proj4JsPack
-        pl <- compressScriptWhitespaceOnly proj4leaflet
-        gh <- compressScriptWhitespaceOnly greinerHormann
+        pl <- compressUglifyJs proj4leaflet
+        gh <- compressUglifyJs greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
         liftIO $ BS.writeFile out (l ++ eb ++ p ++ pl ++ gh ++ t ++ my)
@@ -124,6 +124,16 @@ compressScriptSimple path = do
         , "--warning_level", "VERBOSE"
         , "--js", path]
 
+    return my
+
+
+compressUglifyJs :: FilePath -> Action ByteString
+compressUglifyJs path = do
+    need [uglifyJs]
+    Stdout my <- command [] uglifyJs
+        [ "--compress", "--mangle", "--"
+        , path
+        ]
     return my
 
 compressScriptWhitespaceOnly :: FilePath -> Action ByteString
