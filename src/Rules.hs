@@ -66,6 +66,11 @@ scripts = do
         command_ [Cwd "scripts/highlight.js/"] "node" ("tools/build.js" : "-t" :
             "browser" : includeHighlightingLanguages)
 
+    proj4JsPack %> \_ -> do
+        need ["scripts/proj4js/package.json"]
+        command_ [Cwd "scripts/proj4js/"] "npm" ["install"]
+        command_ [Cwd "scripts/proj4js/"] "node" ["./node_modules/.bin/grunt", "build:moll"]
+
     siteDir </> "scripts/main.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
         need (postcss : highlightJsPack : files)
@@ -76,10 +81,10 @@ scripts = do
 
     siteDir </> "scripts/map.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
-        need files
+        need (proj4JsPack : files)
         l <- liftIO $ BS.readFile leaflet
         eb <- compressScriptWhitespaceOnly easyButton
-        p <- liftIO $ BS.readFile proj4js
+        p <- liftIO $ BS.readFile proj4JsPack
         pl <- compressScriptWhitespaceOnly proj4leaflet
         gh <- compressScriptWhitespaceOnly greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
@@ -93,6 +98,9 @@ scripts = do
         highlightJsPack :: FilePath
         highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
 
+        proj4JsPack :: FilePath
+        proj4JsPack = "scripts/proj4js/dist/proj4.js"
+
         greinerHormann :: FilePath
         greinerHormann = nodeModulesDir </> "greiner-hormann/dist/greiner-hormann.js"
 
@@ -101,9 +109,6 @@ scripts = do
 
         leaflet :: FilePath
         leaflet = nodeModulesDir </> "leaflet/dist/leaflet.js"
-
-        proj4js :: FilePath
-        proj4js = nodeModulesDir </> "proj4/dist/proj4.js"
 
         proj4leaflet :: FilePath
         proj4leaflet = nodeModulesDir </> "proj4leaflet/src/proj4leaflet.js"
