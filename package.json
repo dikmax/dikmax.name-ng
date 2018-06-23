@@ -21,36 +21,37 @@
     "topojson": "^3.0.2"
   },
   "devDependencies": {
-    "colorguard": "^1.2.0",
-    "css-mqpacker": "^5.0.1",
-    "cssnano": "^3.7.4",
+    "colorguard": "^1.2.1",
+    "css-mqpacker": "^6.0.2",
+    "cssnano": "^4.0.0-rc.2",
     "eslint": "^3.4.0",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
     "google-closure-compiler": "^20180610.0.2",
     "json": "^9.0.6",
-    "lost": "^7.1.0",
-    "postcss": "~5.0.0",
-    "postcss-bem": "^0.4.1",
-    "postcss-bem-linter": "^2.5.1",
-    "postcss-cli": "^2.6.0",
-    "postcss-cssnext": "^2.7.0",
+    "lost": "^8.3.0",
+    "postcss": "^6.0.23",
+    "postcss-cli": "^5.0.1",
+    "postcss-color-function": "^4.0.1",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-custom-media": "^6.0.0",
     "postcss-discard-comments": "^2.0.4",
-    "postcss-import": "^8.1.2",
-    "postcss-mixins": "^5.0.1",
-    "postcss-nested": "^1.0.0",
-    "postcss-quantity-queries": "^0.4.0",
-    "postcss-reporter": "^1.4.1",
-    "postcss-responsive-type": "^0.3.3",
-    "postcss-short": "^1.4.0",
-    "stylehacks": "^2.3.1",
-    "stylelint": "^7.2.0",
-    "stylelint-config-standard": "^13.0.0",
+    "postcss-import": "^11.1.0",
+    "postcss-mixins": "^6.2.0",
+    "postcss-nested": "^3.0.0",
+    "postcss-preset-env": "^5.1.0",
+    "postcss-quantity-queries": "^0.5.0",
+    "postcss-reporter": "^5.0.0",
+    "postcss-responsive-type": "^1.0.0",
+    "postcss-short": "^4.1.0",
+    "stylehacks": "^2.3.2",
+    "stylelint": "^9.3.0",
+    "stylelint-config-standard": "^18.2.0",
     "uglify-js": "^3.4.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "node_modules/.bin/stylelint styles/*.pcss"
+    "lint": "stylelint styles/*.pcss"
   },
   "author": "Maxim Dikun",
   "license": "BSD-3-Clause",
@@ -72,6 +73,15 @@
   "stylelint": {
     "extends": "stylelint-config-standard",
     "rules": {
+      "at-rule-no-unknown": [
+        true,
+        {
+          "ignoreAtRules": [
+            "define-mixin",
+            "mixin"
+          ]
+        }
+      ],
       "at-rule-empty-line-before": null,
       "block-no-empty": null,
       "color-hex-length": "long",
@@ -87,8 +97,9 @@
           ]
         }
       ],
-      "max-empty-lines": null,
-      "rule-non-nested-empty-line-before": null
+      "max-empty-lines": [
+        2
+      ]
     }
   },
   "eslintConfig": {

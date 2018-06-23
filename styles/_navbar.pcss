@@ -1,5 +1,5 @@
 /** @define navbar */
-@b navbar {
+.navbar {
     background-color: color(var(--primary-dark-color) a(0.9));
     box-shadow: 0 0   4px rgba(0, 0, 0, 0.14),
                 0 4px 8px rgba(0, 0, 0, 0.28);
@@ -11,7 +11,7 @@
     will-change: transform;
     z-index: 10;
 
-    @e container {
+    &__container {
         align-items: center;
         flex-wrap: no-wrap;
         height: 100%;
@@ -19,7 +19,7 @@
                      calc(var(--body-padding) - var(--navbar-link-padding-side)) flex;
     }
 
-    @e menu {
+    &__menu {
         @media (--sm-screen) {
             display: none;
         }
@@ -31,7 +31,7 @@
         }
     }
 
-    @e navigation {
+    &__navigation {
         display: none;
 
         @media (--sm-screen) {
@@ -39,7 +39,7 @@
         }
     }
 
-    @e item {
+    &__item {
         border-bottom: var(--navbar-underline-width) solid transparent;
         box-sizing: border-box;
         color: var(--dark-background-text);
@@ -49,13 +49,13 @@
         transition: color, border-color 0.3s;
     }
 
-    @e side-menu-button {
+    &__side-menu-button {
         @media (--sm-screen) {
             display: none;
         }
     }
 
-    @m link:hover {
+    &_link:hover {
         border-color: var(--white-color);
         color: var(--white-color);
     }

@@ -1,5 +1,5 @@
 /* @define main */
-@b main {
+.main {
     background-color: var(--white-color);
     color: var(--light-background-text);
 
@@ -9,15 +9,15 @@
 
     @mixin shadow-2dp;
 
-    @m no-hero {
+    &_no-hero {
         padding-top: var(--navbar-height);
     }
 
-    @e centered {
+    &__centered {
         @mixin center;
     }
 
-    @e full-width {
+    &__full-width {
         lost-center: 100% 0 flex;
     }
 }

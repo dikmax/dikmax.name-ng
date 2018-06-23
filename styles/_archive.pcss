@@ -1,11 +1,11 @@
 /** @define archive */
-@b archive {
+.archive {
 
-    @e list {
+    &__list {
         padding: 0;
     }
 
-    @e subheader {
+    &__subheader {
         align-items: center;
         border-top: 1px solid color(var(--black-color) a(0.12));
         color: var(--primary-color);
@@ -15,7 +15,7 @@
         margin-left: 56px;
     }
 
-    @e item {
+    &__item {
         align-items: center;
         color: var(--light-background-text);
         display: flex;
@@ -23,7 +23,7 @@
         text-decoration: none;
     }
 
-    @e item-icon {
+    &__item-icon {
         background-color: var(--accent-color);
         border-radius: 50%;
         box-sizing: border-box;
@@ -38,11 +38,11 @@
             size: 32px;
         }
 
-        @m none {
+        &_none {
             background: none;
         }
     }
 
-    @e item-text {
+    &__item-text {
     }
 }

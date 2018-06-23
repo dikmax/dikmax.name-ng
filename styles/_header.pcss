@@ -1,14 +1,14 @@
 
 /** @define header */
-@b header {
-    @m for-index {
+.header {
+    &_for-index {
         background-size: cover;
         padding-top: var(--navbar-height);
 
         @mixin clearfix;
     }
 
-    @m for-post {
+    &_for-post {
         @mixin clearfix;
 
         overflow: hidden;
@@ -25,20 +25,20 @@
         }
     }
 
-    @m for-post-large {
+    &_for-post-large {
         &::before {
             background-size: cover;
         }
     }
 
-    @m for-post-small {
+    &_for-post-small {
         &::before {
             background-position: center;
             background-repeat: no-repeat;
         }
     }
 
-    @e title-block {
+    &__title-block {
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 10px 10px 0 0;
         box-shadow: 0 0 100px 71px rgba(0, 0, 0, 0.2);
@@ -54,14 +54,14 @@
         }
     }
 
-    @e title {
+    &__title {
         font-size: 400%;
         font-weight: 400;
         letter-spacing: -0.02em;
         line-height: 1.35;
     }
 
-    @e date {
+    &__date {
         font-style: italic;
     }
 }

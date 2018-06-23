@@ -1,16 +1,16 @@
 /** @define archive */
-@b map {
+.map {
 
-    @e view {
+    &__view {
         height: calc(100vh - var(--navbar-height));
         background-color: #ffffff;
     }
 
-    @e list {
+    &__list {
         padding: 0;
     }
 
-    @e subheader {
+    &__subheader {
         align-items: center;
         color: var(--primary-color);
         display: flex;
@@ -22,7 +22,7 @@
         }
     }
 
-    @e subheader-icon {
+    &__subheader-icon {
         box-sizing: border-box;
         margin-right: 16px;
         min-size: 40px;
@@ -33,7 +33,7 @@
         }
     }
 
-    @e subheader-text {
+    &__subheader-text {
         align-items: center;
         border-top: 1px solid color(var(--black-color) a(0.12));
         display: flex;
@@ -42,7 +42,7 @@
     }
 
 
-    @e item {
+    &__item {
         align-items: center;
         color: var(--light-background-text);
         display: flex;
@@ -50,11 +50,11 @@
         margin-left: 56px;
         text-decoration: none;
 
-        @m empty {
+        &_empty {
             color: var(--primary-color);
         }
     }
 
-    @e subheader-text {
+    &__subheader-text {
     }
 }

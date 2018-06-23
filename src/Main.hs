@@ -601,8 +601,8 @@ styles =
     siteDir </> "css/*.css" %> \out -> do
         let src = "styles" </> dropDirectory3 out -<.> "pcss"
         files <- getDirectoryFiles "." ["styles//*"]
-        need (postcss : "postcss.json" : files)
-        cmd (FileStdout out) postcss ("-c" :: FilePath) ("postcss.json" :: FilePath) src
+        need (postcss : "postcss.config.js" : files)
+        cmd (FileStdout out) postcss ("-c" :: FilePath) ("postcss.config.js" :: FilePath) src
 
 
 favicons :: Rules ()

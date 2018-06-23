@@ -1,5 +1,5 @@
 /** @define sidebar */
-@b sidebar {
+.sidebar {
     background-color: rgba(0, 0, 0, 0);
     display: none;
     font-size: var(--static-font-size);
@@ -13,30 +13,30 @@
         display: none;
     }
 
-    @m active {
+    &_active {
         opacity: 1;
         background-color: color(var(--black-color) a(0.5));
         transition: background-color 0.195s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    @e panel {
+    &__panel {
         background: var(--white-color);
-        position: absolute 0 * 0 -var(--sidebar-width);
+        position: absolute 0 * 0 calc(0 - var(--sidebar-width));
         transition: transform 0.225s cubic-bezier(0.4, 0, 1, 1);
         width: var(--sidebar-width);
         will-change: transform;
 
-        @m active {
+        &_active {
             transform: translateX(var(--sidebar-width));
             transition: transform 0.195s cubic-bezier(0, 0, 0.2, 1);
         }
 
-        @m amp {
+        &_amp {
             width: 100%;
         }
     }
 
-    @e link {
+    &__link {
         color: var(--light-background-text);
         display: block;
         font-weight: bold;
@@ -48,7 +48,7 @@
         }
     }
 
-    @e brand {
+    &__brand {
         align-items: center;
         color: var(--light-background-text);
         display: flex;
@@ -57,7 +57,7 @@
         @mixin bottom-divider;
     }
 
-    @e links {
+    &__links {
         padding: var(--body-padding) *;
     }
 }
