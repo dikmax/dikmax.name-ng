@@ -45,6 +45,7 @@
     },
     "cssnano": {
         "colormin": false,
-        "autoprefixer": false
+        "autoprefixer": false,
+        "zindex": false
     }
 }
