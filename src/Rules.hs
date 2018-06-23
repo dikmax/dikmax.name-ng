@@ -32,7 +32,7 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "brotli", "guetzli", "ogr2ogr"]
+        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "brotli", "guetzli"]
     where
         check executable = do
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable
@@ -76,7 +76,7 @@ scripts = do
 
     siteDir </> "scripts/map.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
-        need (topojson : files)
+        need files
         l <- liftIO $ BS.readFile leaflet
         eb <- compressScriptWhitespaceOnly easyButton
         p <- liftIO $ BS.readFile proj4js
@@ -109,7 +109,7 @@ scripts = do
         proj4leaflet = nodeModulesDir </> "proj4leaflet/src/proj4leaflet.js"
 
         topojsonLib :: FilePath
-        topojsonLib = nodeModulesDir </> "topojson/build/topojson.min.js"
+        topojsonLib = nodeModulesDir </> "topojson/dist/topojson.min.js"
 
 compressScriptSimple :: FilePath -> Action ByteString
 compressScriptSimple path = do

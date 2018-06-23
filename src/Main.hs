@@ -536,13 +536,22 @@ blog = do
 -- Build map data
 
 {-
-rm map/subunits.json
-rm map/countries.json
-rm map/regions.json
-ogr2ogr -f GeoJSON map/subunits.json -where "ADM0_A3 = 'FRA'" map/ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp
-ogr2ogr -f GeoJSON map/countries.json -where "ADM0_A3 != 'FRA' and ADM0_A3 != 'RUS' and ADM0_A3 != 'USA'" map/ne_10m_admin_0_countries_lakes/ne_10m_admin_0_countries_lakes.shp
-ogr2ogr -f GeoJSON map/regions.json -where "ADM0_A3 = 'RUS' or ADM0_A3 = 'USA'" map/ne_10m_admin_1_states_provinces_lakes/ne_10m_admin_1_states_provinces_lakes.shp
-topojson -o map/world.json --id-property ADM_A3,SU_A3,adm1_code --simplify 1e-6 -- map/countries.json map/subunits.json map/regions.json
+shp2json -n ne_10m_admin_0_countries_lakes/ne_10m_admin_0_countries_lakes.shp > countries.geojson
+shp2json -n ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp > subunits.geojson
+shp2json -n ne_10m_admin_1_states_provinces_lakes/ne_10m_admin_1_states_provinces_lakes.shp > regions.geojson
+
+ndjson-filter '(d.properties.ADM0_A3 == "FRA")' < subunits.geojson > subunits.filter.geojson
+ndjson-map '(d.id = d.properties.ADM_A3 || d.properties.SU_A3 || d.properties.adm1_code, delete d.properties, d)' < subunits.filter.geojson > subunits.map.geojson
+
+ndjson-filter '(d.properties.ADM0_A3 != "FRA" && d.properties.ADM0_A3 != "RUS" && d.properties.ADM0_A3 != "USA")' < countries.geojson > countries.filter.geojson
+ndjson-map '(d.id = d.properties.ADM_A3 || d.properties.SU_A3 || d.properties.adm1_code, delete d.properties, d)' < countries.filter.geojson > countries.map.geojson
+
+ndjson-filter '(d.properties.adm0_a3 == "RUS" || d.properties.adm0_a3 == "USA")' < regions.geojson > regions.filter.geojson
+ndjson-map '(d.id = d.properties.adm1_code || d.properties.SU_A3 || d.properties.ADM_A3 || d.properties.adm0_a3, delete d.properties, d)' < regions.filter.geojson > regions.map.geojson
+
+cat subunits.map.geojson regions.map.geojson countries.map.geojson | geostitch -n > world.geojson
+geo2topo -q 1e5 -n < world.geojson > world.topojson
+toposimplify -f -p 0.01 < world.topojson > world.json
 -}
 
 mapData :: Rules ()
@@ -558,29 +567,38 @@ mapData = do
         let subunitsSrc = "map/ne_10m_admin_0_map_subunits/ne_10m_admin_0_map_subunits.shp"
         let countriesSrc = "map/ne_10m_admin_0_countries_lakes/ne_10m_admin_0_countries_lakes.shp"
         let regionsSrc = "map/ne_10m_admin_1_states_provinces_lakes/ne_10m_admin_1_states_provinces_lakes.shp"
-        let subunits = buildDir </> "map/subunits.json"
-        let countries = buildDir </> "map/countries.json"
-        let regions = buildDir </> "map/regions.json"
 
-        need [subunitsSrc, countriesSrc, regionsSrc, topojson]
+        need
+            [ subunitsSrc
+            , countriesSrc
+            , regionsSrc
+            , shp2json
+            , ndjsonFilter
+            , ndjsonMap
+            , geostitch
+            , geo2topo
+            , toposimplify
+            ]
 
-        liftIO $ createDirectoryIfMissing True (buildDir </> "map")
+        -- liftIO $ createDirectoryIfMissing True (buildDir </> "map")
 
-        liftIO $ removeFiles "." [subunits, countries, regions]
-        command_ [] "ogr2ogr" ["-f", "GeoJSON", subunits,
-            "-where", "ADM0_A3 = 'FRA'", subunitsSrc]
-        command_ [] "ogr2ogr" ["-f", "GeoJSON", countries,
-            "-where", "ADM0_A3 != 'FRA' and ADM0_A3 != 'RUS' and ADM0_A3 != 'USA'", countriesSrc]
-        command_ [] "ogr2ogr" ["-f", "GeoJSON", regions,
-            "-where", "ADM0_A3 = 'RUS' or ADM0_A3 = 'USA'", regionsSrc]
+        Stdout subunitsGeo <- command [] shp2json ["-n", subunitsSrc]
+        Stdout regionsGeo <- command [] shp2json ["-n", regionsSrc]
+        Stdout countriesGeo <- command [] shp2json ["-n", countriesSrc]
 
-        liftIO $ createDirectoryIfMissing True (takeDirectory out)
+        Stdout subunitsFiltered <- command [Stdin subunitsGeo] ndjsonFilter ["(d.properties.ADM0_A3 == 'FRA')"]
+        Stdout subunitsMapped <- command [Stdin subunitsFiltered] ndjsonMap ["(d.id = d.properties.adm1_code || d.properties.SU_A3 || d.properties.ADM_A3 || d.properties.adm0_a3, delete d.properties, d)"]
+        Stdout regionsFiltered <- command [Stdin regionsGeo] ndjsonFilter ["(d.properties.adm0_a3 == 'RUS' || d.properties.adm0_a3 == 'USA')"]
+        Stdout regionsMapped <- command [Stdin regionsFiltered] ndjsonMap ["(d.id = d.properties.adm1_code || d.properties.SU_A3 || d.properties.ADM_A3 || d.properties.adm0_a3, delete d.properties, d)"]
+        Stdout countriesFiltered <- command [Stdin countriesGeo] ndjsonFilter ["(d.properties.ADM0_A3 != 'FRA' && d.properties.ADM0_A3 != 'RUS' && d.properties.ADM0_A3 != 'USA')"]
+        Stdout countriesMapped <- command [Stdin countriesFiltered] ndjsonMap ["(d.id = d.properties.adm1_code || d.properties.SU_A3 || d.properties.ADM_A3 || d.properties.adm0_a3, delete d.properties, d)"]
 
-        command_ [] topojson ["-o", out,
-            "--id-property", "ADM_A3,SU_A3,adm1_code",
-            "--simplify", "1e-6", "--", countries, subunits, regions]
+        Stdout stitched <- command [Stdin (subunitsMapped ++ regionsMapped ++ countriesMapped)] geostitch ["-n"]
 
+        Stdout topo <- command [Stdin stitched] geo2topo ["-q", "1e5", "-n"]
+        Stdout world <- command [Stdin topo] toposimplify ["-f", "-p", "0.01"]
 
+        liftIO $ BS.writeFile out world
 
 -- Build styles
 styles :: Rules ()
@@ -603,7 +621,7 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss, topojson, json] &%> \_ -> do
+    [postcss, json, shp2json, geo2topo, geostitch, toposimplify, ndjsonFilter, ndjsonMap] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
 

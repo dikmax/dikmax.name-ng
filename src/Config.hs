@@ -58,8 +58,23 @@ demosDir = siteDir </> "demos"
 postcss :: FilePath
 postcss = nodeModulesBinDir </> "postcss"
 
-topojson :: FilePath
-topojson = nodeModulesBinDir </> "topojson"
+shp2json :: FilePath
+shp2json = nodeModulesBinDir </> "shp2json"
+
+geo2topo :: FilePath
+geo2topo = nodeModulesBinDir </> "geo2topo"
+
+geostitch :: FilePath
+geostitch = nodeModulesBinDir </> "geostitch"
+
+toposimplify :: FilePath
+toposimplify = nodeModulesBinDir </> "toposimplify"
+
+ndjsonFilter :: FilePath
+ndjsonFilter = nodeModulesBinDir </> "ndjson-filter"
+
+ndjsonMap :: FilePath
+ndjsonMap = nodeModulesBinDir </> "ndjson-map"
 
 json :: FilePath
 json = nodeModulesBinDir </> "json"
