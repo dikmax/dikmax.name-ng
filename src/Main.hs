@@ -575,12 +575,9 @@ mapData = do
             , shp2json
             , ndjsonFilter
             , ndjsonMap
-            , geostitch
             , geo2topo
             , toposimplify
             ]
-
-        -- liftIO $ createDirectoryIfMissing True (buildDir </> "map")
 
         Stdout subunitsGeo <- command [] shp2json ["-n", subunitsSrc]
         Stdout regionsGeo <- command [] shp2json ["-n", regionsSrc]
@@ -593,9 +590,7 @@ mapData = do
         Stdout countriesFiltered <- command [Stdin countriesGeo] ndjsonFilter ["(d.properties.ADM0_A3 != 'FRA' && d.properties.ADM0_A3 != 'RUS' && d.properties.ADM0_A3 != 'USA')"]
         Stdout countriesMapped <- command [Stdin countriesFiltered] ndjsonMap ["(d.id = d.properties.adm1_code || d.properties.SU_A3 || d.properties.ADM_A3 || d.properties.adm0_a3, delete d.properties, d)"]
 
-        Stdout stitched <- command [Stdin (subunitsMapped ++ regionsMapped ++ countriesMapped)] geostitch ["-n"]
-
-        Stdout topo <- command [Stdin stitched] geo2topo ["-q", "1e5", "-n"]
+        Stdout topo <- command [Stdin (subunitsMapped ++ regionsMapped ++ countriesMapped)] geo2topo ["-q", "1e5", "-n"]
         Stdout world <- command [Stdin topo] toposimplify ["-f", "-p", "0.01"]
 
         liftIO $ BS.writeFile out world
@@ -621,7 +616,7 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss, json, shp2json, geo2topo, geostitch, toposimplify, ndjsonFilter, ndjsonMap, uglifyJs] &%> \_ -> do
+    [postcss, json, shp2json, geo2topo, toposimplify, ndjsonFilter, ndjsonMap, uglifyJs] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath)
 

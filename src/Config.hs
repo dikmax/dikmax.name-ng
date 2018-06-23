@@ -64,9 +64,6 @@ shp2json = nodeModulesBinDir </> "shp2json"
 geo2topo :: FilePath
 geo2topo = nodeModulesBinDir </> "geo2topo"
 
-geostitch :: FilePath
-geostitch = nodeModulesBinDir </> "geostitch"
-
 toposimplify :: FilePath
 toposimplify = nodeModulesBinDir </> "toposimplify"
 
