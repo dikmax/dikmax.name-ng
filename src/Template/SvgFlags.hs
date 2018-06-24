@@ -26,6 +26,7 @@ svgFlags = M.fromAscList
     , ("FIN", svgFlag "fin" flagFinland)
     , ("FRA", svgFlag "fra" flagFrance)
     , ("FXX", svgFlag "fxx" flagFrance)
+    , ("GBR", svgFlag "gbr" flagGreatBritain)
     , ("HRV", svgFlag "hrv" flagCroatia)
     , ("HUN", svgFlag "hun" flagHungary)
     , ("ITA", svgFlag "ita" flagItaly)
@@ -359,6 +360,14 @@ flagGermany clipId =
         path_ [d_ "M0 0h512v170.7H0z"]
         path_ [fill_ "red", d_ "M0 170.7h512v170.6H0z"]
 
+flagGreatBritain :: Attribute -> Html ()
+flagGreatBritain clipId =
+    g_ [clipId] $ g_ [transform_ "translate(-256) scale(1.024)", stroke_width_ "1pt"] $ do
+        path_ [fill_ "#006", d_ "M0 0h1000v500H0z"]
+        path_ [fill_ "#fff", d_ "M0 0v55.9L888.2 500H1000v-55.9L111.8.1H0zm1000 0v55.9L111.8 500H0v-55.9L888.2 0H1000z"]
+        path_ [fill_ "#fff", d_ "M416.7 0v500h166.6V0H416.7zM0 166.7v166.6h1000V166.7H0z" ]
+        path_ [fill_ "#c00", d_ "M0 200v100h1000V200H0zM450 0v500h100V0H450zM0 500l333.3-166.7H408L74.5 500H0zM0 0l333.3 166.7h-74.5L0 37.3V0zm592.1 166.7L925.5 0h74.5L666.7 166.7H592zm408 333.3L666.6 333.3h74.5L1000 462.7V500z"]
+
 flagEstonia :: Attribute -> Html ()
 flagEstonia clipId =
     g_ [clipId] $
@@ -569,10 +578,10 @@ flagSweden clipId =
 flagTurkey :: Attribute -> Html ()
 flagTurkey clipId =
     g_ [clipId, fill_rule_ "evenodd"] $ do
-        path_ [fill_ "#f31930", d_ "M0 0h512v512H0z"]
-        path_ [d_ "M348.8 264c0 70.6-58.3 128-130 128S88.5 334.5 88.5 264s58.2-128 130-128S349 193.4 349 264z", fill_ "#fff"]
-        path_ [d_ "M355.3 264c0 56.5-46.6 102.3-104 102.3S147 320.5 147 264s46.7-102.3 104.2-102.3 104 45.8 104 102.3z", fill_ "#f31830"]
-        path_ [d_ "M374 204.2l-1 47.3-44 12 43.4 15.5-1 43.3 28.3-33.8 43 14.8-25-36.3 30.3-36-46.4 12.7-27.5-39.5z", fill_ "#fff"]
+        path_ [fill_ "#e30a17", d_ "M0 0h512v512H0z"]
+        path_ [fill_ "#fff", d_ "M348.8 264c0 70.6-58.3 128-130 128S88.5 334.5 88.5 264s58.2-128 130-128S349 193.4 349 264z"]
+        path_ [fill_ "#e30a17", d_ "M355.3 264c0 56.5-46.6 102.3-104 102.3S147 320.5 147 264s46.7-102.3 104.2-102.3 104 45.8 104 102.3z"]
+        path_ [fill_ "#fff", d_ "M374 204.2l-1 47.3-44 12 43.4 15.5-1 43.3 28.3-33.8 43 14.8-25-36.3 30.3-36-46.4 12.7-27.5-39.5z"]
 
 flagUkraine :: Attribute -> Html ()
 flagUkraine clipId =
@@ -582,7 +591,7 @@ flagUkraine clipId =
 
 flagUSA :: Attribute -> Html ()
 flagUSA clipId =
-    g_ [clipId] $ -- TODO move to svgFlag
+    g_ [clipId] $
         g_ [fill_rule_ "evenodd", transform_ "scale(3.9385)"] $ do
             path_ [d_ "M0 0h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0z", fill_ "#bd3d44"]
             path_ [d_ "M0 10h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0zm0 20h247v10H0z", fill_ "#fff"]
