@@ -66,12 +66,31 @@ function getCityLinks(city) {
     (v, i) => `<a href="${v}">${result} (${i + 1})</a>`).join(', ');
 }
 
+/**
+ * @param {Object} city
+ * @return {boolean} True if blue, false grey.
+ */
+function getIconStyle(city) {
+  if (!city['visits']) {
+    return false;
+  }
+
+  return goog.array.some(city['visits'], v => !!v['link']);
+}
+
 dikmax.Map = class {
   constructor() {
     this.world = {};
     this.data = {};
 
     L.Icon.Default.imagePath = '/images/';
+    const GreyIcon = L.Icon.Default.extend({
+      options: {
+        'iconUrl': 'marker-icon-grey.png',
+        'iconRetinaUrl': 'marker-icon-2x-grey.png'
+      }
+    });
+    this.greyIcon = new GreyIcon();
 
     const crs = new L.Proj.CRS('ESRI:53009',
       '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs',
@@ -177,7 +196,12 @@ dikmax.Map = class {
       // eslint-disable-next-line prefer-destructuring
       const cities = country['cities'];
       goog.array.forEach(cities, (city) => {
-        const marker = new L.Marker([city['lat'], city['lon']]);
+        const options = {};
+        if (!getIconStyle(city)) {
+          // If city have no blog posts about it, show grey marker.
+          options['icon'] = this.greyIcon;
+        }
+        const marker = new L.Marker([city['lat'], city['lon']], options);
         marker.bindPopup(getCityLinks(city));
         marker.addTo(markersLayer);
       });

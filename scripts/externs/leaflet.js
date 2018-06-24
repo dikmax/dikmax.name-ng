@@ -148,7 +148,9 @@ L.Icon.Default = {
   /**
    * @type {string}
    */
-  imagePath: ''
+  imagePath: '',
+
+  extend(extra) {}
 };
 
 /**
