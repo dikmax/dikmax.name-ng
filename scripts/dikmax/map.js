@@ -14,6 +14,7 @@ class TopoJSON extends L.GeoJSON {
   constructor(geojson, options) { // eslint-disable-line
     super(geojson, options);
   }
+
   addData(jsonData) {
     if (jsonData['type'] === 'Topology') {
       goog.object.forEach(jsonData['objects'], (data) => {
@@ -173,6 +174,7 @@ dikmax.Map = class {
     const markersLayer = new L.LayerGroup();
 
     goog.object.forEach(this.data, (country) => {
+      // eslint-disable-next-line prefer-destructuring
       const cities = country['cities'];
       goog.array.forEach(cities, (city) => {
         const marker = new L.Marker([city['lat'], city['lon']]);
@@ -196,7 +198,7 @@ dikmax.Map = class {
     let region = null;
     if (country.indexOf('-') !== -1) {
       region = country;
-      country = country.split('-')[0];
+      [country] = country.split('-');
     }
     if (this.data[country]) {
       if ((region && this.data[country]['regions'][region]) || !region) {
@@ -308,14 +310,15 @@ dikmax.Map = class {
     let countryData;
     if (country.indexOf('-') !== -1) {
       const region = country;
-      country = country.split('-')[0];
+      [country] = country.split('-');
 
       countryData = this.data[country];
       if (countryData) {
         content = countryData['name'];
 
-        if (countryData['regions'] &&
-            countryData['regions'][region]) {
+        if (countryData['regions']
+          && countryData['regions'][region]
+        ) {
           content += ` — ${countryData['regions'][region]}`;
         }
       }

@@ -25,14 +25,13 @@ import           Rules
 import           System.Directory           (createDirectoryIfMissing)
 import           Server
 import qualified Template                   as T
-import           Text.Pandoc
+import           Text.Pandoc                hiding (getCurrentTime)
 import           Text.Pandoc.Error          (handleError)
 import           Types
 
 readerOptions :: ReaderOptions
 readerOptions = def
-    { readerSmart = True
-    , readerParseRaw = True
+    { readerExtensions = pandocExtensions
     }
 
 main :: IO ()
@@ -439,7 +438,7 @@ blog = do
 
         imagesContent <- images Anything
 
-        let pandoc = handleError $ readMarkdown readerOptions (T.unpack file)
+        pandoc <- liftIO $ handleError $ runPure $ readMarkdown readerOptions file
         let post = buildPost src imagesContent pandoc
         let pCover = post ^. fileMeta ^. postCover
         let color = mplus

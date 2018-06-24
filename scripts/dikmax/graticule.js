@@ -117,7 +117,6 @@ function getGraticule(interval) {
  */
 
 dikmax.Graticule = class extends L.GeoJSON {
-
   /**
    * @param {Object=} opts
    */

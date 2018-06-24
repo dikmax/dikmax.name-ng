@@ -1,0 +1,4 @@
+# Created by .ignore support plugin (hsz.mobi)
+node_modules/
+/scripts/proj4js/
+/scripts/highlight.js/

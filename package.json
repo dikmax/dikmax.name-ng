@@ -24,9 +24,9 @@
     "colorguard": "^1.2.1",
     "css-mqpacker": "^6.0.2",
     "cssnano": "^4.0.0-rc.2",
-    "eslint": "^3.4.0",
-    "eslint-config-airbnb-base": "^11.0.1",
-    "eslint-plugin-import": "^2.2.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.12.0",
     "google-closure-compiler": "^20180610.0.2",
     "json": "^9.0.6",
     "lost": "^8.3.0",
@@ -50,7 +50,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "stylelint styles/*.pcss"
+    "lint": "stylelint styles/*.pcss",
+    "eslint": "eslint scripts"
   },
   "author": "Maxim Dikun",
   "license": "BSD-3-Clause",

@@ -16,6 +16,8 @@ goog.require('goog.Timer');
 
 const LOAD_DELAY = 100;
 
+/* global MAP: false */
+
 dikmax.App.init = function () {
   dikmax.App.setupNavigation_();
   if (!MAP) {
@@ -44,10 +46,9 @@ dikmax.App.setupNavigation_ = function () {
     goog.dom.classlist.remove(sidebarPanel, 'sidebar__panel_active');
     goog.dom.classlist.remove(sidebar, 'sidebar_active');
     goog.events.listenOnce(sidebar, goog.events.EventType.TRANSITIONEND,
-        () => {
-          goog.style.setStyle(sidebar, 'display', 'none');
-        }
-    );
+      () => {
+        goog.style.setStyle(sidebar, 'display', 'none');
+      });
   });
 };
 
@@ -62,8 +63,10 @@ dikmax.App.setupNavigation_ = function () {
 dikmax.App.constrainImage_ = function (
   allowEnlarge, maxWidth, maxHeight, image
 ) {
-  let result = new goog.math.Size(parseInt(image.getAttribute('width'), 10),
-      parseInt(image.getAttribute('height'), 10));
+  let result = new goog.math.Size(
+    parseInt(image.getAttribute('width'), 10),
+    parseInt(image.getAttribute('height'), 10)
+  );
   if (allowEnlarge) {
     let scale = 1;
     if (maxWidth) {
@@ -100,7 +103,8 @@ dikmax.App.setupLazyImages_ = function () {
 
     goog.array.forEach(images, (image) => {
       const newSize = dikmax.App.constrainImage_(
-          false, imageMaxWidth, imageMaxHeight, image[0]);
+        false, imageMaxWidth, imageMaxHeight, image[0]
+      );
       goog.style.setSize(image[0], `${newSize.width}px`, `${newSize.height}px`);
     });
   };
@@ -183,9 +187,11 @@ dikmax.App.setupPanoramas_ = function () {
       return;
     }
     const smallSize = dikmax.App.constrainImage_(
-        false, imageMaxWidth, imageMaxHeight, image);
+      false, imageMaxWidth, imageMaxHeight, image
+    );
     const largeSize = dikmax.App.constrainImage_(
-        true, null, imageMaxHeight, image);
+      true, null, imageMaxHeight, image
+    );
     if (!goog.math.Size.equals(smallSize, largeSize)) {
       // There's no point to introduce panorama if size wouldn't change.
       const src = goog.dom.dataset.get(image, 'src');
@@ -220,11 +226,10 @@ dikmax.App.getZoomInIcon_ = function () {
 
   const path1 = document.createElementNS(SVG_NS, PATH_TAG);
   path1.setAttribute('d',
-      'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 ' +
-      '9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28' +
-      'v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5' +
-      'S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'
-  );
+    'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 '
+      + '9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28'
+      + 'v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5'
+      + 'S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z');
   svg.appendChild(path1);
 
   const path2 = document.createElementNS(SVG_NS, PATH_TAG);
@@ -251,7 +256,7 @@ dikmax.App.handlePanorama_ = function (_image) {
 
   // Adding overlay
   const overlay = goog.dom.createDom('div', 'post__figure-pano-overlay',
-      dikmax.App.getZoomInIcon_());
+    dikmax.App.getZoomInIcon_());
 
   goog.dom.appendChild(inner, overlay);
 
@@ -284,7 +289,8 @@ dikmax.App.handlePanorama_ = function (_image) {
       const size = vsm.getSize();
       const imageMaxHeight = size.height - 60;
       const largeSize = dikmax.App.constrainImage_(
-          true, null, imageMaxHeight, image);
+        true, null, imageMaxHeight, image
+      );
 
       const scrollLeft = (largeSize.width - size.width) / 2;
       if (scrollLeft >= 0) {
@@ -294,9 +300,9 @@ dikmax.App.handlePanorama_ = function (_image) {
   });
 };
 
-const DISQUS_URL =
-  goog.html.TrustedResourceUrl.fromConstant(
-    goog.string.Const.from('//dikmax.disqus.com/embed.js'));
+const DISQUS_URL = goog.html.TrustedResourceUrl.fromConstant(
+  goog.string.Const.from('//dikmax.disqus.com/embed.js')
+);
 
 dikmax.App.loadDisqus_ = function () {
   const observer = new IntersectionObserver((entries) => {

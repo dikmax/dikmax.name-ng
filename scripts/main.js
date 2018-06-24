@@ -25,6 +25,7 @@ dikmax.main = function () {
     dikmax.Higlight.init();
   }
   if (MAP) {
+    // eslint-disable-next-line no-new
     new dikmax.Map();
   }
 };

@@ -84,7 +84,10 @@ writeLucidText options pandoc = renderText $ writeLucid options pandoc
 writeLucid :: LucidWriterOptions -> Pandoc -> Html ()
 writeLucid options pandoc
     | options ^. debugOutput =
-        pre_ [] (toHtml $ writeNative def pandoc)
+        -- let (Right native) = runPure $ writeNative def pandoc
+        pre_ [] (toHtml $
+            either (error "writeNative error") id $
+            runPure $ writeNative def pandoc)
     | otherwise = evalState (writeLucid' pandoc)
                     (def & writerOptions .~ (options & idPrefix %~ (\p -> if p == "" then "new" else p)))
 
