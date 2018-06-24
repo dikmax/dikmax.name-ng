@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: sassnitz-and-koenigsstuhl
+    name: Засниц и меловые скалы
+
   - id: gdansk
     name: Гданьск
 
