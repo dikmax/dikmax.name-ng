@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: rostock
+    name: Росток и Варнемюнде
+
   - id: prora
     name: Прора
 
