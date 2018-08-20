@@ -1,0 +1,96 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "id": "https://dikmax.name/map/",
+    "definitions": {
+        "visit": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "date"
+            ],
+            "additionalProperties": false
+        },
+        "city": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "alias": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "lon": {
+                    "type": "number"
+                },
+                "visits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/visit"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "lat",
+                "lon"
+            ],
+            "additionalProperties": false
+        },
+        "country": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string",
+                    "enum": [
+                        "blue",
+                        "green",
+                        "orange",
+                        "pink",
+                        "purple",
+                        "red",
+                        "turquoise",
+                        "yellow"
+                    ]
+                },
+                "cities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/city"
+                    },
+                    "additionalItems": true
+                },
+                "regions": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "color"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "additionalProperties": {
+        "$ref": "#/definitions/country"
+    }
+}

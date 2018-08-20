@@ -1,0 +1,45 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "id": "https://dikmax.name/collections/",
+    "definitions": {
+        "item": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "name"
+            ],
+            "additionalProperties": false
+        },
+        "collection": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/item"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "items"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "additionalProperties": {
+        "$ref": "#/definitions/collection"
+    }
+}
