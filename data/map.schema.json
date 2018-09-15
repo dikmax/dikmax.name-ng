@@ -84,7 +84,8 @@
             },
             "required": [
                 "name",
-                "color"
+                "color",
+                "cities"
             ],
             "additionalProperties": false
         }
