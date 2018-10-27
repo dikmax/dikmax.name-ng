@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: luebeck
+    name: Любек и Травемюнде
+
   - id: rostock
     name: Росток и Варнемюнде
 

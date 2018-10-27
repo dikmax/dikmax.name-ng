@@ -29,6 +29,7 @@ svgFlags = M.fromAscList
     , ("GBR", svgFlag "gbr" flagGreatBritain)
     , ("HRV", svgFlag "hrv" flagCroatia)
     , ("HUN", svgFlag "hun" flagHungary)
+    , ("IRL", svgFlag "irl" flagIreland)
     , ("ITA", svgFlag "ita" flagItaly)
     , ("LTU", svgFlag "ltu" flagLithuania)
     , ("LVA", svgFlag "lva" flagLatvia)
@@ -402,6 +403,13 @@ flagHungary clipId =
         path_ [fill_ "#fff", d_ "M512 512H0V0h512z"]
         path_ [fill_ "#388d00", d_ "M512 512H0V341.3h512z"]
         path_ [fill_ "#d43516", d_ "M512 170.8H0V0h512z"]
+
+flagIreland :: Attribute -> Html ()
+flagIreland clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
+        path_ [fill_ "#fff", d_ "M0 0h512v512H0z"]
+        path_ [fill_ "#009a49", d_ "M0 0h170.7v512H0z"]
+        path_ [fill_ "#ff7900", d_ "M341.4 0H512v512H341.4z"]
 
 flagItaly :: Attribute -> Html ()
 flagItaly clipId =

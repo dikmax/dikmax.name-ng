@@ -973,7 +973,8 @@
                 "lon": 10.2338,
                 "visits": [
                     {
-                        "date": "2017-05-11"
+                        "date": "2017-05-11",
+                        "link": "/post/rothenburg-ob-der-tauber/"
                     }
                 ]
             },
