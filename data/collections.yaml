@@ -1,6 +1,9 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: rothenburg-ob-der-tauber
+    name: Ротенбург на Таубере
+
   - id: luebeck
     name: Любек и Травемюнде
 
