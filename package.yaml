@@ -1,0 +1,62 @@
+name:                dikmax-name
+version:             0.1.0.0
+github:              "githubuser/dikmax-name"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2019 Author name here"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/dikmax-name#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- aeson >= 1.4 && < 1.5
+- base64-bytestring >= 1 && < 2
+- basic-prelude >= 0.7 && < 0.8
+- binary >= 0.7 && < 0.9
+- bytestring >= 0.10 && < 0.11
+- containers >= 0.6 && < 0.7
+- cryptohash >= 0.11 && < 0.12
+- data-default >= 0.7 && < 0.8
+- directory >= 1.3 && < 1.4
+- filepath >= 1.4 && < 1.5
+- hashable >= 1.2 && < 1.3
+- JuicyPixels >= 3.3.3 && < 3.4
+- JuicyPixels-extra >= 0.4 && < 0.5
+- lens >= 4.17 && < 4.18
+- lucid >= 2.9 && < 2.10
+- mtl >= 2.2 && < 2.3
+- network-uri >= 2.6 && < 3
+- pandoc >= 2.5 && < 2.6
+- pandoc-types >= 1.17 && < 1.18
+- regex-posix >= 0.95 && < 1.0
+- resourcet >= 1.2 && < 1.3
+- shake >= 0.17.8 && < 0.18
+- snap-core >= 1.0 && < 1.1
+- snap-server >= 1.1 && < 1.2
+- text >= 1.2 && < 1.3
+- time >= 1.8 && < 1.9
+- unordered-containers >= 0.2 && < 0.3
+- utf8-string >= 1.0 && < 1.1
+- vector >= 0.12 && < 0.13
+- yaml >= 0.11 && < 0.12
+
+executables:
+  dikmax.name:
+    main:                Main.hs
+    source-dirs:         src
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    default-extensions:  NoImplicitPrelude, OverloadedStrings
