@@ -3,7 +3,7 @@ title: "SATrip 2015: Копакабана"
 date: 2015-12-02T07:40:00+01:00
 collections: [latest-travel]
 published: true
-tags: [satrip, satrip-2015, боливия, отпуск, путешествие, фотки]
+tags: [satrip, satrip-2015, боливия, город, озеро, отпуск, путешествие, фотки]
 cover:
     img: /images/travel/2015-09-satrip/copacabana-cover.jpg
 ---

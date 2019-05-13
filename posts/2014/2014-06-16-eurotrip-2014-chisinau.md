@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Кишинёв"
 date: "2014-06-16T12:05:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, молдова, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2014, город, молдова, отпуск, путешествие, фотки]
 thread: 2768801852
 cover:
     img: /images/travel/2014-06-eurotrip/chisinau-skates.jpg

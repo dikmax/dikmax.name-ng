@@ -3,7 +3,7 @@ title: "Eurotrip: Берлин"
 date: "2013-08-21T23:11:15+03:00"
 collections: [latest-travel]
 published: true
-tags: [eurotrip, eurotrip-2013, германия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2013, город, германия, отпуск, путешествие, фотки]
 cover:
     img: /images/travel/2013-08-eurotrip/berlin-fernsehenturm.jpg
     hcenter: 50%

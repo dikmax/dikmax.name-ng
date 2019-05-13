@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Болонья"
 date: "2014-07-11T09:10:00+03:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2014, город, италия, отпуск, путешествие, фотки]
 thread: 2833689647
 cover:
     img: /images/travel/2014-06-eurotrip/bologna-cover.jpg

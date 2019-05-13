@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Загреб"
 date: "2014-06-30T22:30:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, отпуск, путешествие, фотки, хорватия]
+tags: [eurotrip, eurotrip-2014, город, отпуск, путешествие, фотки, хорватия]
 cover:
     img: /images/travel/2014-06-eurotrip/zagreb-kiss.jpg
 ---

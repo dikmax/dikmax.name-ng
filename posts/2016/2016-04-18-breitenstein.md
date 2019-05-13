@@ -3,7 +3,7 @@ title: "Брайтенштайн"
 date: 2016-04-18T08:15:00+01:00
 collections: [latest-travel]
 published: true
-tags: [komoot, путешествие, фотки, германия, хайкинг]
+tags: [komoot, путешествие, горы, фотки, германия, хайкинг]
 cover:
     img: /images/travel/2016-04-breitenstein/cover.jpg
     hcenter: 60%

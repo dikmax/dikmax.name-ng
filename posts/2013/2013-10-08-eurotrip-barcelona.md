@@ -4,7 +4,7 @@ date: "2013-10-08T08:20:28+03:00"
 collections: [latest-travel]
 published: true
 author: "Анастасия Барбосова"
-tags: [eurotrip, eurotrip-2013, гостевой пост, испания, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2013, город, море, гостевой пост, испания, отпуск, путешествие, фотки]
 thread: 1833535879
 cover:
     img: /images/travel/2013-08-eurotrip/barcelona-storm.jpg

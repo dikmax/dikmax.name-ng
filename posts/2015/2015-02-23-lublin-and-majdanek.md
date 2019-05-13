@@ -3,7 +3,7 @@ title: "Люблин и Майданек"
 date: "2015-02-23T12:20:00+03:00"
 collections: [latest-travel]
 published: true
-tags: [польша, путешествие, фотки]
+tags: [польша, город, путешествие, фотки]
 cover:
     img: /images/travel/2015-02-lublin/lublin-cover.jpg
 ---

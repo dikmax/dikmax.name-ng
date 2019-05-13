@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Братислава"
 date: "2014-06-25T10:25:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, отпуск, путешествие, словакия, фотки]
+tags: [eurotrip, eurotrip-2014, город, отпуск, путешествие, словакия, фотки]
 thread: 2789638545
 cover:
     img: /images/travel/2014-06-eurotrip/bratislava-castle-stairs.jpg

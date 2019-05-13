@@ -3,7 +3,7 @@ title: "Шауинсланд"
 date: "2015-04-09T12:00:00+03:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, германия]
+tags: [путешествие, горы, фотки, германия]
 cover:
     img: /images/travel/2015-03-schwarzwald/schauinsland-cover.jpg
 ---

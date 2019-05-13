@@ -3,7 +3,7 @@ title: "SATrip 2015: юг Боливии"
 date: 2015-11-23T11:15:00+03:00
 collections: [latest-travel]
 published: true
-tags: [satrip, satrip-2015, боливия, отпуск, путешествие, фотки]
+tags: [satrip, satrip-2015, боливия, горы, отпуск, путешествие, фотки]
 cover:
     img: /images/travel/2015-09-satrip/uyuni-2-cover.jpg
 ---

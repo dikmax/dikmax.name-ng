@@ -4,7 +4,7 @@ date: "2016-03-14T08:05:00+01:00"
 collections: [latest-travel, proofreaders-stories]
 author: "Анастасия Барбосова"
 published: true
-tags: [путешествие, фотки, германия]
+tags: [путешествие, город, фотки, германия]
 cover:
     img: /images/travel/2016-01-heidelberg/heidelberg-cover.jpg
     hcenter: 50%

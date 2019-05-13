@@ -3,7 +3,7 @@ title: "Филлинген-Швеннинген и Титизе"
 date: "2015-04-16T12:00:00+03:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, германия]
+tags: [путешествие, озеро, фотки, германия]
 cover:
     img: /images/travel/2015-03-schwarzwald/titisee-cover.jpg
 ---

@@ -3,7 +3,7 @@ title: "Ротенбург на Таубере"
 date: "2018-10-28T08:00:00+02:00"
 collections: [latest-travel]
 published: true
-tags: [германия, путешествие, фотки]
+tags: [германия, город, путешествие, фотки]
 cover:
     hcenter: 50%
     vcenter: 50%

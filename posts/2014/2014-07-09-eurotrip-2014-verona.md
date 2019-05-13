@@ -4,7 +4,7 @@ date: "2014-07-09T00:15:00+03:00"
 collections: [eurotrip-2014]
 author: "Анастасия Барбосова"
 published: true
-tags: [eurotrip, eurotrip-2014, гостевой пост, италия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2014, город, гостевой пост, италия, отпуск, путешествие, фотки]
 cover:
     img: /images/travel/2014-06-eurotrip/verona-cover.jpg
 ---

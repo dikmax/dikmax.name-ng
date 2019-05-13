@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Постойнские и Шкотьянские пеще
 date: "2014-07-04T21:40:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, отпуск, путешествие, словения, фотки]
+tags: [eurotrip, eurotrip-2014, пещеры, отпуск, путешествие, словения, фотки]
 cover:
     img: /images/travel/2014-06-eurotrip/postojna-cover.jpg
 ---

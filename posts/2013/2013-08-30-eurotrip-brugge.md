@@ -3,7 +3,7 @@ title: "Eurotrip: Брюгге"
 date: "2013-08-30T02:54:14+03:00"
 collections: [latest-travel]
 published: true
-tags: [eurotrip, eurotrip-2013, бельгия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2013, город, бельгия, отпуск, путешествие, фотки]
 thread: 1668487788
 cover:
     img: /images/travel/2013-08-eurotrip/brugge-welcome.jpg

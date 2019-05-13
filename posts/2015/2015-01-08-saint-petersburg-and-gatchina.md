@@ -3,7 +3,7 @@ title: "Санкт-Петербург и Гатчина"
 date: "2015-01-08T10:05:00+03:00"
 collections: [latest-travel]
 published: true
-tags: [россия, путешествие, фотки]
+tags: [россия, город, путешествие, фотки]
 thread: 3399696299
 cover:
     img: /images/travel/2014-12-saint-petersburg-and-gatchina/spb-cover.jpg

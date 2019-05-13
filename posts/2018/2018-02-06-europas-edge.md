@@ -3,7 +3,7 @@ title: "На краю Европы"
 date: "2018-02-06T08:20:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, португалия]
+tags: [путешествие, город, море, фотки, португалия]
 cover:
     img: /images/travel/2016-09-portugal/cabo-da-roca-cover.jpg
     hcenter: 66%

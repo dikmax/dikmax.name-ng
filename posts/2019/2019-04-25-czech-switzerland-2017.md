@@ -3,7 +3,7 @@ title: "Чешская Швейцария"
 date: "2019-04-25T17:00:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [komoot, путешествие, фотки, хайкинг, чехия]
+tags: [komoot, путешествие, фотки, горы, ущелье, хайкинг, чехия]
 cover:
     hcenter: 30%
     vcenter: 30%

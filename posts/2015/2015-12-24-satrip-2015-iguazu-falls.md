@@ -3,7 +3,7 @@ title: "SATrip 2015: водопады Игуасу"
 date: 2015-12-24T16:45:00+01:00
 collections: [latest-travel]
 published: true
-tags: [satrip, satrip-2015, отпуск, бразилия, путешествие, фотки]
+tags: [satrip, satrip-2015, отпуск, бразилия, водопад, путешествие, фотки]
 cover:
     img: /images/travel/2015-09-satrip/iguazu-cover.jpg
 ---

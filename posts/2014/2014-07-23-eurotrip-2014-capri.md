@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Капри"
 date: "2014-07-23T15:50:00+03:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, италия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2014, озеро, остров, италия, отпуск, путешествие, фотки]
 cover:
     img: /images/travel/2014-06-eurotrip/capri-cover.jpg
 ---

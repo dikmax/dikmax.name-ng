@@ -3,7 +3,7 @@ title: "SATrip 2015: Мачу-Пикчу"
 date: 2015-10-29T11:00:00+03:00
 collections: [latest-travel]
 published: true
-tags: [satrip, satrip-2015, отпуск, перу, путешествие, фотки]
+tags: [satrip, satrip-2015, горы, отпуск, перу, путешествие, фотки]
 cover:
     img: /images/travel/2015-09-satrip/machu-picchu-2-cover.jpg
 ---

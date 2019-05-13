@@ -3,7 +3,7 @@ title: "Eurotrip: Гент"
 date: "2013-08-30T11:56:58+03:00"
 collections: [latest-travel]
 published: true
-tags: [eurotrip, eurotrip-2013, бельгия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2013, город, бельгия, отпуск, путешествие, фотки]
 thread: 1671146682
 cover:
     img: /images/travel/2013-08-eurotrip/ghent-welcome.jpg

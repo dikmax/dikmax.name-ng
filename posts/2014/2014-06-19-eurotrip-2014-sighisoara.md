@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Сигишоара"
 date: "2014-06-19T20:40:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, отпуск, путешествие, румыния, фотки]
+tags: [eurotrip, eurotrip-2014, город, отпуск, путешествие, румыния, фотки]
 cover:
     img: /images/travel/2014-06-eurotrip/sighisoara-faces.jpg
     vcenter: 0%

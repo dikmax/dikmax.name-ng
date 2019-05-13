@@ -3,7 +3,7 @@ title: "Саксонская Швейцария"
 date: "2018-11-22T08:00:00+02:00"
 collections: [latest-travel]
 published: true
-tags: [германия, путешествие, фотки]
+tags: [германия, горы, путешествие, ущелье, фотки]
 cover:
     hcenter: 50%
     vcenter: 50%

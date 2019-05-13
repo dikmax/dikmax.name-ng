@@ -3,7 +3,7 @@ title: "Рюген: Засниц и меловые скалы"
 date: "2018-06-11T08:00:00+02:00"
 collections: [latest-travel]
 published: true
-tags: [baltictrip, baltictrip-2017, komoot, германия, путешествие, фотки, хайкинг]
+tags: [baltictrip, baltictrip-2017, komoot, германия, море, путешествие, фотки, хайкинг]
 cover:
     img: /images/travel/2017-04-ostsee/ruegen-cover.jpg
 ---

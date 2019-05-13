@@ -3,7 +3,7 @@ title: "Белосток"
 date: "2014-11-24T09:20:00+03:00"
 published: true
 collections: [latest-travel]
-tags: [польша, путешествие, фотки]
+tags: [польша, город, путешествие, фотки]
 cover:
     img: /images/travel/2014-10-bialystok/cover.jpg
 ---

@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Бухарест"
 date: "2014-06-16T21:05:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, отпуск, путешествие, румыния, фотки]
+tags: [eurotrip, eurotrip-2014, город, отпуск, путешествие, румыния, фотки]
 thread: 2770052776
 cover:
     img: /images/travel/2014-06-eurotrip/bucharest-parlament.jpg

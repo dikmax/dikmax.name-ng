@@ -3,7 +3,7 @@ title: "SATrip 2015: Солончак Уюни"
 date: 2015-11-16T11:00:00+03:00
 collections: [latest-travel]
 published: true
-tags: [satrip, satrip-2015, боливия, отпуск, путешествие, фотки]
+tags: [satrip, satrip-2015, боливия, отпуск, путешествие, солончак, фотки]
 cover:
     img: /images/travel/2015-09-satrip/uyuni-1-cover.jpg
 ---

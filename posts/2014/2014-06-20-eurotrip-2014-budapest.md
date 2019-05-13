@@ -3,7 +3,7 @@ title: "Eurotrip 2014: Будапешт"
 date: "2014-06-20T20:40:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, венгрия, отпуск, путешествие, фотки]
+tags: [eurotrip, eurotrip-2014, город, венгрия, отпуск, путешествие, фотки]
 cover:
     img: /images/travel/2014-06-eurotrip/budapest-top-view-1.jpg
 ---

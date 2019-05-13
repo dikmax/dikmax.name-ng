@@ -3,7 +3,7 @@ title: "Eurotrip: Краков"
 date: "2013-08-15T15:41:25+03:00"
 collections: [latest-travel]
 published: true
-tags: [eurotrip, eurotrip-2013, отпуск, польша, путешествие, фотки]
+tags: [eurotrip, eurotrip-2013, город, отпуск, польша, путешествие, фотки]
 thread: 1607936053
 cover:
     img: /images/travel/2013-08-eurotrip/krakow-wodka.jpg

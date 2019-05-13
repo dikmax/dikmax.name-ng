@@ -3,7 +3,7 @@ title: "Eurotrip 2014: озёра Блед и Бохинь"
 date: "2014-07-05T23:10:00+02:00"
 collections: [eurotrip-2014]
 published: true
-tags: [eurotrip, eurotrip-2014, отпуск, путешествие, словения, фотки]
+tags: [eurotrip, eurotrip-2014, озеро, горы, отпуск, путешествие, словения, фотки]
 thread: 2820457609
 cover:
     img: /images/travel/2014-06-eurotrip/bohinj-cover.jpg
