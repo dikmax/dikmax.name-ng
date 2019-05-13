@@ -3,7 +3,7 @@ title: "Ночной Берлин"
 date: "2016-07-01T09:30:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, город, фотки, германия]
+tags: [берлин, путешествие, город, фотки, германия]
 cover:
     img: /images/travel/2016-06-berlin/cover.jpg
     hcenter: 50%

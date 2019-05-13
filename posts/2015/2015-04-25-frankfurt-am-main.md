@@ -3,7 +3,7 @@ title: "Франкфурт-на-Майне"
 date: 2015-04-25T13:55:00+03:00
 collections: [latest-travel]
 published: true
-tags: [германия, город, путешествие, фотки]
+tags: [гессен, германия, город, путешествие, фотки]
 cover:
     img: /images/travel/2015-03-schwarzwald/frankfurt-cover.jpg
 ---

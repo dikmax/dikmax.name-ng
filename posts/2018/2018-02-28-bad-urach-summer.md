@@ -3,7 +3,7 @@ title: "Бад-Урах летом"
 date: "2018-02-28T08:20:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [komoot, путешествие, водопад, фотки, германия, хайкинг]
+tags: [komoot, баден-вюртемберг, путешествие, водопад, фотки, германия, хайкинг]
 cover:
     img: /images/travel/2016-07-bad-urach/cover.jpg
     hcenter: 63%

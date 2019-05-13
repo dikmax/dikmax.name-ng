@@ -4,7 +4,7 @@ date: "2016-03-17T08:15:00+01:00"
 collections: [latest-travel, proofreaders-stories]
 author: "Анастасия Барбосова"
 published: true
-tags: [путешествие, город, фотки, германия]
+tags: [бавария, путешествие, город, фотки, германия]
 cover:
     img: /images/travel/2016-01-nuerenberg/nuernberg-cover.jpg
     hcenter: 0%

@@ -3,7 +3,7 @@ title: "Весенние каникулы: Саксонская Швейцари
 date: "2014-05-10T21:20:00+03:00"
 collections: [latest-travel]
 published: true
-tags: [германия, горы, водопад, отпуск, путешествие, фотки]
+tags: [германия, горы, водопад, отпуск, путешествие, саксония, фотки]
 thread: 2675328521
 cover:
     img: /images/travel/2014-04-germany/rathen-bastei-brigde-3.jpg

@@ -3,7 +3,7 @@ title: "Ritter Sport и Вальденбух"
 date: 2016-05-31T08:20:00+01:00
 collections: [latest-travel]
 published: true
-tags: [путешествие, фотки, германия]
+tags: [баден-вюртемберг, путешествие, фотки, германия]
 cover:
     img: /images/travel/2016-02-ritter-sport/ritter-sport-cover.jpg
     hcenter: 50%
