@@ -1,6 +1,15 @@
 latest-travel:
   name: Последние путешествия
   items:
+  - id: dresden-2017
+    name: Мы и Дрезден
+
+  - id: czech-switzerland-2017
+    name: Чешская Швейцария
+
+  - id: saxon-switzerland-2017
+    name: Саксонская Швейцария
+
   - id: rothenburg-ob-der-tauber
     name: Ротенбург на Таубере
 
