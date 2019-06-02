@@ -615,7 +615,8 @@ favicons =
 -- npm packages
 npmPackages :: Rules ()
 npmPackages =
-    [postcss, json, shp2json, geo2topo, toposimplify, ndjsonFilter, ndjsonMap, uglifyJs] &%> \_ -> do
+    [postcss, json, shp2json, geo2topo, toposimplify, ndjsonFilter, ndjsonMap
+    , uglifyJs, googleClosureCompiler] &%> \_ -> do
         need ["package.json"]
         cmd ("npm" :: FilePath) ("install" :: FilePath) ("--no-save" :: FilePath)
 

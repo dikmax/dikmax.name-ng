@@ -32,7 +32,7 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        mapM_ check ["java", "node", "npm", "rsync", "zopflipng", "brotli", "guetzli"]
+        mapM_ check ["node", "npm", "rsync", "zopflipng", "brotli", "guetzli"]
     where
         check executable = do
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable
@@ -118,6 +118,7 @@ scripts = do
 
 compressScriptSimple :: FilePath -> Action ByteString
 compressScriptSimple path = do
+    need [googleClosureCompiler]
     Stdout my <- command [] googleClosureCompiler
         [ "--compilation_level", "SIMPLE_OPTIMIZATIONS"
         , "--warning_level", "VERBOSE"
@@ -137,6 +138,7 @@ compressUglifyJs path = do
 
 compressScriptWhitespaceOnly :: FilePath -> Action ByteString
 compressScriptWhitespaceOnly path = do
+    need [googleClosureCompiler]
     Stdout my <- command [] googleClosureCompiler
         [ "--compilation_level", "WHITESPACE_ONLY"
         , "--warning_level", "VERBOSE"
@@ -146,6 +148,7 @@ compressScriptWhitespaceOnly path = do
 
 buildScript :: Bool -> Bool -> Action ByteString
 buildScript dHighlightJs dMap = do
+    need [googleClosureCompiler]
     Stdout my <- command [] googleClosureCompiler
         ([ "--entry_point", "goog:dikmax.main"
         , "--only_closure_dependencies", "true"
