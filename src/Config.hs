@@ -55,6 +55,9 @@ imagesDir = "images"
 demosDir :: FilePath
 demosDir = siteDir </> "demos"
 
+googleClosureCompiler :: FilePath
+googleClosureCompiler = nodeModulesBinDir </> "google-closure-compiler"
+
 postcss :: FilePath
 postcss = nodeModulesBinDir </> "postcss"
 

@@ -12,7 +12,7 @@ import           Types
 layout :: Html () -> CommonData -> FileMeta -> Html () -> Html ()
 layout scripts cd meta content = do
     doctype_
-    html_ [lang_ "ru"] $ do
+    html_ [lang_ "ru", dir_ "ltr"] $ do
         head_ $ do
             title_ $ toHtml $ pageTitle meta
             meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]

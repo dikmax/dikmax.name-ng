@@ -118,9 +118,8 @@ scripts = do
 
 compressScriptSimple :: FilePath -> Action ByteString
 compressScriptSimple path = do
-    Stdout my <- command [] "java"
-        [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
-        , "--compilation_level", "SIMPLE_OPTIMIZATIONS"
+    Stdout my <- command [] googleClosureCompiler
+        [ "--compilation_level", "SIMPLE_OPTIMIZATIONS"
         , "--warning_level", "VERBOSE"
         , "--js", path]
 
@@ -138,9 +137,8 @@ compressUglifyJs path = do
 
 compressScriptWhitespaceOnly :: FilePath -> Action ByteString
 compressScriptWhitespaceOnly path = do
-    Stdout my <- command [] "java"
-        [ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
-        , "--compilation_level", "WHITESPACE_ONLY"
+    Stdout my <- command [] googleClosureCompiler
+        [ "--compilation_level", "WHITESPACE_ONLY"
         , "--warning_level", "VERBOSE"
         , "--js", path]
 
@@ -148,9 +146,8 @@ compressScriptWhitespaceOnly path = do
 
 buildScript :: Bool -> Bool -> Action ByteString
 buildScript dHighlightJs dMap = do
-    Stdout my <- command [] "java"
-        ([ "-client", "-jar", "node_modules/google-closure-compiler/compiler.jar"
-        , "--entry_point", "goog:dikmax.main"
+    Stdout my <- command [] googleClosureCompiler
+        ([ "--entry_point", "goog:dikmax.main"
         , "--only_closure_dependencies", "true"
         , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
         , "--warning_level", "VERBOSE"
