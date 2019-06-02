@@ -62,13 +62,13 @@ scripts :: Rules ()
 scripts = do
     highlightJsPack %> \_ -> do
         need ["scripts/highlight.js/package.json"]
-        command_ [Cwd "scripts/highlight.js/"] "npm" ["install"]
+        command_ [Cwd "scripts/highlight.js/"] "npm" ["install", "--no-save"]
         command_ [Cwd "scripts/highlight.js/"] "node" ("tools/build.js" : "-t" :
             "browser" : includeHighlightingLanguages)
 
     proj4JsPack %> \_ -> do
         need ["scripts/proj4js/package.json"]
-        command_ [Cwd "scripts/proj4js/"] "npm" ["install"]
+        command_ [Cwd "scripts/proj4js/"] "npm" ["install", "--no-save"]
         command_ [Cwd "scripts/proj4js/"] "node" ["./node_modules/.bin/grunt", "build:moll"]
 
     siteDir </> "scripts/main.js" %> \out -> do

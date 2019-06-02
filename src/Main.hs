@@ -617,7 +617,7 @@ npmPackages :: Rules ()
 npmPackages =
     [postcss, json, shp2json, geo2topo, toposimplify, ndjsonFilter, ndjsonMap, uglifyJs] &%> \_ -> do
         need ["package.json"]
-        cmd ("npm" :: FilePath) ("install" :: FilePath)
+        cmd ("npm" :: FilePath) ("install" :: FilePath) ("--no-save" :: FilePath)
 
 
 idFromPost :: Pandoc -> Text
