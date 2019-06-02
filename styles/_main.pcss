@@ -1,7 +1,22 @@
 /* @define main */
 .main {
-    background-color: var(--white-color);
+    background-color: var(--light-background);
     color: var(--light-background-text);
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--dark-background);
+        color: var(--dark-background-text);
+
+        :link {
+            /* Default link color, lightened */
+            color: color(#0000EE tint(50%));
+        }
+
+        :visited {
+            /* Default visited link color, lightened */
+            color: color(#551A8B tint(50%));
+        }
+    }
 
     @mixin clearfix;
 

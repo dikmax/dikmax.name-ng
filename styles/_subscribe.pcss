@@ -2,6 +2,10 @@
 .subscribe-info {
     color: var(--light-background-text) var(--primary-light-color);
 
+    @media (prefers-color-scheme: dark) {
+        color: var(--dark-background-text) var(--darker-background);
+    }
+
     &__centered {
         @mixin center;
     }

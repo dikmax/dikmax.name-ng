@@ -5,7 +5,12 @@ html {
     font-weight: 500;
     letter-spacing: 0;
     line-height: 1.625;
-    background-color: var(--primary-dark-color);
+
+    background-color: var(--dark-background);
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--darker-background);
+    }
 }
 
 body {

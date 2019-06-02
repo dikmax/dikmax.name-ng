@@ -7,7 +7,7 @@
     position: fixed 0 0 0 0;
     transition: background-color 0.225s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: background-color;
-    z-index: 11;
+    z-index: 1100;
 
     @media (--sm-screen) {
         display: none;
@@ -20,11 +20,15 @@
     }
 
     &__panel {
-        background: var(--white-color);
+        background: var(--light-background);
         position: absolute 0 * 0 calc(0 - var(--sidebar-width));
         transition: transform 0.225s cubic-bezier(0.4, 0, 1, 1);
         width: var(--sidebar-width);
         will-change: transform;
+
+        @media (prefers-color-scheme: dark) {
+            background: var(--dark-background);
+        }
 
         &_active {
             transform: translateX(var(--sidebar-width));
@@ -43,6 +47,10 @@
         padding: var(--body-padding);
         text-decoration: none;
 
+        @media (prefers-color-scheme: dark) {
+            color: var(--dark-background-text);
+        }
+
         &:hover {
             text-decoration: underline;
         }
@@ -55,6 +63,10 @@
         height: var(--navbar-height);
         padding: 0 var(--body-padding);
         @mixin bottom-divider;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--dark-background-text);
+        }
     }
 
     &__links {

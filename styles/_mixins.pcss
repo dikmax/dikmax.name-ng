@@ -6,10 +6,23 @@
 
 @define-mixin bottom-divider {
     border-bottom: 1px solid color(var(--black-color) a(0.12));
+
+    @media (prefers-color-scheme: dark) {
+        border-bottom-color: color(var(--white-color));
+    }
 }
 
 @define-mixin center {
     lost-center: var(--body-width) var(--body-padding);
+    width: calc(100% - var(--body-padding) * 2);
+
+    @media (--sm-screen) {
+        width: var(--body-width);
+    }
+}
+
+@define-mixin center-flex {
+    lost-center: var(--body-width) var(--body-padding) flex;
     width: calc(100% - var(--body-padding) * 2);
 
     @media (--sm-screen) {

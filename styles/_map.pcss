@@ -3,7 +3,7 @@
 
     &__view {
         height: calc(100vh - var(--navbar-height));
-        background-color: #ffffff;
+        background-color: var(--light-background);
     }
 
     &__list {
@@ -39,6 +39,10 @@
         display: flex;
         flex: 1;
         height: 48px;
+
+        @media (prefers-color-scheme: dark) {
+            border-top-color: color(var(--white-color) a(0.12));
+        }
     }
 
 

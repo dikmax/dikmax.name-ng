@@ -219,6 +219,8 @@
     justify-content: space-between;
     text-align: center;
 
+    @mixin center-flex;
+
     &__button {
         border: none;
         border-radius: 2px;
@@ -228,18 +230,13 @@
         box-sizing: border-box;
         color: var(--dark-background-text);
         flex-basis: 50%;
-        margin: 5px *;
+        margin: 5px -5px;
         min-size: 64px *;
         padding: 0 16px;
         text-decoration: none;
 
         @media (--sm-screen) {
             flex-basis: 33.33333%;
-
-            /* Safari layout bug */
-            &:first-child {
-                flex-basis: 33%;
-            }
         }
 
         & svg {
@@ -406,14 +403,26 @@
 
     &_warning {
         background-color: #fff2cc;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: color(#fff2cc shade(25%)) ;
+        }
     }
 
     &_success {
         background-color: #d9ead3;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: color(#d9ead3 shade(25%)) ;
+        }
     }
 
     &_failure {
         background-color: #f4cccc;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: color(#f4cccc shade(25%)) ;
+        }
     }
 
     &__tick {

@@ -1,9 +1,13 @@
 /** @define footer */
 .footer {
-    background-color: var(--primary-dark-color);
+    background-color: var(--dark-background);
     color: var(--dark-background-text);
     height: var(--footer-height);
     will-change: transform;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--darker-background);
+    }
 
     &__container {
         align-items: center;

@@ -49,7 +49,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                         " ") $
                     post ^. fileMeta ^. postTags
 
-        div_ [class_ "main__centered share-buttons"] $ do
+        div_ [class_ "share-buttons"] $ do
             a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlFacebook,
                     class_ "share-buttons__button share-buttons__button_facebook"]) $ do
                 iconFacebook
