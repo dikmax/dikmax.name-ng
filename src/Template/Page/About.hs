@@ -13,14 +13,13 @@ buttons :: [(Text, Text, Text, Html ())]
 buttons =
     [ ("E-mail",   "email",       "mailto:me@dikmax.name",                               iconEmail)
     , ("Facebook", "facebook",    "https://www.facebook.com/dikmax",                     iconFacebook)
-    , ("Google+",  "google-plus", "https://www.google.com/+MaximDikun",                  iconGooglePlus)
     , ("LinkedIn", "linkedin",    "https://www.linkedin.com/pub/maxim-dikun/36/389/303", iconLinkedIn)
     , ("VK",       "vk",          "https://vk.com/dikmax",                               iconVk)
     , ("last.fm",  "lastfm",      "http://www.last.fm/user/dikmax",                      iconLastfm)
     , ("Instagram","instagram",   "https://www.instagram.com/dikmax/",                   iconInstagram)
     , ("GitHub",   "github",      "https://github.com/dikmax",                           iconGitHub)
     , ("StackOverflow","stack-overflow","https://stackoverflow.com/users/682727/dikmax", iconStackOverflow)
-    , ("Twitter",  "twitter",     "https://twitter.com/dikmax",                          iconTwitter)
+    -- , ("Twitter",  "twitter",     "https://twitter.com/dikmax",                          iconTwitter)
     , ("YouTube",  "youtube",     "https://www.youtube.com/user/zabeydikmax",            iconYouTube)
     ]
 
@@ -28,7 +27,7 @@ buttons =
 aboutPage :: (Html () -> Html ()) -> CommonData -> File -> Html ()
 aboutPage layout cd about = layout $ do
     navigation False
-    main_ [class_ "main main_no-hero"] $ do
+    main_ [class_ "main main_no-hero about"] $ do
         writeLucid opts $ about ^. fileContent
 
         h1_ [class_ "main__centered post__block post__block_header-1"] $

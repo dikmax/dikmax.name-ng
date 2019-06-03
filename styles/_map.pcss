@@ -54,8 +54,16 @@
         margin-left: 56px;
         text-decoration: none;
 
+        @media (prefers-color-scheme: dark) {
+            color: var(--dark-background-text);
+        }
+
         &_empty {
             color: var(--primary-color);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--primary-color);
+            }
         }
     }
 

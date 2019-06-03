@@ -3,6 +3,8 @@
     counter-reset: imgs;
     z-index: 2;
 
+    @mixin dark-background-links;
+
     &_list {
         @mixin clearfix;
 
@@ -203,10 +205,19 @@
         color: var(--light-background-text);
         font-style: italic;
 
+        @media (prefers-color-scheme: dark) {
+            color: var(--dark-background-text);
+        }
+
+
         &::before {
             content: "#";
             display: inline;
         }
+    }
+
+    &__comments {
+        @mixin dark-background-links;
     }
 }
 
@@ -380,6 +391,8 @@
     display: flex;
     justify-content: space-between;
     margin: var(--body-padding) *;
+
+    @mixin dark-background-links;
 
     &__previous {
         width: 100%;

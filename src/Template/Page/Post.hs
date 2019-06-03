@@ -12,6 +12,7 @@ import           Lucid
 import           Lucid.AMP
 import           Network.URI
 import           Template.Navigation
+import           Template.Subscribe
 import           Template.SvgIcons
 import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
@@ -86,15 +87,22 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                        , class_ "pager__next"] $
                         toHtml (p ^. fileMeta ^. postTitle ++ " →")) nextPost
 
+        div_ [class_ "main__centered post__comments"] $
+            p_ $ do
+              toHtml $ ("Хочется что-то добавить или сказать? Я всегда рад послушать и обсудить. Пишите на " :: Text)
+              a_ [ href_ $ "mailto:me@dikmax.name?subject=Комментарий к \"" ++ (post ^. fileMeta ^. postTitle) ++ "\""] "me@dikmax.name"
+              toHtml $ ("." :: Text)
 
+        subscribe
+
+        {-
         unless (null $ post ^. fileMeta ^. postCollections) $
             div_ [class_ "main__full-width__centered related-posts"] $ do
                 div_ [class_ "related-posts__collection-name"] $ do
                     p_ "Читать ещё"
                     p_ [class_ "related-posts__arrow-down"] iconArrowDown
                 forM_ (post ^. fileMeta ^. postCollections) writeCollection
-
-        unless isAmp disqus
+        -}
     where
         writeCollection :: Text -> Html ()
         writeCollection collectionId =
@@ -140,23 +148,6 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
         showMaxCount
             | length (post ^. fileMeta ^. postCollections) == 1 = 8
             | otherwise = 4
-
-
-        disqus :: Html ()
-        disqus = do
-             div_ [id_ "disqus_thread", class_ "main__centered"] mempty
-             div_ [class_ "main__centered disqus-post"] $ do
-                 script_ $
-                     "var disqus_config=function(){\
-                         \this.page.url='" ++ escapeJsString url ++ "';\
-                         \this.page.identifier='" ++ escapeJsString pId ++ "';\
-                         \this.page.title='" ++ escapeJsString title ++ "';\
-                     \}"
-
-                 noscript_ $ do
-                     "Please enable JavaScript to view the "
-                     a_ [ href_ "https://disqus.com/?ref_noscript"
-                        , rel_ "nofollow"] "comments powered by Disqus."
 
         opts :: LucidWriterOptions
         opts = (def :: LucidWriterOptions)

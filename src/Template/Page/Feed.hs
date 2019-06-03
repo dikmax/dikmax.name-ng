@@ -31,7 +31,6 @@ feedPage now posts = atomHeader_ $
             title_ $ toHtml $ post ^. fileMeta ^. postTitle
             description_ $ toHtml $ renderText $ renderSingle post
             link_ $ toHtml $ post ^. fileMeta ^. postUrl
-            comments_ $ toHtml $ post ^. fileMeta ^. postUrl ++ "#disqus_thread"
             guid_ $ toHtml $ post ^. fileMeta ^. postUrl
             maybe mempty
                 (pubDate_ . toHtml . formatTime defaultTimeLocale rfc822DateFormat) $

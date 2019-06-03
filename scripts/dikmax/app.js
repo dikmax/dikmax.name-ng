@@ -24,7 +24,6 @@ dikmax.App.init = function () {
     dikmax.App.setupPanoramas_();
     dikmax.App.setupLazyImages_();
     dikmax.App.setupLazyIframes_();
-    dikmax.App.loadDisqus_();
   }
 };
 
@@ -298,24 +297,4 @@ dikmax.App.handlePanorama_ = function (_image) {
       }
     }
   });
-};
-
-const DISQUS_URL = goog.html.TrustedResourceUrl.fromConstant(
-  goog.string.Const.from('//dikmax.disqus.com/embed.js')
-);
-
-dikmax.App.loadDisqus_ = function () {
-  const observer = new IntersectionObserver((entries) => {
-    goog.array.forEach(entries, (entry) => {
-      if (entry.isIntersecting) {
-        observer.disconnect();
-        // Load script.
-        goog.net.jsloader.safeLoad(DISQUS_URL);
-      }
-    });
-  });
-  const element = goog.dom.getElement('disqus_thread');
-  if (element) {
-    observer.observe(element);
-  }
 };

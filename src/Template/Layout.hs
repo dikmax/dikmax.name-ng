@@ -17,7 +17,7 @@ layout scripts cd meta content = do
             title_ $ toHtml $ pageTitle meta
             meta_ [httpEquiv_ "Content-Type", content_ "text/html; charset=utf-8"]
             meta_ [httpEquiv_ "X-UA-Compatible", content_ "IE=edge"]
-            meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0, ya-title=fade, ya-dock=fade"]
+            meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0"]
 
             -- Favicons
             link_ [rel_ "apple-touch-icon", sizes_ "180x180", href_ "/apple-touch-icon.png?v=yyyEB94O8G"]
@@ -34,9 +34,7 @@ layout scripts cd meta content = do
             -- Resource hints
             link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com/"]
             link_ [rel_ "preconnect", href_ "https://www.gstatic.com/"]
-            link_ [rel_ "preconnect", href_ "https://dikmax.disqus.com/"]
             link_ [rel_ "preconnect", href_ "https://ssl.google-analytics.com/"]
-            link_ [rel_ "preconnect", href_ "https://a.disquscdn.com/"]
 
             maybe mempty
                 (\_ -> link_ [rel_ "amphtml", href_ $ meta ^. postUrl ++ "amp/"])
