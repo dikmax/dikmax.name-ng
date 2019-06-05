@@ -93,7 +93,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
               a_ [ href_ $ "mailto:me@dikmax.name?subject=Комментарий к \"" ++ (post ^. fileMeta ^. postTitle) ++ "\""] "me@dikmax.name"
               toHtml $ ("." :: Text)
 
-        subscribe
+        unless isAmp subscribe
 
         {-
         unless (null $ post ^. fileMeta ^. postCollections) $
