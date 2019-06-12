@@ -1,33 +1,19 @@
-goog.provide('dikmax.main');
+goog.module('dikmax.main');
 
-goog.require('dikmax.App');
-goog.require('dikmax.Higlight');
-goog.require('dikmax.Map');
-goog.require('goog.dom');
+const App = goog.require('dikmax.App');
+const Higlight = goog.require('dikmax.Higlight');
+const dikmaxMap = goog.require('dikmax.Map');
+const {HIGHLIGHT_JS, MAP} = goog.require('dikmax.defines');
 
-/**
- * Include highlighting
- *
- * @define {boolean}
- */
-const HIGHLIGHT_JS = false;
-
-/**
- * Include maps.
- *
- * @define {boolean}
- */
-const MAP = false;
-
-dikmax.main = function () {
-  dikmax.App.init();
+const main = function () {
+  App.init();
   if (HIGHLIGHT_JS) {
-    dikmax.Higlight.init();
+    Higlight.init();
   }
   if (MAP) {
     // eslint-disable-next-line no-new
-    new dikmax.Map();
+    new dikmaxMap();
   }
 };
 
-dikmax.main();
+main();

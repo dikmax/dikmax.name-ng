@@ -1,52 +1,39 @@
-goog.provide('dikmax.App');
+goog.module('dikmax.App');
 
-goog.require('goog.array');
-goog.require('goog.dom');
-goog.require('goog.dom.classlist');
-goog.require('goog.dom.dataset');
-goog.require('goog.dom.ViewportSizeMonitor');
-goog.require('goog.events');
-goog.require('goog.html.TrustedResourceUrl');
-goog.require('goog.math.Size');
-goog.require('goog.net.jsloader');
-goog.require('goog.string');
-goog.require('goog.string.Const');
-goog.require('goog.style');
-goog.require('goog.Timer');
+const {map: arrayMap, forEach: arrayForEach, filter: arrayFilter} = goog.require('goog.array');
+const {getElementByClass, getElementsByClass, getParentElement, createDom, appendChild} = goog.require('goog.dom');
+const classlist = goog.require('goog.dom.classlist');
+const {get: datasetGet, remove: datasetRemove} = goog.require('goog.dom.dataset');
+const ViewportSizeMonitor = goog.require('goog.dom.ViewportSizeMonitor');
+const events = goog.require('goog.events');
+const Size = goog.require('goog.math.Size');
+const {endsWith} = goog.require('goog.string');
+const style = goog.require('goog.style');
+const Timer = goog.require('goog.Timer');
+const {MAP} = goog.require('dikmax.defines');
 
 const LOAD_DELAY = 100;
 
-/* global MAP: false */
+const setupNavigation = function () {
+  const menuButton = getElementByClass('navbar__menu');
+  const sidebar = getElementByClass('sidebar');
+  const sidebarPanel = getElementByClass('sidebar__panel');
 
-dikmax.App.init = function () {
-  dikmax.App.setupNavigation_();
-  if (!MAP) {
-    dikmax.App.setupPanoramas_();
-    dikmax.App.setupLazyImages_();
-    dikmax.App.setupLazyIframes_();
-  }
-};
-
-dikmax.App.setupNavigation_ = function () {
-  const menuButton = goog.dom.getElementByClass('navbar__menu');
-  const sidebar = goog.dom.getElementByClass('sidebar');
-  const sidebarPanel = goog.dom.getElementByClass('sidebar__panel');
-
-  goog.events.listen(menuButton, goog.events.EventType.CLICK, (event) => {
+  events.listen(menuButton, events.EventType.CLICK, (event) => {
     event.preventDefault();
-    goog.style.setStyle(sidebar, 'display', 'block');
-    goog.Timer.callOnce(() => {
-      goog.dom.classlist.add(sidebar, 'sidebar_active');
-      goog.dom.classlist.add(sidebarPanel, 'sidebar__panel_active');
+    style.setStyle(sidebar, 'display', 'block');
+    Timer.callOnce(() => {
+      classlist.add(sidebar, 'sidebar_active');
+      classlist.add(sidebarPanel, 'sidebar__panel_active');
     }, 10);
   });
 
-  goog.events.listen(sidebar, goog.events.EventType.CLICK, () => {
-    goog.dom.classlist.remove(sidebarPanel, 'sidebar__panel_active');
-    goog.dom.classlist.remove(sidebar, 'sidebar_active');
-    goog.events.listenOnce(sidebar, goog.events.EventType.TRANSITIONEND,
+  events.listen(sidebar, events.EventType.CLICK, () => {
+    classlist.remove(sidebarPanel, 'sidebar__panel_active');
+    classlist.remove(sidebar, 'sidebar_active');
+    events.listenOnce(sidebar, events.EventType.TRANSITIONEND,
       () => {
-        goog.style.setStyle(sidebar, 'display', 'none');
+        style.setStyle(sidebar, 'display', 'none');
       });
   });
 };
@@ -56,13 +43,13 @@ dikmax.App.setupNavigation_ = function () {
  * @param {?number} maxWidth Max width constrain if needed.
  * @param {?number} maxHeight Max height constrain if needed.
  * @param {HTMLImageElement} image Image to constrain.
- * @return {goog.math.Size} Resulting size.
+ * @return {Size} Resulting size.
  * @private
  */
-dikmax.App.constrainImage_ = function (
+const constrainImage = function (
   allowEnlarge, maxWidth, maxHeight, image
 ) {
-  let result = new goog.math.Size(
+  let result = new Size(
     parseInt(image.getAttribute('width'), 10),
     parseInt(image.getAttribute('height'), 10)
   );
@@ -86,36 +73,36 @@ dikmax.App.constrainImage_ = function (
   return result;
 };
 
-dikmax.App.setupLazyImages_ = function () {
-  /** @type {[HTMLImageElement, boolean]} */
-  let images = goog.array.map(
-    goog.dom.getElementsByClass('post__figure-img_lazy'),
-    image => [image, false]
+const setupLazyImages = function () {
+  /** @type {!Array<{image: !HTMLImageElement, isIntersecting: boolean}>} */
+  let images = arrayMap(
+    getElementsByClass('post__figure-img_lazy'),
+    image => ({image, isIntersecting: false})
   );
 
-  const vsm = new goog.dom.ViewportSizeMonitor();
+  const vsm = new ViewportSizeMonitor();
 
   const resizeImages = function () {
     const size = vsm.getSize();
     const imageMaxWidth = size.width - 32;
     const imageMaxHeight = size.height - 60;
 
-    goog.array.forEach(images, (image) => {
-      const newSize = dikmax.App.constrainImage_(
-        false, imageMaxWidth, imageMaxHeight, image[0]
+    arrayForEach(images, ({image}) => {
+      const newSize = constrainImage(
+        false, imageMaxWidth, imageMaxHeight, image
       );
-      goog.style.setSize(image[0], `${newSize.width}px`, `${newSize.height}px`);
+      style.setSize(image, `${newSize.width}px`, `${newSize.height}px`);
     });
   };
 
   const observer = new IntersectionObserver((entries) => {
-    goog.array.forEach(entries, (entry) => {
+    arrayForEach(entries, (entry) => {
       const image = entry.target;
       let pair;
-      goog.array.forEach(images, (i) => {
-        if (i[0] === image) {
+      arrayForEach(images, (i) => {
+        if (i.image === image) {
           // eslint-disable-next-line no-param-reassign
-          i[1] = entry.isIntersecting;
+          i.isIntersecting = entry.isIntersecting;
           pair = i;
         }
       });
@@ -123,79 +110,79 @@ dikmax.App.setupLazyImages_ = function () {
       if (entry.isIntersecting) {
         // Delay image load for small time in case of fast scroll.
         setTimeout(() => {
-          if (!pair[1]) {
+          if (!pair.isIntersecting) {
             return;
           }
 
-          images = goog.array.filter(images, i => i !== pair);
+          images = arrayFilter(images, i => i !== pair);
           observer.unobserve(image);
 
           // Load
-          goog.events.listenOnce(image, goog.events.EventType.LOAD, () => {
-            goog.style.setSize(image, '', '');
+          events.listenOnce(image, events.EventType.LOAD, () => {
+            style.setSize(image, '', '');
           });
-          image.src = goog.dom.dataset.get(image, 'src');
-          image.srcset = goog.dom.dataset.get(image, 'srcset');
-          goog.dom.dataset.remove(image, 'src');
-          goog.dom.dataset.remove(image, 'srcset');
+          image.src = datasetGet(image, 'src');
+          image.srcset = datasetGet(image, 'srcset');
+          datasetRemove(image, 'src');
+          datasetRemove(image, 'srcset');
         }, LOAD_DELAY);
       }
     });
   });
 
-  goog.array.forEach(images, (image) => {
-    observer.observe(image[0]);
+  arrayForEach(images, ({image}) => {
+    observer.observe(image);
   });
 
-  goog.events.listen(vsm, goog.events.EventType.RESIZE, () => {
+  events.listen(vsm, events.EventType.RESIZE, () => {
     resizeImages();
   });
   resizeImages();
 };
 
-dikmax.App.setupLazyIframes_ = function () {
-  const iframes = goog.dom.getElementsByClass('post__embed-lazy');
+const setupLazyIframes = function () {
+  const iframes = getElementsByClass('post__embed-lazy');
 
   const observer = new IntersectionObserver((entries) => {
-    goog.array.forEach(entries, (entry) => {
+    arrayForEach(entries, (entry) => {
       if (entry.isIntersecting) {
         const iframe = entry.target;
         observer.unobserve(iframe);
 
         // Load
-        iframe.src = goog.dom.dataset.get(iframe, 'src');
-        goog.dom.dataset.remove(iframe, 'src');
+        iframe.src = datasetGet(iframe, 'src');
+        datasetRemove(iframe, 'src');
       }
     });
   });
-  goog.array.forEach(iframes, (image) => {
+  arrayForEach(iframes, (image) => {
     observer.observe(image);
   });
 };
 
-dikmax.App.setupPanoramas_ = function () {
-  const images = goog.dom.getElementsByClass('post__figure-img');
+const setupPanoramas = function () {
+  const images = getElementsByClass('post__figure-img');
 
-  const vsm = new goog.dom.ViewportSizeMonitor();
+  const vsm = new ViewportSizeMonitor();
   const size = vsm.getSize();
   const imageMaxWidth = size.width - 32;
   const imageMaxHeight = size.height - 60;
 
-  goog.array.forEach(images, (image) => {
+  arrayForEach(images, (image) => {
     if (!(image instanceof HTMLImageElement)) {
       return;
     }
-    const smallSize = dikmax.App.constrainImage_(
+    const smallSize = constrainImage(
       false, imageMaxWidth, imageMaxHeight, image
     );
-    const largeSize = dikmax.App.constrainImage_(
+    const largeSize = constrainImage(
       true, null, imageMaxHeight, image
     );
-    if (!goog.math.Size.equals(smallSize, largeSize)) {
+    if (!Size.equals(smallSize, largeSize)) {
       // There's no point to introduce panorama if size wouldn't change.
-      const src = goog.dom.dataset.get(image, 'src');
-      if (src !== null && goog.string.endsWith(src, '-pano.jpg')) {
-        dikmax.App.handlePanorama_(image);
+      const src = datasetGet(image, 'src');
+      if (src !== null && endsWith(src, '-pano.jpg')) {
+        handlePanorama(image);
       }
     }
   });
@@ -208,7 +195,7 @@ const PATH_TAG = 'path';
  * @return {!Element} icon.
  * @private
  */
-dikmax.App.getZoomInIcon_ = function () {
+const getZoomInIcon = function () {
   /*
    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5
@@ -247,32 +234,32 @@ dikmax.App.getZoomInIcon_ = function () {
  * @param {!HTMLImageElement} _image Element to setup pano.
  * @private
  */
-dikmax.App.handlePanorama_ = function (_image) {
+const handlePanorama = function (_image) {
   const image = _image;
   let expanded = false;
-  const inner = goog.dom.getParentElement(image);
-  goog.style.setStyle(inner, 'cursor', 'zoom-in');
+  const inner = getParentElement(image);
+  style.setStyle(inner, 'cursor', 'zoom-in');
 
   // Adding overlay
-  const overlay = goog.dom.createDom('div', 'post__figure-pano-overlay',
-    dikmax.App.getZoomInIcon_());
+  const overlay = createDom('div', 'post__figure-pano-overlay',
+    getZoomInIcon());
 
-  goog.dom.appendChild(inner, overlay);
+  appendChild(inner, overlay);
 
   // Get names of bigger images
-  const smallSrc = goog.dom.dataset.get(image, 'src');
-  const smallSrcSet = goog.dom.dataset.get(image, 'srcset');
+  const smallSrc = datasetGet(image, 'src');
+  const smallSrcSet = datasetGet(image, 'srcset');
   const largeSrc = smallSrc.replace(/-pano\.jpg$/, '-pano-full.jpg');
   let largeSrcSet = null;
   if (smallSrcSet) {
     largeSrcSet = smallSrcSet.replace(/-pano\.jpg/g, '-pano-full.jpg');
   }
-  goog.events.listen(inner, goog.events.EventType.CLICK, () => {
+  events.listen(inner, events.EventType.CLICK, () => {
     expanded = !expanded;
-    goog.dom.classlist.enable(image, 'post__figure-img_pano', expanded);
-    goog.dom.classlist.enable(inner, 'post__figure-inner_pano', expanded);
-    goog.style.setStyle(inner, 'cursor', expanded ? 'zoom-out' : 'zoom-in');
-    goog.style.setElementShown(overlay, !expanded);
+    classlist.enable(image, 'post__figure-img_pano', expanded);
+    classlist.enable(inner, 'post__figure-inner_pano', expanded);
+    style.setStyle(inner, 'cursor', expanded ? 'zoom-out' : 'zoom-in');
+    style.setElementShown(overlay, !expanded);
 
     image.src = expanded ? largeSrc : smallSrc;
     if (largeSrcSet && smallSrcSet) {
@@ -280,14 +267,14 @@ dikmax.App.handlePanorama_ = function (_image) {
     }
 
     if (expanded) {
-      const imageTop = goog.style.getPageOffsetTop(image);
+      const imageTop = style.getPageOffsetTop(image);
       window.scrollTo(0, imageTop - 60);
 
       // Scrolling image to center
-      const vsm = new goog.dom.ViewportSizeMonitor();
+      const vsm = new ViewportSizeMonitor();
       const size = vsm.getSize();
       const imageMaxHeight = size.height - 60;
-      const largeSize = dikmax.App.constrainImage_(
+      const largeSize = constrainImage(
         true, null, imageMaxHeight, image
       );
 
@@ -297,4 +284,17 @@ dikmax.App.handlePanorama_ = function (_image) {
       }
     }
   });
+};
+
+const init = function () {
+  setupNavigation();
+  if (!MAP) {
+    setupPanoramas();
+    setupLazyImages();
+    setupLazyIframes();
+  }
+};
+
+exports = {
+  init
 };

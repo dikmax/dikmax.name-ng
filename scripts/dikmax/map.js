@@ -1,14 +1,13 @@
-goog.provide('dikmax.Map');
+goog.module('dikmax.Map');
 
 /* global L, topojson, greinerHormann */
 
-goog.require('goog.array');
-goog.require('goog.dom');
-goog.require('goog.object');
-goog.require('goog.Promise');
-goog.require('goog.net.XhrIo');
+const {forEach: arrayForEach, map: arrayMap, some: arraySome, defaultCompare, sort: arraySort} = goog.require('goog.array');
+const {getElementByClass} = goog.require('goog.dom');
+const {forEach: objectForEach} = goog.require('goog.object');
+const XhrIo = goog.require('goog.net.XhrIo');
 
-goog.require('dikmax.graticule');
+const {graticule: dikmaxGraticule} = goog.require('dikmax.graticule');
 
 class TopoJSON extends L.GeoJSON {
   constructor(geojson, options) { // eslint-disable-line
@@ -17,7 +16,7 @@ class TopoJSON extends L.GeoJSON {
 
   addData(jsonData) {
     if (jsonData['type'] === 'Topology') {
-      goog.object.forEach(jsonData['objects'], (data) => {
+      objectForEach(jsonData['objects'], (data) => {
         const geojson = topojson.feature(jsonData, data);
         super.addData(geojson);
       });
@@ -50,7 +49,7 @@ function getCityLinks(city) {
   }
 
   const links = [];
-  goog.array.forEach(city['visits'], (v) => {
+  arrayForEach(city['visits'], (v) => {
     if (v['link']) {
       links.push(v['link']);
     }
@@ -62,7 +61,7 @@ function getCityLinks(city) {
   if (links.length === 1) {
     return `<a href="${links[0]}">${result}</a>`;
   }
-  return goog.array.map(links,
+  return arrayMap(links,
     (v, i) => `<a href="${v}">${result} (${i + 1})</a>`).join(', ');
 }
 
@@ -75,10 +74,10 @@ function getIconStyle(city) {
     return false;
   }
 
-  return goog.array.some(city['visits'], v => !!v['link']);
+  return arraySome(city['visits'], v => !!v['link']);
 }
 
-dikmax.Map = class {
+class MapHandler {
   constructor() {
     this.world = {};
     this.data = {};
@@ -97,12 +96,12 @@ dikmax.Map = class {
       {
         'resolutions': [65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256]
       });
-    this.map = L.map(goog.dom.getElementByClass('map__view'), {
+    this.map = L.map(getElementByClass('map__view'), {
       'crs': crs,
       'maxZoom': 8
     }).fitWorld();
 
-    const frame = dikmax.graticule({
+    const frame = dikmaxGraticule({
       sphere: true,
       style: {
         'color': '#333',
@@ -114,7 +113,7 @@ dikmax.Map = class {
     });
     frame.addTo(this.map);
 
-    const graticule = dikmax.graticule({
+    const graticule = dikmaxGraticule({
       style: {
         'fill': false,
         'color': '#000',
@@ -133,8 +132,8 @@ dikmax.Map = class {
   }
 
   loadData() {
-    const worldPromise = new goog.Promise((resolve, reject) => {
-      goog.net.XhrIo.send('/data/world.json', (e) => {
+    const worldPromise = new Promise((resolve, reject) => {
+      XhrIo.send('/data/world.json', (e) => {
         const xhr = e.target;
         if (!xhr.isSuccess()) {
           reject(xhr);
@@ -145,8 +144,8 @@ dikmax.Map = class {
       });
     });
 
-    const dataPromise = new goog.Promise((resolve, reject) => {
-      goog.net.XhrIo.send('/data/map.json', (e) => {
+    const dataPromise = new Promise((resolve, reject) => {
+      XhrIo.send('/data/map.json', (e) => {
         const xhr = e.target;
         if (!xhr.isSuccess()) {
           reject(xhr);
@@ -157,14 +156,12 @@ dikmax.Map = class {
       });
     });
 
-    goog.Promise.all([worldPromise, dataPromise]).then(([world, data]) => {
+    Promise.all([worldPromise, dataPromise]).then(([world, data]) => {
       this.world = world;
       this.data = data;
 
       this.setupData();
-    }).thenCatch((err) => {
-      console.error(err);
-    });
+    }).catch(console.error);
   }
 
   setupData() {
@@ -179,7 +176,7 @@ dikmax.Map = class {
     topoLayer.addData(this.world);
     topoLayer.addTo(this.map);
 
-    const frame = dikmax.graticule({
+    const frame = dikmaxGraticule({
       sphere: true,
       style: {
         'color': '#333',
@@ -192,10 +189,10 @@ dikmax.Map = class {
 
     const markersLayer = new L.LayerGroup();
 
-    goog.object.forEach(this.data, (country) => {
+    objectForEach(this.data, (country) => {
       // eslint-disable-next-line prefer-destructuring
       const cities = country['cities'];
-      goog.array.forEach(cities, (city) => {
+      arrayForEach(cities, (city) => {
         const options = {};
         if (!getIconStyle(city)) {
           // If city have no blog posts about it, show grey marker.
@@ -265,7 +262,7 @@ dikmax.Map = class {
     if (feature['id'] === 'ATA') { // Antarctica
       /** @type {Array<Array<L.LatLng>>} */
       const latlngs = layer.getLatLngs();
-      goog.array.forEach(latlngs, (shape) => {
+      arrayForEach(latlngs, (shape) => {
         const s = shape;
         if (360 - Math.abs(s[0].lng - s[s.length - 1].lng) < 5) {
           for (let l = s[0].lat; l > -90; l -= 1) {
@@ -287,18 +284,18 @@ dikmax.Map = class {
     const latlngs = layer.getLatLngs();
     const result = [];
     // Wrapping and splitting polygons that intersects antimeridian around.
-    goog.array.forEach(latlngs, (shape) => {
+    arrayForEach(latlngs, (shape) => {
       const polygon = new L.Polygon(shape);
       const polygonBounds = polygon.getBounds();
       if (360 - (polygonBounds.getEast() - polygonBounds.getWest()) > 10) {
         result.push(shape);
         return;
       }
-      const pointsA = goog.array.map(shape, latlng => ({
+      const pointsA = arrayMap(shape, latlng => ({
         x: latlng.lng < 0 ? latlng.lng + 360 : latlng.lng,
         y: latlng.lat
       }));
-      const pointsB = goog.array.map(shape, latlng => ({
+      const pointsB = arrayMap(shape, latlng => ({
         x: latlng.lng > 0 ? latlng.lng - 360 : latlng.lng,
         y: latlng.lat
       }));
@@ -313,13 +310,13 @@ dikmax.Map = class {
           {x: -179.9999, y: -90},
           {x: 0, y: -90}]);
       if (!goog.isNull(resA)) {
-        goog.array.forEach(resA, (i) => {
-          result.push(goog.array.map(i, point => new L.LatLng(point.y, point.x)));
+        arrayForEach(resA, (i) => {
+          result.push(arrayMap(i, point => new L.LatLng(point.y, point.x)));
         });
       }
       if (!goog.isNull(resB)) {
-        goog.array.forEach(resB, (i) => {
-          result.push(goog.array.map(i, point => new L.LatLng(point.y, point.x)));
+        arrayForEach(resB, (i) => {
+          result.push(arrayMap(i, point => new L.LatLng(point.y, point.x)));
         });
       }
     });
@@ -354,11 +351,13 @@ dikmax.Map = class {
     }
 
     if (countryData) {
-      goog.array.sort(countryData['cities'],
-        (a, b) => goog.array.defaultCompare(a['name'], b['name']));
-      const cities = goog.array.map(countryData['cities'], getCityLinks);
+      arraySort(countryData['cities'],
+        (a, b) => defaultCompare(a['name'], b['name']));
+      const cities = arrayMap(countryData['cities'], getCityLinks);
       content = `<h1>${content}</h1><p>${cities.join(', ')}</p>`;
     }
     layer.bindPopup(content);
   }
-};
+}
+
+exports = MapHandler;

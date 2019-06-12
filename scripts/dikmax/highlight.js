@@ -1,10 +1,12 @@
-goog.provide('dikmax.Higlight');
+goog.module('dikmax.Higlight');
 
 /* global hljs */
 
-goog.require('goog.array');
+const {forEach} = goog.require('goog.array');
 
-dikmax.Higlight.init = function () {
-  const blocks = document.querySelectorAll('pre > code.sourceCode');
-  goog.array.forEach(blocks, hljs.highlightBlock);
+exports = {
+  init() {
+    const blocks = document.querySelectorAll('pre > code.sourceCode');
+    forEach(blocks, hljs.highlightBlock);
+  }
 };

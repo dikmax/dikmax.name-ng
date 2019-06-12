@@ -1,7 +1,6 @@
-goog.provide('dikmax.Graticule');
-goog.provide('dikmax.graticule');
+goog.module('dikmax.graticule');
 
-goog.require('goog.object');
+const {extend} = goog.require('goog.object');
 
 /* global L */
 
@@ -115,8 +114,7 @@ function getGraticule(interval) {
  Graticule plugin for Leaflet powered maps.
  based on https://github.com/ablakey/Leaflet.SimpleGraticule
  */
-
-dikmax.Graticule = class extends L.GeoJSON {
+class Graticule extends L.GeoJSON {
   /**
    * @param {Object=} opts
    */
@@ -129,7 +127,7 @@ dikmax.Graticule = class extends L.GeoJSON {
       interval: 20,
       sphere: false
     };
-    goog.object.extend(options, opts);
+    extend(options, opts);
 
     super(null, options);
 
@@ -139,12 +137,17 @@ dikmax.Graticule = class extends L.GeoJSON {
       this.addData(getGraticule(this.options.interval));
     }
   }
-};
+}
 
 /**
  * @param {Object=} options
- * @returns {dikmax.Graticule}
+ * @returns {Graticule}
  */
-dikmax.graticule = function (options) {
-  return new dikmax.Graticule(options);
+const graticule = function (options) {
+  return new Graticule(options);
+};
+
+exports = {
+  graticule,
+  Graticule
 };
