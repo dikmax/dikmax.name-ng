@@ -5,7 +5,7 @@ goog.module('dikmax.Map');
 const {forEach: arrayForEach, map: arrayMap, some: arraySome, defaultCompare, sort: arraySort} = goog.require('goog.array');
 const {getElementByClass} = goog.require('goog.dom');
 const {forEach: objectForEach} = goog.require('goog.object');
-const XhrIo = goog.require('goog.net.XhrIo');
+const {getJson} = goog.require('goog.labs.net.xhr');
 const {graticule: mapGraticule} = goog.require('dikmax.graticule');
 
 class TopoJSON extends L.GeoJSON {
@@ -131,31 +131,10 @@ class MapHandler {
   }
 
   loadData() {
-    const worldPromise = new Promise((resolve, reject) => {
-      XhrIo.send('/data/world.json', (e) => {
-        const xhr = e.target;
-        if (!xhr.isSuccess()) {
-          reject(xhr);
-          return;
-        }
-        const json = xhr.getResponseJson();
-        resolve(json);
-      });
-    });
-
-    const dataPromise = new Promise((resolve, reject) => {
-      XhrIo.send('/data/map.json', (e) => {
-        const xhr = e.target;
-        if (!xhr.isSuccess()) {
-          reject(xhr);
-          return;
-        }
-        const json = xhr.getResponseJson();
-        resolve(json);
-      });
-    });
-
-    Promise.all([worldPromise, dataPromise]).then(([world, data]) => {
+    Promise.all([
+      getJson('/data/world.json'),
+      getJson('/data/map.json')
+    ]).then(([world, data]) => {
       this.world = world;
       this.data = data;
 
