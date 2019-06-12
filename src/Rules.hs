@@ -155,7 +155,7 @@ buildScript dHighlightJs dMap = do
         , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
         , "--warning_level", "VERBOSE"
         , "--language_in", "ECMASCRIPT_2019"
-        , "--language_out", "ECMASCRIPT5_STRICT"
+        , "--language_out", "ECMASCRIPT_2015"
         {-, "--new_type_inf"-}] ++
         defines ++
         [ "--externs", "scripts/externs/highlight.js"

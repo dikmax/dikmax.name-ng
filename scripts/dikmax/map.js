@@ -6,8 +6,7 @@ const {forEach: arrayForEach, map: arrayMap, some: arraySome, defaultCompare, so
 const {getElementByClass} = goog.require('goog.dom');
 const {forEach: objectForEach} = goog.require('goog.object');
 const XhrIo = goog.require('goog.net.XhrIo');
-
-const {graticule: dikmaxGraticule} = goog.require('dikmax.graticule');
+const {graticule: mapGraticule} = goog.require('dikmax.graticule');
 
 class TopoJSON extends L.GeoJSON {
   constructor(geojson, options) { // eslint-disable-line
@@ -101,7 +100,7 @@ class MapHandler {
       'maxZoom': 8
     }).fitWorld();
 
-    const frame = dikmaxGraticule({
+    const frame = mapGraticule({
       sphere: true,
       style: {
         'color': '#333',
@@ -113,7 +112,7 @@ class MapHandler {
     });
     frame.addTo(this.map);
 
-    const graticule = dikmaxGraticule({
+    const graticule = mapGraticule({
       style: {
         'fill': false,
         'color': '#000',
@@ -176,7 +175,7 @@ class MapHandler {
     topoLayer.addData(this.world);
     topoLayer.addTo(this.map);
 
-    const frame = dikmaxGraticule({
+    const frame = mapGraticule({
       sphere: true,
       style: {
         'color': '#333',

@@ -5,9 +5,11 @@ var L = {};
 /**
  * @interface
  */
-var ILayer = class {};
+var ILayer = function() {};
 
-L.Class = class {};
+/** @constructor */
+L.Class = function () {};
+
 /**
  * @type {Object}
  */
@@ -21,14 +23,13 @@ L.Util = {
   setOptions(obj, options) {}
 };
 
-L.Point = class {
-  /**
-   * @param {number} x
-   * @param {number} y
-   * @param {boolean=} round
-   */
-  constructor(x, y, round) {};
-};
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {boolean=} round
+ * @constructor
+ */
+L.Point = function(x, y, round) {};
 /**
  * @type {number}
  */
@@ -38,13 +39,12 @@ L.Point.prototype.x = 0;
  */
 L.Point.prototype.y = 0;
 
-L.Bounds = class {
-  /**
-   * @param {L.Point|Array<number>} a
-   * @param {L.Point|Array<number>} b
-   */
-  constructor(a, b) {};
-};
+/**
+ * @param {L.Point|Array<number>} a
+ * @param {L.Point|Array<number>} b
+ * @constructor
+ */
+L.Bounds = function(a, b) {};
 /**
  * @type {L.Point}
  */
@@ -62,15 +62,13 @@ L.Bounds.prototype.max = null;
  */
 L.bounds = function(a, b) {};
 
-L.LatLng = class {
-  /**
-   * @param {number} lat
-   * @param {number} lng
-   * @param {number=} alt
-   */
-  constructor(lat, lng, alt){}
-};
-
+/**
+ * @param {number} lat
+ * @param {number} lng
+ * @param {number=} alt
+ * @constructor
+ */
+L.LatLng = function(lat, lng, alt){};
 /**
  * @type {number}
  */
@@ -84,65 +82,61 @@ L.LatLng.prototype.lng = 0;
  */
 L.LatLng.prototype.alt = null;
 
-L.LatLngBounds = class {
-  /**
-   * @return {number}
-   * @nosideeffects
-   */
-  	getWest() {}
+/** @constructor */
+L.LatLngBounds = function() {};
+/**
+ * @return {number}
+ * @nosideeffects
+ */
+L.LatLngBounds.prototype.getWest = function() {};
+/**
+ * @return {number}
+ * @nosideeffects
+ */
+L.LatLngBounds.prototype.getSouth = function() {};
+/**
+ * @return {number}
+ * @nosideeffects
+ */
+L.LatLngBounds.prototype.getEast = function() {};
+/**
+ * @return {number}
+ * @nosideeffects
+ */
+L.LatLngBounds.prototype.getNorth = function() {};
 
-  /**
-   * @return {number}
-   * @nosideeffects
-   */
-  getSouth() {}
-
-  /**
-   * @return {number}
-   * @nosideeffects
-   */
-  getEast() {}
-
-  /**
-   * @return {number}
-   * @nosideeffects
-   */
-  getNorth() {}
-};
-
-L.Projection = class {
-  /**
-   * @param {L.LatLng} latlng
-   * @return {L.Point}
-   * @nosideeffects
-   */
-  project(latlng) {};
-
-  /**
-   * @param {L.Point} point
-   * @return {L.LatLng}
-   * @nosideeffects
-   */
-  unproject(point) {};
-
-  /**
-   * @return {L.Bounds}
-   */
-  bounds() {};
-};
+/** @constructor */
+L.Projection = function(){};
+/**
+ * @param {L.LatLng} latlng
+ * @return {L.Point}
+ * @nosideeffects
+ */
+L.Projection.prototype.project = function (latlng) {};
+/**
+ * @param {L.Point} point
+ * @return {L.LatLng}
+ * @nosideeffects
+ */
+L.Projection.prototype.unproject = function (point) {};
+/**
+ * @return {L.Bounds}
+ */
+L.Projection.prototype.bounds = function () {};
 
 L.Proj = {};
 
-L.Proj.CRS = class extends L.Class {
-  /**
-   * @param {string} a
-   * @param {string} b
-   * @param {Object=} c
-   */
-  constructor(a, b, c) {}
-};
+/**
+ * @param {string} a
+ * @param {string} b
+ * @param {Object=} c
+ * @constructor
+ * @extends {L.Class}
+ */
+L.Proj.CRS = function(a, b, c) {};
 
-L.Icon = class {};
+/** @constructor */
+L.Icon = function () {};
 
 L.Icon.Default = {
   /**
@@ -154,96 +148,110 @@ L.Icon.Default = {
 };
 
 /**
+ * @constructor
+ * @extends {L.Class}
  * @implements ILayer
  */
-L.LayerGroup = class extends L.Class {
-  constructor() {};
+L.LayerGroup = function() {};
+/**
+ * @param {ILayer} map
+ * @return this
+ */
+L.LayerGroup.prototype.addTo = function(map) {};
 
-  /**
-   * @param {ILayer} map
-   * @return this
+/**
+ * @constructor
+ * @extends {L.Class}
+ */
+L.Popup = function() {};
+
+/**
+ * @constructor
+ * @extends {L.Class}
+ */
+L.Marker = function() {};
+/**
+ * @param {ILayer} map
+ * @return this
+ */
+L.Marker.prototype.addTo = function(map) {};
+
+/**
+ * @param {string|HTMLElement|L.Popup} content
+ * @param {Object=} options
+ */
+L.Marker.prototype.bindPopup = function(content, options) {};
+
+/**
+ * @constructor
+ * @extends {L.Class}
+ */
+L.Path = function() {};
+/**
+ * @param {string|HTMLElement|L.Popup} content
+ * @param {Object=} options
    */
-  addTo (map) {};
-};
+L.Path.prototype.bindPopup = function(content, options) {};
 
-L.Popup = class extends L.Class {};
+/**
+ * @param {Object} style
+ */
+L.Path.prototype.setStyle = function(style) {};
 
-L.Marker = class extends L.Class {
-  /**
-   * @param {ILayer} map
-   * @return this
-   */
-  addTo(map) {};
+/**
+ * @constructor
+ * @extends {L.Path}
+ */
+L.Polyline = function() {};
+/**
+ * @return {L.LatLngBounds}
+ * @nosideeffects
+ */
+L.Polyline.prototype.getBounds = function () {};
 
-  /**
-   * @param {string|HTMLElement|L.Popup} content
-   * @param {Object=} options
-   */
-  bindPopup(content, options) {};
-};
+/**
+ * @return {Array<Array<L.LatLng>>}
+ * @nosideeffects
+ */
+L.Polyline.prototype.getLatLngs = function () {};
 
-L.Path = class extends L.Class {
+/**
+ * @param {Array<Array<L.LatLng>>} latlngs
+ */
+L.Polyline.prototype.setLatLngs = function (latlngs) {};
 
-  /**
-   * @param {string|HTMLElement|L.Popup} content
-   * @param {Object=} options
-     */
-  bindPopup(content, options) {};
+/**
+ * @param {Array<L.LatLng>} latlngs
+ * @param {Object=} options
+ * @constructor
+ * @extends {L.Polyline}
+ */
+L.Polygon = function(latlngs, options) {};
 
-  /**
-   * @param {Object} style
-   */
-  setStyle(style) {};
-};
+/**
+ * @constructor
+ * @extends {L.LayerGroup}
+ */
+L.FeatureGroup = function() {};
+/**
+ * @return {L.LatLngBounds}
+ * @nosideeffects
+ */
+L.FeatureGroup.prototype.getBounds = function() {};
 
-L.Polyline = class extends L.Path {
-  /**
-   * @return {L.LatLngBounds}
-   * @nosideeffects
-   */
-  getBounds() {}
+/**
+ * @param {Object=} geojson
+ * @param {Object=} options
+ * @constructor
+ * @extends {L.FeatureGroup}
+ */
+L.GeoJSON = function(geojson, options) {};
+/**
+ * @param {Object} geojson
+ * @return this
+ */
+L.GeoJSON.prototype.addData = function(geojson) {};
 
-  /**
-   * @return {Array<Array<L.LatLng>>}
-   * @nosideeffects
-   */
-  getLatLngs() {}
-
-  /**
-   * @param {Array<Array<L.LatLng>>} latlngs
-   */
-  setLatLngs(latlngs) {}
-};
-
-L.Polygon = class extends L.Polyline {
-  /**
-   * @param {Array<L.LatLng>} latlngs
-   * @param {Object=} options
-     */
-  constructor(latlngs, options) {};
-};
-
-L.FeatureGroup = class extends L.LayerGroup {
-  /**
-   * @return {L.LatLngBounds}
-   * @nosideeffects
-   */
-  getBounds() {}
-};
-
-L.GeoJSON = class extends L.FeatureGroup {
-  /**
-   * @param {Object=} geojson
-   * @param {Object=} options
-   */
-  constructor(geojson, options) {};
-
-  /**
-   * @param {Object} geojson
-   * @return this
-   */
-  addData (geojson) {};
-};
 L.GeoJSON.prototype.options = {
   /**
    * @param {Object} feature
@@ -253,48 +261,45 @@ L.GeoJSON.prototype.options = {
 };
 
 /**
+ * @param {string|Element} id
+ * @param {Object=} options
+ * @constructor
+ * @extends {L.Class}
  * @implements ILayer
  */
-L.Map = class extends L.Class {
-  /**
-   * @param {string|Element} id
-   * @param {Object=} options
-   */
-  constructor(id, options) {};
+L.Map = function (id, options) {};
+/**
+ * @param {Array<number>} center
+ * @param {number} zoom
+ * @return {L.Map}
+ */
+L.Map.prototype.setView = function(center, zoom) {};
 
-  /**
-   * @param {Array<number>} center
-   * @param {number} zoom
-   * @return {L.Map}
-   */
-  setView(center, zoom) {};
+/**
+ * @return this
+ */
+L.Map.prototype.fitWorld = function() {};
 
-  /**
-   * @return this
-   */
-  fitWorld() {};
+/**
+ * @return {number}
+ */
+L.Map.prototype.getZoom = function() {};
 
-  /**
-   * @return {number}
-   */
-  getZoom() {};
+/**
+ * @param {L.LayerGroup} layer
+ */
+L.Map.prototype.addLayer = function(layer) {};
 
-  /**
-   * @param {L.LayerGroup} layer
-   */
-  addLayer(layer) {};
+/**
+ * @param {L.LayerGroup} layer
+ */
+L.Map.prototype.removeLayer = function(layer) {};
 
-  /**
-   * @param {L.LayerGroup} layer
-   */
-  removeLayer(layer) {};
-
-  /**
-   * @param {string} event
-   * @param {function()} handler
-   */
-  on(event, handler) {};
-};
+/**
+ * @param {string} event
+ * @param {function()} handler
+ */
+L.Map.prototype.on = function(event, handler) {};
 
 
 /**
