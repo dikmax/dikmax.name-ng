@@ -1,12 +1,16 @@
-goog.module('dikmax.Map');
-
 /* global L, topojson, greinerHormann */
 
-const {forEach: arrayForEach, map: arrayMap, some: arraySome, defaultCompare, sort: arraySort} = goog.require('goog.array');
-const {getElementByClass} = goog.require('goog.dom');
-const {forEach: objectForEach} = goog.require('goog.object');
-const {getJson} = goog.require('goog.labs.net.xhr');
-const {graticule: mapGraticule} = goog.require('dikmax.graticule');
+import {
+  forEach as arrayForEach,
+  map as arrayMap,
+  some as arraySome,
+  defaultCompare,
+  sort as arraySort
+} from 'goog:goog.array';
+import {getElementByClass} from 'goog:goog.dom';
+import {forEach as objectForEach} from 'goog:goog.object';
+import {getJson} from 'goog:goog.labs.net.xhr';
+import mapGraticule from './graticule';
 
 class TopoJSON extends L.GeoJSON {
   constructor(geojson, options) { // eslint-disable-line
@@ -338,4 +342,7 @@ class MapHandler {
   }
 }
 
-exports = MapHandler;
+export default function init() {
+  // eslint-disable-next-line no-new
+  new MapHandler();
+}

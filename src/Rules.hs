@@ -150,12 +150,14 @@ buildScript :: Bool -> Bool -> Action ByteString
 buildScript dHighlightJs dMap = do
     need [googleClosureCompiler]
     Stdout my <- command [] googleClosureCompiler
-        ([ "--entry_point", "goog:dikmax.main"
+        ([ "--entry_point", "scripts/main.js"
         , "--only_closure_dependencies", "true"
         , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
         , "--warning_level", "VERBOSE"
         , "--language_in", "ECMASCRIPT_2019"
         , "--language_out", "ECMASCRIPT_2015"
+        , "--js_module_root", "node_modules"
+        , "--module_resolution", "NODE"
         {-, "--new_type_inf"-}] ++
         defines ++
         [ "--externs", "scripts/externs/highlight.js"

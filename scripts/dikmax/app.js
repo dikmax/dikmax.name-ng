@@ -1,17 +1,15 @@
-goog.module('dikmax.App');
-
-const {map: arrayMap, forEach: arrayForEach} = goog.require('goog.array');
-const {getElementByClass, getElementsByClass, getParentElement, createDom, appendChild} = goog.require('goog.dom');
-const classlist = goog.require('goog.dom.classlist');
-const dataset = goog.require('goog.dom.dataset');
-const ViewportSizeMonitor = goog.require('goog.dom.ViewportSizeMonitor');
-const events = goog.require('goog.events');
-const Size = goog.require('goog.math.Size');
-const {endsWith} = goog.require('goog.string');
-const style = goog.require('goog.style');
-const asserts = goog.require('goog.asserts');
-const Timer = goog.require('goog.Timer');
-const {MAP} = goog.require('dikmax.defines');
+import {map as arrayMap, forEach as arrayForEach} from 'goog:goog.array';
+import {getElementByClass, getElementsByClass, getParentElement, createDom, appendChild} from 'goog:goog.dom';
+import classlist from 'goog:goog.dom.classlist';
+import dataset from 'goog:goog.dom.dataset';
+import ViewportSizeMonitor from 'goog:goog.dom.ViewportSizeMonitor';
+import events from 'goog:goog.events';
+import Size from 'goog:goog.math.Size';
+import {endsWith} from 'goog:goog.string';
+import style from 'goog:goog.style';
+import asserts from 'goog:goog.asserts';
+import Timer from 'goog:goog.Timer';
+import {MAP} from './defines';
 
 const LOAD_DELAY = 100;
 
@@ -278,7 +276,7 @@ function handlePanorama(_image) {
   });
 }
 
-function init() {
+export default function init() {
   setupNavigation();
   if (!MAP) {
     setupPanoramas();
@@ -286,7 +284,3 @@ function init() {
     setupLazyIframes();
   }
 }
-
-exports = {
-  init
-};

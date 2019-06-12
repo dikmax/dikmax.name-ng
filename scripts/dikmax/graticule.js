@@ -1,6 +1,4 @@
-goog.module('dikmax.graticule');
-
-const {extend} = goog.require('goog.object');
+import {extend} from 'goog:goog.object';
 
 /* global L */
 
@@ -143,11 +141,6 @@ class Graticule extends L.GeoJSON {
  * @param {Object=} options
  * @returns {Graticule}
  */
-const graticule = function (options) {
+export default function graticule(options) {
   return new Graticule(options);
-};
-
-exports = {
-  graticule,
-  Graticule
 };

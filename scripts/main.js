@@ -1,18 +1,15 @@
-goog.module('dikmax.main');
-
-const App = goog.require('dikmax.App');
-const Higlight = goog.require('dikmax.Higlight');
-const dikmaxMap = goog.require('dikmax.Map');
-const {HIGHLIGHT_JS, MAP} = goog.require('dikmax.defines');
+import appInit from './dikmax/app';
+import {HIGHLIGHT_JS, MAP} from './dikmax/defines';
+import higlightInit from './dikmax/highlight';
+import mapInit from './dikmax/map';
 
 const main = function () {
-  App.init();
+  appInit();
   if (HIGHLIGHT_JS) {
-    Higlight.init();
+    higlightInit();
   }
   if (MAP) {
-    // eslint-disable-next-line no-new
-    new dikmaxMap();
+    mapInit();
   }
 };
 
