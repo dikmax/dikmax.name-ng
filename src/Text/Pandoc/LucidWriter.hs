@@ -338,7 +338,7 @@ writeYoutube attr inline target = do
     return $
         case (options ^. renderType) of
             RenderAMP ->
-                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                         div_ [class_ "post__figure-inner post__embed"] $ do
                             ampYoutube_
@@ -354,7 +354,7 @@ writeYoutube attr inline target = do
                     a_ [href_ fullSrc] "[Ссылка на Youtube]"
 
             RenderNormal ->
-                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                 div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner post__embed"] $ do
                     iframe_
@@ -382,7 +382,7 @@ writeIframe attr _ target = do
     return $
         case (options ^. renderType) of
             RenderAMP ->
-                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                     div_ [class_ "post__figure-inner post__embed"] $
                     ampIframe_ [ src_ $ T.pack $ fst target
@@ -399,7 +399,7 @@ writeIframe attr _ target = do
                     a_ [href_ $ T.pack $ fst target] (toHtml $ T.pack $ fst target)
 
             RenderNormal ->
-                div_ (class_ "main__full-width post__block" : writeAttr attr "") $
+                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                     div_ [class_ "post__figure-inner post__embed"] $ do
                         iframe_ [ class_ "post__embed-lazy"

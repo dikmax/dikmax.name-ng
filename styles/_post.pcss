@@ -7,6 +7,7 @@
 
     &_list {
         @mixin clearfix;
+        @mixin snap-point-start;
 
         margin: 75px *;
 
@@ -55,10 +56,14 @@
         &_header-6 {}
         &_header-rule {}
         &_div {}
+        &_with-embed {
+            @mixin snap-point-center;
+        }
     }
 
     &__figure {
         @mixin clearfix;
+        @mixin snap-point-center;
 
         &_with-number {
             &::before {
