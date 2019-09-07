@@ -19,6 +19,7 @@ svgFlags = M.fromAscList
     , ("BOL", svgFlag "bol" flagBolivia)
     , ("BRA", svgFlag "bra" flagBrazil)
     , ("CHE", svgFlag "che" flagSwitzerland)
+    , ("CHN", svgFlag "chn" flagChina)
     , ("CZE", svgFlag "cze" flagCzech)
     , ("DEU", svgFlag "deu" flagGermany)
     , ("ESP", svgFlag "esp" flagSpain)
@@ -345,6 +346,18 @@ flagBrazil clipId =
                 \c-.8.2-1.6.8-2.3 1.8z"]
         path_ [fill_ "#309e3a", d_ "M246.43 228.95l1.7-7.5 5.55 1.27-.28 1.27\
             \-4.04-1-.38 1.6 3.75.8-.3 1.2-3.74-.9-.5 2 4.2.9-.3 1.2-5.7-1.3z"]
+
+flagChina :: Attribute -> Html ()
+flagChina clipId =
+    g_ [clipId] $ do
+        defs_ $
+            path_ [id_ "star-chn", fill_ "#ffde00", d_ "M1-.3L-.7.8 0-1 .6.8-1-.3z"]
+        path_ [fill_ "#de2910", d_ "M0 0h512v512H0z"]
+        use_ [width_ "30", height_ "20", transform_ "matrix(76.8 0 0 76.8 128 128)", xlinkHref_ "#star-chn"]
+        use_ [width_ "30", height_ "20", transform_ "rotate(-121 142.6 -47) scale(25.5827)", xlinkHref_ "#star-chn"]
+        use_ [width_ "30", height_ "20", transform_ "rotate(-98.1 198 -82) scale(25.6)", xlinkHref_ "#star-chn"]
+        use_ [width_ "30", height_ "20", transform_ "rotate(-74 272.4 -114) scale(25.6137)", xlinkHref_ "#star-chn"]
+        use_ [width_ "30", height_ "20", transform_ "matrix(16 -19.968 19.968 16 256 230.4)", xlinkHref_ "#star-chn"]
 
 flagCzech :: Attribute -> Html ()
 flagCzech clipId =
