@@ -803,7 +803,8 @@
                 "lon": 7.8243,
                 "visits": [
                     {
-                        "date": "2017-10-01"
+                        "date": "2017-10-01",
+                        "link": "/post/rhein-valley-1/"
                     }
                 ]
             },
