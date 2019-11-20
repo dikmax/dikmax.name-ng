@@ -59,18 +59,16 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                     class_ "share-buttons__button share-buttons__button_vk"]) $ do
                 iconVk
                 " Расшарить"
-            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlGooglePlus,
-                    class_ "share-buttons__button share-buttons__button_google-plus"]) $ do
-                iconGooglePlus
-                " Рассказать"
             a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlTwitter,
                     class_ "share-buttons__button share-buttons__button_twitter"]) $ do
                 iconTwitter
                 " Твитнуть"
+            {-
             a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlPinterest,
                     class_ "share-buttons__button share-buttons__button_pinterest"]) $ do
                 iconPinterest
                 " Запинить"
+            -}
             a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlEmail,
                     class_ "share-buttons__button share-buttons__button_email"]) $ do
                 iconEmail
@@ -180,10 +178,6 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
 
         urlFacebook :: Text
         urlFacebook = "https://www.facebook.com/sharer/sharer.php?u="
-            ++ escapeURIComponent url
-
-        urlGooglePlus :: Text
-        urlGooglePlus = "https://plus.google.com/share?url="
             ++ escapeURIComponent url
 
         urlPinterest :: Text
