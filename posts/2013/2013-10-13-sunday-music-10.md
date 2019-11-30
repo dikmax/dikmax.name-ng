@@ -11,7 +11,7 @@ tags: [youtube, видео, музыка, музыка по воскресень
 
 Итак, вашему вниманию представляется отличная бодрая джига, хоть сейчас можно начинать танцевать.
 
-![String\ --- What Have We Got?](http://www.youtube.com/watch?v=0qre73V1YQ0)
+![Sting\ --- What Have We Got?](http://www.youtube.com/watch?v=0qre73V1YQ0)
 
 Остальные песни можно послушать, например, на [Яндекс.Музыке][sting].
 
