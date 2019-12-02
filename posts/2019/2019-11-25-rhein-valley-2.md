@@ -145,7 +145,7 @@ Maus\ --- Замок Мышь.
 
 ![](/images/travel/2017-10-rhein-valley/rhein-2-end.jpg)
 
-Продолжение следует...
+Читать дальше: [Мозель, Эльц и Немецкий Угол](/post/eltz-koblenz/).
 
 [booking]: https://www.booking.com/hotel/de/burghotel-auf-schonburg.html
 [previous]: /post/rhein-valley-1/
