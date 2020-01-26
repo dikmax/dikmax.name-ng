@@ -11,4 +11,4 @@ published: true
 
 [munich]: https://ru.wikipedia.org/wiki/Мюнхен
 [js]: /tag/javascript/
-[map]: /map/
+[map]: /map/list/
