@@ -28,6 +28,7 @@ svgFlags = M.fromAscList
     , ("FRA", svgFlag "fra" flagFrance)
     , ("FXX", svgFlag "fxx" flagFrance)
     , ("GBR", svgFlag "gbr" flagGreatBritain)
+    , ("GRC", svgFlag "grc" flagGreece)
     , ("HRV", svgFlag "hrv" flagCroatia)
     , ("HUN", svgFlag "hun" flagHungary)
     , ("IRL", svgFlag "irl" flagIreland)
@@ -381,6 +382,23 @@ flagGreatBritain clipId =
         path_ [fill_ "#fff", d_ "M0 0v55.9L888.2 500H1000v-55.9L111.8.1H0zm1000 0v55.9L111.8 500H0v-55.9L888.2 0H1000z"]
         path_ [fill_ "#fff", d_ "M416.7 0v500h166.6V0H416.7zM0 166.7v166.6h1000V166.7H0z" ]
         path_ [fill_ "#c00", d_ "M0 200v100h1000V200H0zM450 0v500h100V0H450zM0 500l333.3-166.7H408L74.5 500H0zM0 0l333.3 166.7h-74.5L0 37.3V0zm592.1 166.7L925.5 0h74.5L666.7 166.7H592zm408 333.3L666.6 333.3h74.5L1000 462.7V500z"]
+
+flagGreece :: Attribute -> Html ()
+flagGreece clipId =
+    g_ [clipId, fill_rule_ "evenodd"] $ do
+      path_ [fill_ "#005bae", d_ "M0 0h512v57H0z"]
+      path_ [fill_ "#fff", d_ "M0 57h512v57H0z"]
+      path_ [fill_ "#005bae", d_ "M0 114h512v57H0z"]
+      path_ [fill_ "#fff", d_ "M0 171h512v57H0z"]
+      path_ [fill_ "#005bae", d_ "M0 228h512v57H0z"]
+      path_ [fill_ "#fff", d_ "M0 285h512v57H0z"]
+      path_ [fill_ "#005bae", d_ "M0 342h512v57H0z"]
+      path_ [fill_ "#fff", d_ "M0 399h512v57H0z"]
+      path_ [fill_ "#005bae", d_ "M0 0h285v285H0z"]
+      g_ [fill_ "#fff"] $ do
+        path_ [d_ "M114 0h57v285h-57z"]
+        path_ [d_ "M0 114h285v57H0z"]
+      path_ [fill_ "#005bae", d_ "M0 455h512v57H0z"]
 
 flagEstonia :: Attribute -> Html ()
 flagEstonia clipId =
