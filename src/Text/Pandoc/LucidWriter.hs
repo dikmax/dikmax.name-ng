@@ -338,7 +338,7 @@ writeYoutube attr inline target = do
     return $
         case (options ^. renderType) of
             RenderAMP ->
-                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
+                div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                         div_ [class_ "post__figure-inner post__embed"] $ do
                             ampYoutube_
@@ -350,11 +350,11 @@ writeYoutube attr inline target = do
                             unless (null inline) $
                                 p_ [class_ "figure-description"] inlines
             RenderRSS ->
-                p_ (class_ "main__centered post__block post__block_para" : writeAttr attr "") $
+                p_ (class_ " main__centered post__block post__block_para" : writeAttr attr "") $
                     a_ [href_ fullSrc] "[Ссылка на Youtube]"
 
             RenderNormal ->
-                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
+                div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                 div_ [class_ "post__figure-outer"] $
                 div_ [class_ "post__figure-inner post__embed"] $ do
                     iframe_
@@ -382,7 +382,7 @@ writeIframe attr _ target = do
     return $
         case (options ^. renderType) of
             RenderAMP ->
-                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
+                div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                     div_ [class_ "post__figure-inner post__embed"] $
                     ampIframe_ [ src_ $ T.pack $ fst target
@@ -395,11 +395,11 @@ writeIframe attr _ target = do
                         ] mempty
 
             RenderRSS ->
-                p_ (class_ "main__centered post__block post__block_para" : writeAttr attr "") $
+                p_ (class_ " main__centered post__block post__block_para" : writeAttr attr "") $
                     a_ [href_ $ T.pack $ fst target] (toHtml $ T.pack $ fst target)
 
             RenderNormal ->
-                div_ (class_ "main__full-width post__block post__block_with-embed" : writeAttr attr "") $
+                div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                     div_ [class_ "post__figure-inner post__embed"] $ do
                         iframe_ [ class_ "post__embed-lazy"
@@ -420,7 +420,7 @@ writeImage attr inline target = do
             RenderAMP ->
                 figure_
                     ([ id_ (extractId $ T.pack $ fst target)
-                     , class_ $ "main__full-width post__block post__figure"
+                     , class_ $ " main__full-width post__block post__figure"
                         ++ if options ^. showFigureNumbers
                             then " post__figure_with-number"
                             else ""
@@ -433,7 +433,7 @@ writeImage attr inline target = do
             RenderRSS ->
                 figure_
                     ([ id_ (extractId $ T.pack $ fst target)
-                     , class_ $ "main__full-width post__block post__figure"
+                     , class_ $ " main__full-width post__block post__figure"
                      ] ++ writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                         div_ [class_ "post__figure-inner"] $ do
@@ -444,7 +444,7 @@ writeImage attr inline target = do
             RenderNormal ->
                 figure_
                     ([ id_ (extractId $ T.pack $ fst target)
-                     , class_ $ "main__full-width post__block post__figure"
+                     , class_ $ " main__full-width post__block post__figure"
                         ++ if options ^. showFigureNumbers
                             then " post__figure_with-number"
                             else ""

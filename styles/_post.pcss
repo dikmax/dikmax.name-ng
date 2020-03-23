@@ -60,7 +60,7 @@
     &__figure {
         @mixin clearfix;
 
-        &_with-number {
+        &_with-number:not(.hide-number) {
             &::before {
                 color: color(#b3b3b3 a(0.5));
                 content: counter(imgs);
