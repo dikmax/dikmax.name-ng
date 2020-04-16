@@ -3,7 +3,7 @@ title: "Eurotrip: Варшава"
 date: "2013-08-13T13:35:30+03:00"
 collections: [latest-travel]
 published: true
-tags: [eurotrip, eurotrip-2013, город, отпуск, польша, путешествие, фотки]
+tags: [eurotrip, eurotrip-2013, город, отпуск, польша, путешествие, фотки, юнеско]
 cover:
     img: /images/travel/2013-08-eurotrip/warsaw-mermaid.jpg
 ---
