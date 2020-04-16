@@ -3,7 +3,7 @@ title: "Страсбург"
 date: "2016-06-28T08:15:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [путешествие, город, фотки, франция]
+tags: [путешествие, город, фотки, франция, юнеско]
 cover:
     img: /images/travel/2016-03-strasbourg/cover.jpg
     hcenter: 50%

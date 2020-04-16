@@ -3,7 +3,7 @@ title: "Мозель, Эльц и Немецкий Угол"
 date: "2019-12-03T08:30:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [komoot, путешествие, германия, фотки]
+tags: [komoot, путешествие, германия, фотки, рейнланд-пфальц]
 cover:
     hcenter: 50%
     vcenter: 75%

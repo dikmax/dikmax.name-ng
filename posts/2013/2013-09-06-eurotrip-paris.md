@@ -3,7 +3,7 @@ title: "Eurotrip: Париж"
 date: "2013-09-06T14:58:57+03:00"
 collections: [latest-travel]
 published: true
-tags: [eurotrip, eurotrip-2013, город, отпуск, париж, путешествие, фотки, франция]
+tags: [eurotrip, eurotrip-2013, город, отпуск, париж, путешествие, фотки, франция, юнеско]
 cover:
     img: /images/travel/2013-08-eurotrip/paris-hotel-des-invalides.jpg
 ---

@@ -3,7 +3,7 @@ title: "Долина Рейна, часть вторая"
 date: "2019-11-25T08:30:00+01:00"
 collections: [latest-travel]
 published: true
-tags: [komoot, путешествие, германия, фотки]
+tags: [komoot, путешествие, германия, фотки, рейнланд-пфальц]
 cover:
     hcenter: 50%
     vcenter: 100%
