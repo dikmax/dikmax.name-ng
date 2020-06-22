@@ -1502,7 +1502,8 @@
                 "lon": 2.407,
                 "visits": [
                     {
-                        "date": "2018-01-02"
+                        "date": "2018-01-02",
+                        "link": "/post/carcassonne"
                     }
                 ]
             },

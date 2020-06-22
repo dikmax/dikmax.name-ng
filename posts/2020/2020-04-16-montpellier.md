@@ -196,7 +196,7 @@ cover:
 
 ![](/images/travel/2017-12-france/montpellier-railway-station.jpg)
 
-Продолжение следует...
+Читать дальше: [Каркассон](/post/carcassonne/).
 
 [flamingo]: /post/satrip-2015-south-of-bolivia/
 [lyon]: /post/lyon/
