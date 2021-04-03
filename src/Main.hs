@@ -515,7 +515,7 @@ blog = do
         alterDate _ date = date
 
         dateFromFilePath :: FilePath -> Maybe UTCTime
-        dateFromFilePath = parseDate . intercalate "-" . take 3 . splitAll "-" . takeFileName
+        dateFromFilePath = parseDate . T.pack . intercalate "-" . take 3 . splitAll "-" . takeFileName
 
         pathsFromList :: FilePath -> FilePath -> Posts -> [FilePath]
         pathsFromList prefix suffix ps =
@@ -624,13 +624,13 @@ npmPackages =
 idFromPost :: Pandoc -> Text
 idFromPost (Pandoc meta _) = maybe (terror "Post have no id") getId $ lookupMeta "id" meta
     where
-        getId (MetaString s) = T.pack s
+        getId (MetaString s) = s
         getId s = terror $ "Post id field have wrong value: " ++ tshow s
 
 dateFromPost :: Pandoc -> Text
 dateFromPost (Pandoc meta _) = maybe (terror "Post have no date") getDate $ lookupMeta "date" meta
     where
-        getDate (MetaString s) = T.pack s
+        getDate (MetaString s) = s
         getDate s = terror $ "Post date field have wrong value: " ++ tshow s
 
 coverToStyle :: File -> Text

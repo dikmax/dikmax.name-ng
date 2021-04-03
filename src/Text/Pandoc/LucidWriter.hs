@@ -122,7 +122,7 @@ writeBlock (CodeBlock (identifier, classes, others) code) = do
     cl <- getMainBlockClass
     let mapAttrs =
             writeAttr (identifier,
-                T.unpack cl : "post__block_code sourceCode" : classes, others) ""
+                cl : "post__block_code sourceCode" : classes, others) ""
     let mapAttrs2 =
             writeAttr (identifier,
                 "sourceCode" : classes, others) ""
@@ -210,7 +210,7 @@ writeBlock (Div (identifier, classes, others) blocks) = do
     let mapAttrs =
             writeAttr (identifier,
                 if null classes
-                    then [T.unpack cl, "post__block_div"]
+                    then [cl, "post__block_div"]
                     else classes,
                 others) ""
 
@@ -227,12 +227,12 @@ processListItems blocks = do
 
 writeAttr :: Attr -> Text -> [Attribute]
 writeAttr (identifier, classes, others) defaultId =
-    [id_ $ T.pack identifier | identifier /= ""] ++
+    [id_ identifier | identifier /= ""] ++
     [id_ defaultId | identifier == "" && defaultId /= ""] ++
     [class_ classesString | classesString /= ""] ++
-    map (\(k, v) -> makeAttribute (T.pack k) (T.pack v)) others
+    map (\(k, v) -> makeAttribute k v) others
     where
-        classesString = unwords $ map T.pack classes
+        classesString = T.unwords classes
 
 concatInlines :: [Inline] -> WriterState (Html ())
 concatInlines inlines = do
@@ -297,18 +297,18 @@ writeInline (Link attr inline target) = do
     return $ a_
         (writeAttr attr "" ++
             [ href_ $ linkToAbsolute (options ^. renderType)
-                (T.pack $ fst target) (options ^. siteDomain)
-            , title_ $ T.pack $ snd target
+                (fst target) (options ^. siteDomain)
+            , title_ $ snd target
             ]
         ) inlines
 
 writeInline (Image attr inline target) =
-    if | "http://www.youtube.com/watch?v=" `isPrefixOf` fst target ||
-            "https://www.youtube.com/watch?v=" `isPrefixOf` fst target ->
+    if | "http://www.youtube.com/watch?v=" `T.isPrefixOf` fst target ||
+            "https://www.youtube.com/watch?v=" `T.isPrefixOf` fst target ->
                 -- Youtube video
                 writeYoutube attr inline target
-       | "iframe:" `isPrefixOf` fst target ->
-                writeIframe attr inline (drop 7 $ fst target, snd target)
+       | "iframe:" `T.isPrefixOf` fst target ->
+                writeIframe attr inline (T.drop 7 $ fst target, snd target)
        | otherwise ->
                 -- Just image
                 writeImage attr inline target
@@ -342,7 +342,7 @@ writeYoutube attr inline target = do
                     div_ [class_ "post__figure-outer"] $
                         div_ [class_ "post__figure-inner post__embed"] $ do
                             ampYoutube_
-                                [ data_ "videoid" (videoId $ T.pack $ fst target)
+                                [ data_ "videoid" (videoId $ fst target)
                                 , term "layout" "responsive"
                                 , width_ "480"
                                 , height_ "270"
@@ -371,9 +371,9 @@ writeYoutube attr inline target = do
         videoId url = T.takeWhile (/= '&') $ T.replace "http://www.youtube.com/watch?v=" "" $
             T.replace "https://www.youtube.com/watch?v=" "" url
         embedSrc = "https://www.youtube.com/embed/" ++
-            videoId (T.pack $ fst target) ++ "?wmode=transparent"
+            videoId (fst target) ++ "?wmode=transparent"
         fullSrc = "https://www.youtube.com/watch?v=" ++
-            videoId (T.pack $ fst target)
+            videoId (fst target)
 
 writeIframe :: Attr -> [Inline] -> Target -> WriterState (Html ())
 writeIframe attr _ target = do
@@ -385,7 +385,7 @@ writeIframe attr _ target = do
                 div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                     div_ [class_ "post__figure-inner post__embed"] $
-                    ampIframe_ [ src_ $ T.pack $ fst target
+                    ampIframe_ [ src_ $ fst target
                         , term "frameborder" "0"
                         , term "allowfullscreen" "allowfullscreen"
                         , term "layout" "responsive"
@@ -396,17 +396,17 @@ writeIframe attr _ target = do
 
             RenderRSS ->
                 p_ (class_ " main__centered post__block post__block_para" : writeAttr attr "") $
-                    a_ [href_ $ T.pack $ fst target] (toHtml $ T.pack $ fst target)
+                    a_ [href_ $ fst target] (toHtml $ fst target)
 
             RenderNormal ->
                 div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                     div_ [class_ "post__figure-inner post__embed"] $ do
                         iframe_ [ class_ "post__embed-lazy"
-                                , data_ "src" $ T.pack $ fst target
+                                , data_ "src" $ fst target
                                 , term "allowfullscreen" "allowfullscreen"] mempty
                         noscript_ $
-                            iframe_ [ src_ $ T.pack $ fst target
+                            iframe_ [ src_ $ fst target
                                     , term "allowfullscreen" "allowfullscreen"] mempty
 
 
@@ -419,7 +419,7 @@ writeImage attr inline target = do
         case (options ^. renderType) of
             RenderAMP ->
                 figure_
-                    ([ id_ (extractId $ T.pack $ fst target)
+                    ([ id_ (extractId $ fst target)
                      , class_ $ " main__full-width post__block post__figure"
                         ++ if options ^. showFigureNumbers
                             then " post__figure_with-number"
@@ -432,7 +432,7 @@ writeImage attr inline target = do
                               p_ [class_ "post__figure-description"] inlines
             RenderRSS ->
                 figure_
-                    ([ id_ (extractId $ T.pack $ fst target)
+                    ([ id_ (extractId $ fst target)
                      , class_ $ " main__full-width post__block post__figure"
                      ] ++ writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
@@ -443,7 +443,7 @@ writeImage attr inline target = do
 
             RenderNormal ->
                 figure_
-                    ([ id_ (extractId $ T.pack $ fst target)
+                    ([ id_ (extractId $ fst target)
                      , class_ $ " main__full-width post__block post__figure"
                         ++ if options ^. showFigureNumbers
                             then " post__figure_with-number"
@@ -475,16 +475,16 @@ writeImage attr inline target = do
                 RenderAMP ->
                     ampImg_
                         ([ class_ "post__figure-img_amp"
-                        , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                        , src_ $ linkToAbsolute (options ^. renderType) (fst target)
                           (options ^. siteDomain)
                         , term "layout" "responsive"
-                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        , alt_ $ fixImageTitle $ snd target
                         ] ++ imgAttrs False options)
                 RenderRSS ->
                     img_ ([ class_ $ "post__figure-img"
-                        , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                        , src_ $ linkToAbsolute (options ^. renderType) (fst target)
                           (options ^. siteDomain)
-                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        , alt_ $ fixImageTitle $ snd target
                         ] ++ imgAttrs False options)
                 RenderNormal -> do
                     img_ ([ class_ $ "post__figure-img post__figure-img_lazy"
@@ -492,30 +492,30 @@ writeImage attr inline target = do
                                 then " post__figure-img_responsive"
                                 else ""
                         , src_ $ imgSrc options
-                        , data_ "src" $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                        , data_ "src" $ linkToAbsolute (options ^. renderType) (fst target)
                             (options ^. siteDomain)
-                        , alt_ $ fixImageTitle $ T.pack $ snd target
+                        , alt_ $ fixImageTitle $ snd target
                         ] ++ imgAttrs True options)
                     noscript_ $
                         img_ ([ class_ "post__figure-img"
-                            , src_ $ linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                            , src_ $ linkToAbsolute (options ^. renderType) (fst target)
                                 (options ^. siteDomain)
-                            , alt_ $ fixImageTitle $ T.pack $ snd target
+                            , alt_ $ fixImageTitle $ snd target
                             ] ++ imgAttrs False options)
 
         imgSrc :: LucidWriterOptions -> Text
-        imgSrc options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
+        imgSrc options = case (options ^. commonData ^. imageMeta) $ fst target of
             Just meta -> meta ^. imageThumbnail
             Nothing -> blankImage
 
         imgAttrs :: Bool -> LucidWriterOptions -> [Attribute]
-        imgAttrs lazy options = case (options ^. commonData ^. imageMeta) $ T.pack $ fst target of
+        imgAttrs lazy options = case (options ^. commonData ^. imageMeta) $ fst target of
             Just meta ->
                 [ width_ $ tshow $ meta ^. imageWidth
                 , height_ $ tshow $ meta ^. imageHeight
                 , makeAttribute
                     (if lazy then "data-srcset" else "srcset")
-                    (linkToAbsolute (options ^. renderType) (T.pack $ fst target)
+                    (linkToAbsolute (options ^. renderType) (fst target)
                         (options ^. siteDomain) ++ " " ++ tshow (meta ^. imageWidth) ++ "w")
                 , sizes_ "100vw" ] :: [Attribute]
             Nothing -> []

@@ -68,17 +68,17 @@ buildPost src images pandoc = File m pandoc
             | "posts/" `isPrefixOf` src = PostMeta
                 { _postId            = fromMaybe "" (idFromSrcFilePath src)
                 , _postMeta          = m'
-                , _postTitle         = T.pack $ getMetaString
+                , _postTitle         = getMetaText
                                             (unMeta $ pandoc ^. meta)
                                             "title"
-                , _postDate          = parseDate $ getMetaString
+                , _postDate          = parseDate $ getMetaText
                                             (unMeta $ pandoc ^. meta)
                                             "date"
                 , _postCover         = buildPostCover (pandoc ^. meta)
-                , _postTags          = map T.pack $ getStringsList
+                , _postTags          = getTextsList
                                             (unMeta $ pandoc ^. meta)
                                             "tags"
-                , _postCollections   = map T.pack $ getStringsList
+                , _postCollections   = getTextsList
                                             (unMeta $ pandoc ^. meta)
                                             "collections"
                 , _postFigureNumbers = getMetaBool True
@@ -92,14 +92,14 @@ buildPost src images pandoc = File m pandoc
             | otherwise = PageMeta
                 { _postCover = buildPostCover (pandoc ^. meta)
                 , _postMeta  = toMetadata WebPage
-                    { _webPageHeadline = T.pack $ getMetaString' ""
+                    { _webPageHeadline = getMetaText' ""
                                 (unMeta $ pandoc ^. meta) "title"
                     , _webPageCopyrightHolder = copyrightHolder
                     , _webPageCopyrightYear = copyrightYear
                     }
-                , _postTitle = T.pack $ getMetaString' "" (unMeta $ pandoc ^. meta)
+                , _postTitle = getMetaText' "" (unMeta $ pandoc ^. meta)
                                         "title"
-                , _postTags  = map T.pack $ getStringsList (unMeta $ pandoc ^. meta)
+                , _postTags  = getTextsList (unMeta $ pandoc ^. meta)
                                         "tags"
                 , _postUrl = url
                 }
@@ -110,18 +110,18 @@ buildPost src images pandoc = File m pandoc
         m' :: Metadata
         m' = toMetadata BlogPosting
             { _blogPostingHeadline =
-                T.pack $ getMetaString (unMeta $ pandoc ^. meta) "title"
-            , _blogPostingDatePublished = fromMaybe (error "date not defined") $
-                parseDate $ getMetaString (unMeta $ pandoc ^. meta) "date"
+                getMetaText (unMeta $ pandoc ^. meta) "title"
+            , _blogPostingDatePublished = fromMaybe (terror "date not defined") $
+                parseDate $ getMetaText (unMeta $ pandoc ^. meta) "date"
             , _blogPostingDateModified =
-                parseDate $ getMetaString' "" (unMeta $ pandoc ^. meta) "modified"
+                parseDate $ getMetaText' "" (unMeta $ pandoc ^. meta) "modified"
             , _blogPostingAuthor = author
             , _blogPostingImage = img
             , _blogPostingPublisher = publisher
             , _blogPostingMainEntityOfPage = url
             , _blogPostingCopyrightHolder = copyrightHolder
             , _blogPostingCopyrightYear = copyrightYear
-            , _blogPostingKeywords = intercalate ", " $ map T.pack $ getStringsList
+            , _blogPostingKeywords = T.intercalate ", " $ getTextsList
                  (unMeta $ pandoc ^. meta)
                  "tags"
             , _blogPostingEditor = editor
@@ -129,8 +129,8 @@ buildPost src images pandoc = File m pandoc
 
         author :: Person
         author = Person -- TODO more data to person
-            { _personName = T.pack $
-                getMetaString' "Максим Дикун" (unMeta $ pandoc ^. meta) "author"
+            { _personName =
+                getMetaText' "Максим Дикун" (unMeta $ pandoc ^. meta) "author"
             }
 
         img :: ImageObject
@@ -161,14 +161,14 @@ buildPost src images pandoc = File m pandoc
             , _imageObjectHeight = 192
             }
 
-parseDate :: String -> Maybe UTCTime
+parseDate :: Text -> Maybe UTCTime
 parseDate str =
     parseDate' formats
     where
         parseDate' :: [String] -> Maybe UTCTime
         parseDate' [] = Nothing
         parseDate' (f : fs) =
-            case parseTimeM True timeLocale f str of
+            case parseTimeM True timeLocale f (T.unpack str) of
                 Nothing -> parseDate' fs
                 a -> a
 
@@ -185,34 +185,34 @@ formats    =
     , "%b %d, %Y"
     ]
 
-getMetaString :: M.Map String MetaValue -> String -> String
-getMetaString m key =
-    maybe (error $ "Key \"" ++ key ++ "\" not found") extractString' $
+getMetaText :: M.Map Text MetaValue -> Text -> Text
+getMetaText m key =
+    maybe (terror $ "Key \"" ++ key ++ "\" not found") extractText' $
         M.lookup key m
     where
-        extractString' :: MetaValue -> String
-        extractString' = fromMaybe
-            (error "String cannot be extracted for key \"" ++ key ++ "\"") .
-                extractString
+        extractText' :: MetaValue -> Text
+        extractText' = fromMaybe
+            (terror "String cannot be extracted for key \"" ++ key ++ "\"") .
+                extractText
 
-getMetaString' :: String -> M.Map String MetaValue -> String -> String
-getMetaString' d m key =
-    maybe d extractString' $ M.lookup key m
+getMetaText' :: Text -> M.Map Text MetaValue -> Text -> Text
+getMetaText' d m key =
+    maybe d extractText' $ M.lookup key m
     where
-        extractString' :: MetaValue -> String
-        extractString' = fromMaybe d . extractString
+        extractText' :: MetaValue -> Text
+        extractText' = fromMaybe d . extractText
 
 
-getStringsList :: M.Map String MetaValue -> String -> [String]
-getStringsList m key =
+getTextsList :: M.Map Text MetaValue -> Text -> [Text]
+getTextsList m key =
     maybe [] extractList $ M.lookup key m
     where
-        extractList :: MetaValue -> [String]
-        extractList (MetaList values) = mapMaybe extractString values
+        extractList :: MetaValue -> [Text]
+        extractList (MetaList values) = mapMaybe extractText values
         extractList _ = []
 
 
-getMetaBool :: Bool -> M.Map String MetaValue -> String -> Bool
+getMetaBool :: Bool -> M.Map Text MetaValue -> Text -> Bool
 getMetaBool d m key =
     maybe d extractBool' $ M.lookup key m
     where
@@ -227,26 +227,26 @@ buildPostCover m =
         _                -> def
     where
         cover m' = PostCover
-            { _coverImg     = fmap T.pack $ extractString' $ M.lookup "img" m'
-            , _coverVCenter = T.pack $ fromMaybe "center" $ extractString' $
+            { _coverImg     = extractText' $ M.lookup "img" m'
+            , _coverVCenter = fromMaybe "center" $ extractText' $
                                 M.lookup "vcenter" m'
-            , _coverHCenter = T.pack $ fromMaybe "center" $ extractString' $
+            , _coverHCenter = fromMaybe "center" $ extractText' $
                                 M.lookup "hcenter" m'
             , _coverSmall   = extractBool' $ M.lookup "small" m'
-            , _coverColor   = fmap T.pack $ extractString' $ M.lookup "color" m'
+            , _coverColor   = extractText' $ M.lookup "color" m'
             }
-        extractString' :: Maybe MetaValue -> Maybe String
-        extractString' (Just v) = extractString v
-        extractString' Nothing = Nothing
+        extractText' :: Maybe MetaValue -> Maybe Text
+        extractText' (Just v) = extractText v
+        extractText' Nothing = Nothing
 
         extractBool' :: Maybe MetaValue -> Bool
         extractBool' (Just v) = fromMaybe False (extractBool v)
         extractBool' Nothing = False
 
-extractString :: MetaValue -> Maybe String
-extractString (MetaString str) = Just str
-extractString (MetaInlines inlines) = Just $ concatMap stringify inlines
-extractString _ = Nothing
+extractText :: MetaValue -> Maybe Text
+extractText (MetaString str) = Just str
+extractText (MetaInlines inlines) = Just $ T.concat $ map (stringify) inlines
+extractText _ = Nothing
 
 extractBool :: MetaValue -> Maybe Bool
 extractBool (MetaBool b) = Just b
