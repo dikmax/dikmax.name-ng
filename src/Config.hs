@@ -161,4 +161,4 @@ googleAnalyticsUA :: Text
 googleAnalyticsUA = "UA-32213724-1"
 
 copyrightYear :: Int
-copyrightYear = 2020
+copyrightYear = 2021
