@@ -9,7 +9,7 @@
   "dependencies": {
     "d3": "^5.14.2",
     "d3-geo-projection": "^2.7.1",
-    "google-closure-library": "^20190528.0.0",
+    "google-closure-library": "^20200315.0.0",
     "greiner-hormann": "^1.4.1",
     "intersection-observer": "^0.7.0",
     "leaflet": "^1.6.0",
