@@ -2,42 +2,44 @@
 Language: Tagger Script
 Author: Philipp Wolfer <ph.wolfer@gmail.com>
 Description: Syntax Highlighting for the Tagger Script as used by MusicBrainz Picard.
+Website: https://picard.musicbrainz.org
  */
-function(hljs) {
-
-  var COMMENT = {
+export default function(hljs) {
+  const COMMENT = {
     className: 'comment',
     begin: /\$noop\(/,
     end: /\)/,
-    contains: [{
+    contains: [ {
       begin: /\(/,
       end: /\)/,
-      contains: ['self', {
-        begin: /\\./
-      }]
-    }],
+      contains: [ 'self',
+        {
+          begin: /\\./
+        } ]
+    } ],
     relevance: 10
   };
 
-  var FUNCTION = {
+  const FUNCTION = {
     className: 'keyword',
     begin: /\$(?!noop)[a-zA-Z][_a-zA-Z0-9]*/,
     end: /\(/,
     excludeEnd: true
   };
 
-  var VARIABLE = {
+  const VARIABLE = {
     className: 'variable',
     begin: /%[_a-zA-Z0-9:]*/,
     end: '%'
   };
 
-  var ESCAPE_SEQUENCE = {
+  const ESCAPE_SEQUENCE = {
     className: 'symbol',
     begin: /\\./
   };
 
   return {
+    name: 'Tagger Script',
     contains: [
       COMMENT,
       FUNCTION,

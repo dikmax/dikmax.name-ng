@@ -2,30 +2,45 @@
 Language: LiveCode
 Author: Ralf Bitter <rabit@revigniter.com>
 Description: Language definition for LiveCode server accounting for revIgniter (a web application framework) characteristics.
-Version: 1.0a
-Date: 2013-06-03
+Version: 1.1
+Date: 2019-04-17
 Category: enterprise
 */
 
-function(hljs) {
-  var VARIABLE = {
-    begin: '\\b[gtps][A-Z]+[A-Za-z0-9_\\-]*\\b|\\$_[A-Z]+',
+export default function(hljs) {
+  const VARIABLE = {
+    className: 'variable',
+    variants: [
+      {
+        begin: '\\b([gtps][A-Z]{1}[a-zA-Z0-9]*)(\\[.+\\])?(?:\\s*?)'
+      },
+      {
+        begin: '\\$_[A-Z]+'
+      }
+    ],
     relevance: 0
   };
-  var COMMENT_MODES = [
+  const COMMENT_MODES = [
     hljs.C_BLOCK_COMMENT_MODE,
     hljs.HASH_COMMENT_MODE,
     hljs.COMMENT('--', '$'),
     hljs.COMMENT('[^:]//', '$')
   ];
-  var TITLE1 = hljs.inherit(hljs.TITLE_MODE, {
+  const TITLE1 = hljs.inherit(hljs.TITLE_MODE, {
     variants: [
-      {begin: '\\b_*rig[A-Z]+[A-Za-z0-9_\\-]*'},
-      {begin: '\\b_[a-z0-9\\-]+'}
+      {
+        begin: '\\b_*rig[A-Z][A-Za-z0-9_\\-]*'
+      },
+      {
+        begin: '\\b_[a-z0-9\\-]+'
+      }
     ]
   });
-  var TITLE2 = hljs.inherit(hljs.TITLE_MODE, {begin: '\\b([A-Za-z0-9_\\-]+)\\b'});
+  const TITLE2 = hljs.inherit(hljs.TITLE_MODE, {
+    begin: '\\b([A-Za-z0-9_\\-]+)\\b'
+  });
   return {
+    name: 'LiveCode',
     case_insensitive: false,
     keywords: {
       keyword:
@@ -52,12 +67,12 @@ function(hljs) {
         'put abs acos aliasReference annuity arrayDecode arrayEncode asin atan atan2 average avg avgDev base64Decode ' +
         'base64Encode baseConvert binaryDecode binaryEncode byteOffset byteToNum cachedURL cachedURLs charToNum ' +
         'cipherNames codepointOffset codepointProperty codepointToNum codeunitOffset commandNames compound compress ' +
-        'constantNames cos date dateFormat decompress directories ' +
+        'constantNames cos date dateFormat decompress difference directories ' +
         'diskSpace DNSServers exp exp1 exp2 exp10 extents files flushEvents folders format functionNames geometricMean global ' +
         'globals hasMemory harmonicMean hostAddress hostAddressToName hostName hostNameToAddress isNumber ISOToMac itemOffset ' +
         'keys len length libURLErrorData libUrlFormData libURLftpCommand libURLLastHTTPHeaders libURLLastRHHeaders ' +
         'libUrlMultipartFormAddPart libUrlMultipartFormData libURLVersion lineOffset ln ln1 localNames log log2 log10 ' +
-        'longFilePath lower macToISO matchChunk matchText matrixMultiply max md5Digest median merge millisec ' +
+        'longFilePath lower macToISO matchChunk matchText matrixMultiply max md5Digest median merge messageAuthenticationCode messageDigest millisec ' +
         'millisecs millisecond milliseconds min monthNames nativeCharToNum normalizeText num number numToByte numToChar ' +
         'numToCodepoint numToNativeChar offset open openfiles openProcesses openProcessIDs openSockets ' +
         'paragraphOffset paramCount param params peerAddress pendingMessages platform popStdDev populationStandardDeviation ' +
@@ -87,9 +102,9 @@ function(hljs) {
         'xsltLoadStylesheetFromFile add breakpoint cancel clear local variable file word line folder directory URL close socket process ' +
         'combine constant convert create new alias folder directory decrypt delete variable word line folder ' +
         'directory URL dispatch divide do encrypt filter get include intersect kill libURLDownloadToFile ' +
-        'libURLFollowHttpRedirects libURLftpUpload libURLftpUploadFile libURLresetAll libUrlSetAuthCallback ' +
+        'libURLFollowHttpRedirects libURLftpUpload libURLftpUploadFile libURLresetAll libUrlSetAuthCallback libURLSetDriver ' +
         'libURLSetCustomHTTPHeaders libUrlSetExpect100 libURLSetFTPListCommand libURLSetFTPMode libURLSetFTPStopTime ' +
-        'libURLSetStatusCallback load multiply socket prepare process post seek rel relative read from process rename ' +
+        'libURLSetStatusCallback load extension loadedExtensions multiply socket prepare process post seek rel relative read from process rename ' +
         'replace require resetAll resolve revAddXMLNode revAppendXML revCloseCursor revCloseDatabase revCommitDatabase ' +
         'revCopyFile revCopyFolder revCopyXMLNode revDeleteFolder revDeleteXMLNode revDeleteAllXMLTrees ' +
         'revDeleteXMLTree revExecuteSQL revGoURL revInsertXMLNode revMoveFolder revMoveToFirstRecord revMoveToLastRecord ' +
@@ -100,7 +115,7 @@ function(hljs) {
         'revZipAddItemWithFile revZipAddUncompressedItemWithData revZipAddUncompressedItemWithFile revZipCancel ' +
         'revZipCloseArchive revZipDeleteItem revZipExtractItemToFile revZipExtractItemToVariable revZipSetProgressCallback ' +
         'revZipRenameItem revZipReplaceItemWithData revZipReplaceItemWithFile revZipOpenArchive send set sort split start stop ' +
-        'subtract union unload wait write'
+        'subtract symmetric union unload vectorDotProduct wait write'
     },
     contains: [
       VARIABLE,
@@ -110,7 +125,8 @@ function(hljs) {
       },
       {
         className: 'function',
-        beginKeywords: 'function', end: '$',
+        beginKeywords: 'function',
+        end: '$',
         contains: [
           VARIABLE,
           TITLE2,
@@ -123,7 +139,8 @@ function(hljs) {
       },
       {
         className: 'function',
-        begin: '\\bend\\s+', end: '$',
+        begin: '\\bend\\s+',
+        end: '$',
         keywords: 'end',
         contains: [
           TITLE2,
@@ -132,7 +149,8 @@ function(hljs) {
         relevance: 0
       },
       {
-        beginKeywords: 'command on', end: '$',
+        beginKeywords: 'command on',
+        end: '$',
         contains: [
           VARIABLE,
           TITLE2,
@@ -150,8 +168,12 @@ function(hljs) {
             begin: '<\\?(rev|lc|livecode)',
             relevance: 10
           },
-          { begin: '<\\?' },
-          { begin: '\\?>' }
+          {
+            begin: '<\\?'
+          },
+          {
+            begin: '\\?>'
+          }
         ]
       },
       hljs.APOS_STRING_MODE,
@@ -160,6 +182,6 @@ function(hljs) {
       hljs.C_NUMBER_MODE,
       TITLE1
     ].concat(COMMENT_MODES),
-    illegal: ';$|^\\[|^=|&|{'
+    illegal: ';$|^\\[|^=|&|\\{'
   };
 }

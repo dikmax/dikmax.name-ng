@@ -2,11 +2,14 @@
 Language: Cap’n Proto
 Author: Oleg Efimov <efimovov@gmail.com>
 Description: Cap’n Proto message definition format
+Website: https://capnproto.org/capnp-tool.html
 Category: protocols
 */
 
-function(hljs) {
+/** @type LanguageFn */
+export default function(hljs) {
   return {
+    name: 'Cap’n Proto',
     aliases: ['capnp'],
     keywords: {
       keyword:
@@ -32,23 +35,27 @@ function(hljs) {
       },
       {
         className: 'class',
-        beginKeywords: 'struct enum', end: /\{/,
+        beginKeywords: 'struct enum',
+        end: /\{/,
         illegal: /\n/,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            starts: {endsWithParent: true, excludeEnd: true} // hack: eating everything after the first title
-          })
-        ]
+        contains: [hljs.inherit(hljs.TITLE_MODE, {
+          starts: {
+            endsWithParent: true,
+            excludeEnd: true
+          } // hack: eating everything after the first title
+        })]
       },
       {
         className: 'class',
-        beginKeywords: 'interface', end: /\{/,
+        beginKeywords: 'interface',
+        end: /\{/,
         illegal: /\n/,
-        contains: [
-          hljs.inherit(hljs.TITLE_MODE, {
-            starts: {endsWithParent: true, excludeEnd: true} // hack: eating everything after the first title
-          })
-        ]
+        contains: [hljs.inherit(hljs.TITLE_MODE, {
+          starts: {
+            endsWithParent: true,
+            excludeEnd: true
+          } // hack: eating everything after the first title
+        })]
       }
     ]
   };

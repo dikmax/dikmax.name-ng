@@ -60,7 +60,7 @@ robotsTxt =
 -- Build scripts
 scripts :: Rules ()
 scripts = do
-    highlightJsPack %> \_ -> do
+    highlightJsMin %> \_ -> do
         need ["scripts/highlight.js/package.json"]
         command_ [Cwd "scripts/highlight.js/"] "npm" ["install", "--no-save"]
         command_ [Cwd "scripts/highlight.js/"] "node" ("tools/build.js" : "-t" :
@@ -73,9 +73,9 @@ scripts = do
 
     siteDir </> "scripts/main.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
-        need (postcss : highlightJsPack : files)
+        need (postcss : highlightJsMin : files)
         io <- compressScriptSimple intersectionObserver
-        h <- liftIO $ BS.readFile highlightJsPack
+        h <- liftIO $ BS.readFile highlightJsMin
         my <- buildScript True False
         liftIO $ BS.writeFile out (io ++ h ++ my)
 
@@ -95,8 +95,8 @@ scripts = do
         easyButton :: FilePath
         easyButton = nodeModulesDir </> "leaflet-easybutton/src/easy-button.js"
 
-        highlightJsPack :: FilePath
-        highlightJsPack = "scripts/highlight.js/build/highlight.pack.js"
+        highlightJsMin :: FilePath
+        highlightJsMin = "scripts/highlight.js/build/highlight.min.js"
 
         proj4JsPack :: FilePath
         proj4JsPack = "scripts/proj4js/dist/proj4.js"

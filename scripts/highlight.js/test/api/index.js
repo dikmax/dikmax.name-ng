@@ -1,13 +1,18 @@
 'use strict';
 
 describe('hljs', function() {
-  require('./ident');
-  require('./underscoreIdent');
-  require('./number');
-  require('./cNumber');
+  require('./autoDetection');
+  require('./beginKeywords');
   require('./binaryNumber');
-  require('./starters');
+  require('./cNumber');
+  require('./fixmarkup');
   require('./getLanguage');
   require('./highlight');
-  require('./fixmarkup');
+  require('./ident');
+  require('./keywords');
+  require('./number');
+  require('./registerAlias');
+  require('./unregisterLanguage');
+  require('./starters');
+  require('./underscoreIdent');
 });

@@ -1,14 +1,17 @@
 /*
-Language: AVR Assembler
+Language: AVR Assembly
 Author: Vladimir Ermakov <vooon341@gmail.com>
 Category: assembler
+Website: https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
 */
 
-function(hljs) {
+/** @type LanguageFn */
+export default function(hljs) {
   return {
+    name: 'AVR Assembly',
     case_insensitive: true,
-    lexemes: '\\.?' + hljs.IDENT_RE,
     keywords: {
+      $pattern: '\\.?' + hljs.IDENT_RE,
       keyword:
         /* mnemonic */
         'adc add adiw and andi asr bclr bld brbc brbs brcc brcs break breq brge brhc brhs ' +
@@ -53,12 +56,20 @@ function(hljs) {
       hljs.QUOTE_STRING_MODE,
       {
         className: 'string',
-        begin: '\'', end: '[^\\\\]\'',
+        begin: '\'',
+        end: '[^\\\\]\'',
         illegal: '[^\\\\][^\']'
       },
-      {className: 'symbol',  begin: '^[A-Za-z0-9_.$]+:'},
-      {className: 'meta', begin: '#', end: '$'},
-      {  // подстановка в «.macro»
+      {
+        className: 'symbol',
+        begin: '^[A-Za-z0-9_.$]+:'
+      },
+      {
+        className: 'meta',
+        begin: '#',
+        end: '$'
+      },
+      { // substitution within a macro
         className: 'subst',
         begin: '@[0-9]+'
       }

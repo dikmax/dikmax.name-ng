@@ -1,12 +1,16 @@
 /*
 Language: Hy
-Description: Hy syntax (based on clojure.js)
+Description: Hy is a wonderful dialect of Lisp that’s embedded in Python.
 Author: Sergey Sobko <s.sobko@profitware.ru>
+Website: http://docs.hylang.org/en/stable/
 Category: lisp
 */
 
-function(hljs) {
+export default function(hljs) {
+  var SYMBOLSTART = 'a-zA-Z_\\-!.?+*=<>&#\'';
+  var SYMBOL_RE = '[' + SYMBOLSTART + '][' + SYMBOLSTART + '0-9/;:]*';
   var keywords = {
+    $pattern: SYMBOL_RE,
     'builtin-name':
       // keywords
       '!= % %= & &= * ** **= *= *map ' +
@@ -40,14 +44,7 @@ function(hljs) {
       'xi xor yield yield-from zero? zip zip-longest | |= ~'
    };
 
-  var SYMBOLSTART = 'a-zA-Z_\\-!.?+*=<>&#\'';
-  var SYMBOL_RE = '[' + SYMBOLSTART + '][' + SYMBOLSTART + '0-9/;:]*';
   var SIMPLE_NUMBER_RE = '[-+]?\\d+(\\.\\d+)?';
-
-  var SHEBANG = {
-    className: 'meta',
-    begin: '^#!', end: '$'
-  };
 
   var SYMBOL = {
     begin: SYMBOL_RE,
@@ -89,9 +86,10 @@ function(hljs) {
     relevance: 0
   };
   var NAME = {
+    className: 'name',
+    relevance: 0,
     keywords: keywords,
-    lexemes: SYMBOL_RE,
-    className: 'name', begin: SYMBOL_RE,
+    begin: SYMBOL_RE,
     starts: BODY
   };
   var DEFAULT_CONTAINS = [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL, SYMBOL];
@@ -101,8 +99,9 @@ function(hljs) {
   COLLECTION.contains = DEFAULT_CONTAINS;
 
   return {
+    name: 'Hy',
     aliases: ['hylang'],
     illegal: /\S/,
-    contains: [SHEBANG, LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
-  }
+    contains: [hljs.SHEBANG(), LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
+  };
 }

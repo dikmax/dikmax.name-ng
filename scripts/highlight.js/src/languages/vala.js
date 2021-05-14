@@ -2,10 +2,12 @@
 Language: Vala
 Author: Antono Vasiljev <antono.vasiljev@gmail.com>
 Description: Vala is a new programming language that aims to bring modern programming language features to GNOME developers without imposing any additional runtime requirements and without using a different ABI compared to applications and libraries written in C.
+Website: https://wiki.gnome.org/Projects/Vala
 */
 
-function(hljs) {
+export default function(hljs) {
   return {
+    name: 'Vala',
     keywords: {
       keyword:
         // Value types
@@ -29,17 +31,18 @@ function(hljs) {
     contains: [
       {
         className: 'class',
-        beginKeywords: 'class interface namespace', end: '{', excludeEnd: true,
+        beginKeywords: 'class interface namespace',
+        end: /\{/,
+        excludeEnd: true,
         illegal: '[^,:\\n\\s\\.]',
-        contains: [
-          hljs.UNDERSCORE_TITLE_MODE
-        ]
+        contains: [ hljs.UNDERSCORE_TITLE_MODE ]
       },
       hljs.C_LINE_COMMENT_MODE,
       hljs.C_BLOCK_COMMENT_MODE,
       {
         className: 'string',
-        begin: '"""', end: '"""',
+        begin: '"""',
+        end: '"""',
         relevance: 5
       },
       hljs.APOS_STRING_MODE,
@@ -47,7 +50,8 @@ function(hljs) {
       hljs.C_NUMBER_MODE,
       {
         className: 'meta',
-        begin: '^#', end: '$',
+        begin: '^#',
+        end: '$',
         relevance: 2
       }
     ]

@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-``highlight.js`` developer documentation
+highlight.js developer documentation
 ==========================================
 
 Contents:
@@ -13,12 +13,14 @@ Contents:
 
    api
    language-guide
-   reference
+   mode-reference
    css-classes-reference
    style-guide
+   plugin-api
+   plugin-recipes
    language-contribution
    building-testing
-   release-process
+   maintainers-guide
 
 Miscellaneous:
 
@@ -30,9 +32,11 @@ Miscellaneous:
 
 Links:
 
-- Code: https://github.com/isagalaev/highlight.js
-- Discussion: http://groups.google.com/group/highlightjs
-- Bug tracking: https://github.com/isagalaev/highlight.js/issues
+- Code: https://github.com/highlightjs/highlight.js
+- Discord: https://discord.gg/M24EbU7ja9
+- Issues: https://github.com/highlightjs/highlight.js/issues
+- NPM: https://www.npmjs.com/package/highlight.js
+- Website: https://highlightjs.org
 
 
 Indices and tables

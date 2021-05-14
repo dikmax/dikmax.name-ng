@@ -1,8 +1,14 @@
 'use strict';
 
+const hljs = require('../build');
+hljs.debugMode(); // tests run in debug mode so errors are raised
+
 // Tests specific to the API exposed inside the hljs object.
 // Right now, that only includes tests for several common regular expressions.
 require('./api');
+
+// Test weird bugs we've fixed over time
+require("./parser");
 
 // Tests for auto detection of languages via `highlightAuto`.
 require('./detect');
@@ -12,6 +18,9 @@ require('./detect');
 // expected markup will be added into the `test/markup` folder to keep
 // theses highlighting errors from cropping up again.
 require('./markup');
+
+// check regex for fatal issues like exponential backtracking, etc
+require('./regex');
 
 // Tests meant for the browser only. Using the `test/fixtures/index.html` file
 // along with `jsdom` these tests check for things like: custom markup already

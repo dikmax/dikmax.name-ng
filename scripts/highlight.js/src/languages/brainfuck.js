@@ -1,15 +1,18 @@
 /*
 Language: Brainfuck
 Author: Evgeny Stepanischev <imbolk@gmail.com>
+Website: https://esolangs.org/wiki/Brainfuck
 */
 
-function(hljs){
-  var LITERAL = {
+/** @type LanguageFn */
+export default function(hljs) {
+  const LITERAL = {
     className: 'literal',
-    begin: '[\\+\\-]',
+    begin: /[+-]/,
     relevance: 0
   };
   return {
+    name: 'Brainfuck',
     aliases: ['bf'],
     contains: [
       hljs.COMMENT(
@@ -32,7 +35,7 @@ function(hljs){
       },
       {
         // this mode works as the only relevance counter
-        begin: /\+\+|\-\-/, returnBegin: true,
+        begin: /(?:\+\+|--)/,
         contains: [LITERAL]
       },
       LITERAL

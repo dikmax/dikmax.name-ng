@@ -2,12 +2,14 @@
 Language: Inform 7
 Author: Bruno Dias <bruno.r.dias@gmail.com>
 Description: Language definition for Inform 7, a DSL for writing parser interactive fiction.
+Website: http://inform7.com
 */
 
-function(hljs) {
-  var START_BRACKET = '\\[';
-  var END_BRACKET = '\\]';
+export default function(hljs) {
+  const START_BRACKET = '\\[';
+  const END_BRACKET = '\\]';
   return {
+    name: 'Inform 7',
     aliases: ['i7'],
     case_insensitive: true,
     keywords: {
@@ -26,12 +28,14 @@ function(hljs) {
     contains: [
       {
         className: 'string',
-        begin: '"', end: '"',
+        begin: '"',
+        end: '"',
         relevance: 0,
         contains: [
           {
             className: 'subst',
-            begin: START_BRACKET, end: END_BRACKET
+            begin: START_BRACKET,
+            end: END_BRACKET
           }
         ]
       },
@@ -47,14 +51,16 @@ function(hljs) {
         end: ':',
         contains: [
           {
-            //Rule name
-            begin: '\\(This', end: '\\)'
+            // Rule name
+            begin: '\\(This',
+            end: '\\)'
           }
         ]
       },
       {
         className: 'comment',
-        begin: START_BRACKET, end: END_BRACKET,
+        begin: START_BRACKET,
+        end: END_BRACKET,
         contains: ['self']
       }
     ]

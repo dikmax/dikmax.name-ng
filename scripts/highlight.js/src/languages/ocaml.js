@@ -3,13 +3,17 @@ Language: OCaml
 Author: Mehdi Dogguy <mehdi@dogguy.org>
 Contributors: Nicolas Braud-Santoni <nicolas.braud-santoni@ens-cachan.fr>, Mickael Delahaye <mickael.delahaye@gmail.com>
 Description: OCaml language definition.
+Website: https://ocaml.org
 Category: functional
 */
-function(hljs) {
+
+export default function(hljs) {
   /* missing support for heredoc-like string (OCaml 4.0.2+) */
   return {
+    name: 'OCaml',
     aliases: ['ml'],
     keywords: {
+      $pattern: '[a-z_]\\w*!?',
       keyword:
         'and as assert asr begin class constraint do done downto else end ' +
         'exception external for fun function functor if in include ' +
@@ -27,7 +31,6 @@ function(hljs) {
         'true false'
     },
     illegal: /\/\/|>>/,
-    lexemes: '[a-z_]\\w*!?',
     contains: [
       {
         className: 'literal',
@@ -70,7 +73,7 @@ function(hljs) {
         relevance: 0
       },
       {
-        begin: /[-=]>/ // relevance booster
+        begin: /->/ // relevance booster
       }
     ]
   }
