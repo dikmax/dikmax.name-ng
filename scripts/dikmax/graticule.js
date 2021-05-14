@@ -1,5 +1,3 @@
-import {extend} from 'goog:goog.object';
-
 /* global L */
 
 /**
@@ -125,7 +123,7 @@ class Graticule extends L.GeoJSON {
       interval: 20,
       sphere: false
     };
-    extend(options, opts);
+    Object.assign(options, opts);
 
     super(null, options);
 

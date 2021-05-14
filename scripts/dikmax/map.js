@@ -229,7 +229,7 @@ class MapHandler {
    */
   onEachFeature(feature, layer) {
     this.bindLayer(layer, feature);
-    if (!goog.isFunction(layer.getBounds)) {
+    if (typeof layer.getBounds !== 'function') {
       return;
     }
     const bounds = layer.getBounds();
@@ -237,7 +237,7 @@ class MapHandler {
       return;
     }
 
-    if (!goog.isFunction(layer.getLatLngs)) {
+    if (typeof layer.getLatLngs !== 'function') {
       return;
     }
 
@@ -291,12 +291,12 @@ class MapHandler {
           {x: -179.9999, y: 90},
           {x: -179.9999, y: -90},
           {x: 0, y: -90}]);
-      if (!goog.isNull(resA)) {
+      if (resA !== null) {
         arrayForEach(resA, (i) => {
           result.push(arrayMap(i, point => new L.LatLng(point.y, point.x)));
         });
       }
-      if (!goog.isNull(resB)) {
+      if (resB !== null) {
         arrayForEach(resB, (i) => {
           result.push(arrayMap(i, point => new L.LatLng(point.y, point.x)));
         });

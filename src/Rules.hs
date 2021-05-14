@@ -151,11 +151,11 @@ buildScript dHighlightJs dMap = do
     need [googleClosureCompiler]
     Stdout my <- command [] googleClosureCompiler
         ([ "--entry_point", "scripts/main.js"
-        , "--dependency_mode", "STRICT"
+        , "--dependency_mode", "PRUNE"
         , "--compilation_level", "ADVANCED_OPTIMIZATIONS"
         , "--warning_level", "VERBOSE"
-        , "--language_in", "ECMASCRIPT_2019"
-        , "--language_out", "ECMASCRIPT5"
+        , "--language_in", "ECMASCRIPT_NEXT"
+        , "--language_out", "STABLE"
         , "--module_resolution", "NODE"
         {-, "--new_type_inf"-}] ++
         defines ++
