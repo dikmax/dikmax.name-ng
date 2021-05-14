@@ -3,6 +3,6 @@
 var hljs = {};
 
 /**
- * @param {Element} block
+ * @param {Element} element
  */
-hljs.highlightBlock = function(block) {};
+hljs.highlightElement = function(element) {};

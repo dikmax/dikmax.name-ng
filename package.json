@@ -7,15 +7,15 @@
     "url": "git@github.com:dikmax/dikmax.name-ng.git"
   },
   "dependencies": {
-    "d3": "^5.14.2",
-    "d3-geo-projection": "^2.7.1",
+    "d3": "^6.7.0",
+    "d3-geo-projection": "^3.0.0",
     "google-closure-library": "^20210406.0.0",
     "greiner-hormann": "^1.4.1",
-    "intersection-observer": "^0.7.0",
-    "leaflet": "^1.6.0",
+    "intersection-observer": "^0.12.0",
+    "leaflet": "^1.7.1",
     "leaflet-easybutton": "^2.4.0",
     "ndjson-cli": "^0.3.1",
-    "proj4": "^2.6.0",
+    "proj4": "^2.7.2",
     "proj4leaflet": "^1.0.2",
     "shapefile": "^0.6.6",
     "topojson": "^3.0.2"

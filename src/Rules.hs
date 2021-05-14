@@ -89,7 +89,7 @@ scripts = do
         gh <- compressUglifyJs greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
         my <- buildScript False True
-        liftIO $ BS.writeFile out (l ++ eb ++ p ++ pl ++ gh ++ t ++ my)
+        liftIO $ BS.writeFile out (l ++ "\n" ++ eb ++ p ++ pl ++ gh ++ t ++ my)
 
     where
         easyButton :: FilePath
