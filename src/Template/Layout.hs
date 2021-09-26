@@ -26,7 +26,7 @@ layout scripts cd meta content = do
             link_ [rel_ "manifest", href_ "/manifest.json?v=yyyEB94O8G"]
             link_ [rel_ "mask-icon", href_ "/safari-pinned-tab.svg?v=yyyEB94O8G", term "color" "#474747"]
             link_ [rel_ "shortcut icon", href_ "/favicon.ico?v=yyyEB94O8G"]
-            meta_ [name_ "theme-color", content_ "#474747"]
+            meta_ [name_ "theme-color", content_ "#212121"]
 
             -- Yandex
             link_ [rel_ "yandex-tableau-widget", href_ "/yandex-widget-manifest.json"]
