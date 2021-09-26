@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: eaad6bd7db45e7525d36041e703053090302dad3194cd9ff34d97264450eccbe
+-- hash: 82463cbe246b69e9b0e74b93dc640e6471b3a5139fe99fbe380016235260debb
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -72,38 +72,39 @@ executable dikmax.name
       Paths_dikmax_name
   hs-source-dirs:
       src
-  default-extensions: NoImplicitPrelude, OverloadedStrings
+  default-extensions:
+      NoImplicitPrelude, OverloadedStrings
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       JuicyPixels >=3.3.3 && <3.4
-    , JuicyPixels-extra >=0.4 && <0.5
-    , aeson >=1.5 && <1.6
+    , JuicyPixels-extra ==0.4.*
+    , aeson ==1.5.*
     , base >=4.7 && <5
-    , base64-bytestring >=1 && <2
-    , basic-prelude >=0.7 && <0.8
+    , base64-bytestring ==1.*
+    , basic-prelude ==0.7.*
     , binary >=0.7 && <0.9
-    , bytestring >=0.10 && <0.11
-    , containers >=0.6 && <0.7
-    , cryptohash >=0.11 && <0.12
-    , data-default >=0.7 && <0.8
-    , directory >=1.3 && <1.4
-    , filepath >=1.4 && <1.5
-    , hashable >=1.3 && <1.4
-    , lens >=4.19 && <4.20
-    , lucid >=2.9 && <2.10
-    , mtl >=2.2 && <2.3
+    , bytestring ==0.10.*
+    , containers ==0.6.*
+    , cryptohash ==0.11.*
+    , data-default ==0.7.*
+    , directory ==1.3.*
+    , filepath ==1.4.*
+    , hashable ==1.3.*
+    , lens ==4.19.*
+    , lucid ==2.9.*
+    , mtl ==2.2.*
     , network-uri >=2.6 && <3
-    , pandoc >=2.11 && <2.12
-    , pandoc-types >=1.22 && <1.23
+    , pandoc ==2.11.*
+    , pandoc-types ==1.22.*
     , regex-posix >=0.95 && <1.0
-    , resourcet >=1.2 && <1.3
-    , shake >=0.19 && <0.20
-    , snap-core >=1.0 && <1.1
-    , snap-server >=1.1 && <1.2
-    , text >=1.2 && <1.3
-    , time >=1.9 && <1.10
-    , unordered-containers >=0.2 && <0.3
-    , utf8-string >=1.0 && <1.1
-    , vector >=0.12 && <0.13
-    , yaml >=0.11 && <0.12
+    , resourcet ==1.2.*
+    , shake ==0.19.*
+    , snap-core ==1.0.*
+    , snap-server ==1.1.*
+    , text ==1.2.*
+    , time ==1.9.*
+    , unordered-containers ==0.2.*
+    , utf8-string ==1.0.*
+    , vector ==0.12.*
+    , yaml ==0.11.*
   default-language: Haskell2010

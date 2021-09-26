@@ -17,10 +17,12 @@
 
     &__container {
         align-items: center;
-        flex-wrap: no-wrap;
         height: 100%;
-        lost-center: calc(var(--body-width) + var(--navbar-link-padding-side) * 2)
-                     calc(var(--body-padding) - var(--navbar-link-padding-side)) flex;
+        display: flex;
+        flex-flow: row nowrap;
+        max-width: calc(var(--body-width) + var(--navbar-link-padding-side) * 2);
+        margin: * auto;
+        padding: * calc(var(--body-padding) - var(--navbar-link-padding-side));
     }
 
     &__menu {

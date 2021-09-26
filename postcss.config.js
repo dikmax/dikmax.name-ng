@@ -19,7 +19,6 @@ module.exports = {
     }),
     require('postcss-quantity-queries')({}),
     require('postcss-nested')({}),
-    require('lost')({}),
     require('postcss-responsive-type')({}),
     require('postcss-short')({
       'font-size': {
@@ -33,7 +32,6 @@ module.exports = {
 
     // Minify
     require('postcss-discard-comments')({}),
-    require('css-mqpacker')({}),
     require('cssnano')({
       'autoprefixer': false,
       'zindex': false

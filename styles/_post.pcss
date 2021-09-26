@@ -196,7 +196,11 @@
 
     /* Metadata */
     &__meta {
-        lost-center: var(--body-width) var(--body-padding) flex;
+        display: flex;
+        flex-flow: row wrap;
+        max-width: var(--body-width);
+        margin: * auto;
+        padding: * var(--body-padding);
     }
 
     &__meta-tags {}

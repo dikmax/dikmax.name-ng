@@ -13,7 +13,9 @@
 }
 
 @define-mixin center {
-    lost-center: var(--body-width) var(--body-padding);
+    max-width: var(--body-width);
+    margin: * auto;
+    padding: * var(--body-padding);
     width: calc(100% - var(--body-padding) * 2);
 
     @media (--sm-screen) {
@@ -22,7 +24,11 @@
 }
 
 @define-mixin center-flex {
-    lost-center: var(--body-width) var(--body-padding) flex;
+    display: flex;
+    flex-flow: row wrap;
+    max-width: var(--body-width);
+    margin: * auto;
+    padding: * var(--body-padding);
     width: calc(100% - var(--body-padding) * 2);
 
     @media (--sm-screen) {
