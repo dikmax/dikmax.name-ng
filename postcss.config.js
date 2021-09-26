@@ -25,7 +25,9 @@ module.exports = {
         'disable': true
       }
     }),
-    require('postcss-color-function')({}),
+    require('postcss-color-mod-function')({
+      transformVars: true,
+    }),
     require('stylehacks')({
       browsers
     }),

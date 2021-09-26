@@ -62,7 +62,7 @@
 
         &_with-number:not(.hide-number) {
             &::before {
-                color: color(#b3b3b3 a(0.5));
+                color: color-mod(#b3b3b3 a(0.5));
                 content: counter(imgs);
                 counter-increment: imgs;
                 display: block;
@@ -99,7 +99,7 @@
             overflow-x: scroll;
 
             &:hover .post__figure-pano-overlay svg {
-                fill: color(#b3b3b3 a(0.8));
+                fill: color-mod(#b3b3b3 a(0.8));
             }
         }
     }
@@ -139,7 +139,7 @@
 
         & svg {
             size: 96px 96px;
-            fill: color(#b3b3b3 a(0.5));
+            fill: color-mod(#b3b3b3 a(0.5));
         }
     }
 
@@ -320,7 +320,7 @@
         background-color: #fff2cc;
 
         @media (prefers-color-scheme: dark) {
-            background-color: color(#fff2cc shade(25%)) ;
+            background-color: color-mod(#fff2cc shade(25%)) ;
         }
     }
 
@@ -328,7 +328,7 @@
         background-color: #d9ead3;
 
         @media (prefers-color-scheme: dark) {
-            background-color: color(#d9ead3 shade(25%)) ;
+            background-color: color-mod(#d9ead3 shade(25%)) ;
         }
     }
 
@@ -336,7 +336,7 @@
         background-color: #f4cccc;
 
         @media (prefers-color-scheme: dark) {
-            background-color: color(#f4cccc shade(25%)) ;
+            background-color: color-mod(#f4cccc shade(25%)) ;
         }
     }
 

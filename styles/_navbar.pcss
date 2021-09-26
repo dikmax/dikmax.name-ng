@@ -1,6 +1,6 @@
 /** @define navbar */
 .navbar {
-    background-color: color(var(--dark-background) a(0.9));
+    background-color: color-mod(var(--dark-background) a(0.9));
     box-shadow: 0 0   4px rgba(0, 0, 0, 0.14),
                 0 4px 8px rgba(0, 0, 0, 0.28);
     color: var(--dark-background-text);
@@ -12,7 +12,7 @@
     z-index: 10;
 
     @media (prefers-color-scheme: dark) {
-        background-color: color(var(--darker-background) a(0.9));
+        background-color: color-mod(var(--darker-background) a(0.9));
     }
 
     &__container {
