@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.34.6.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 09979377c0467e78ed3948097c550342ea4398826644622aea7b313bb0a36935
+-- hash: f2bbedc61e1e1588d115efe92386a6c2241974e986995e6812d687ba80a6065f
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -42,6 +42,7 @@ executable dikmax.name
       Lucid.Svg.Elements
       Lucid.Svg.Path
       Map
+      Media
       Rules
       Server
       Template

@@ -21,6 +21,7 @@ import           JsonLD
 import           Lib
 import           Lucid                      hiding (command_)
 import           Map
+import           Media
 import           Rules
 import           System.Directory           (createDirectoryIfMissing)
 import           Server
@@ -51,6 +52,7 @@ main = do
         styles
         scripts
         imagesRules
+        mediaRules
         blog
         favicons
         demos
@@ -64,8 +66,8 @@ build :: Rules ()
 build =
     phony "build" $ do
         need ["prerequisites"]
-        need ["sync-images"]
-        need ["phony-images", "blogposts", "phony-favicons", "phony-demos"
+        need ["sync-images", "sync-media"]
+        need ["phony-images", "phony-media", "blogposts", "phony-favicons", "phony-demos"
             , siteDir </> "robots.txt"
             , siteDir </> T.unpack rssFeedFile
             , siteDir </> "scripts/main.js"

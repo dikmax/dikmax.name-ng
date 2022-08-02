@@ -13,6 +13,9 @@ pandocCacheDir = buildDir </> "pandoc"
 imagesBuildDir :: FilePath
 imagesBuildDir = buildDir </> "images"
 
+mediaBuildDir :: FilePath
+mediaBuildDir = buildDir </> "media"
+
 shakeBuildDir :: FilePath
 shakeBuildDir = buildDir </> "shake"
 
@@ -51,6 +54,9 @@ nodeModulesBinDir = nodeModulesDir </> ".bin"
 
 imagesDir :: FilePath
 imagesDir = "images"
+
+mediaDir :: FilePath
+mediaDir = "media"
 
 demosDir :: FilePath
 demosDir = siteDir </> "demos"
@@ -95,6 +101,9 @@ options = shakeOptions
 
 imagesPatterns :: [FilePath]
 imagesPatterns = [imagesDir <//> "*.png", imagesDir <//> "*.jpg", imagesDir <//> "*.gif"]
+
+mediaPatterns :: [FilePath]
+mediaPatterns = [mediaDir <//> "*"]
 
 rssFeedFile :: Text
 rssFeedFile = "feed.rss"
