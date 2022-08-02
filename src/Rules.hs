@@ -23,10 +23,12 @@ deploy :: Rules ()
 deploy =
     phony "deploy" $ do
         need ["build"]
+        {- TODO new deploy
         need ["compress"]
         command_ [] "rsync" ["--recursive", "--delete", "--force", "--compress",
             "--progress", "--delay-updates", "--iconv=UTF8-MAC,UTF-8",
             "_build/site/", "dikmax@dikmax.name:/home/dikmax/dikmax.name/"]
+        -}
 
 prerequisites :: Rules ()
 prerequisites =
