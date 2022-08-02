@@ -54,7 +54,7 @@ instance ToJSON ImageObject where
 instance Binary ImageObject
 
 
-data Person = Person
+newtype Person = Person
     { _personName :: Text
     } deriving (Generic, Show)
 

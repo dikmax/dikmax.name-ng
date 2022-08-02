@@ -51,15 +51,15 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                     post ^. fileMeta ^. postTags
 
         div_ [class_ "share-buttons"] $ do
-            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlFacebook,
+            a_ ([target_ "blank" | not isAmp] ++ [href_ urlFacebook,
                     class_ "share-buttons__button share-buttons__button_facebook"]) $ do
                 iconFacebook
                 " Поделиться"
-            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlVk,
+            a_ ([target_ "blank" | not isAmp] ++ [href_ urlVk,
                     class_ "share-buttons__button share-buttons__button_vk"]) $ do
                 iconVk
                 " Расшарить"
-            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlTwitter,
+            a_ ([target_ "blank" | not isAmp] ++ [href_ urlTwitter,
                     class_ "share-buttons__button share-buttons__button_twitter"]) $ do
                 iconTwitter
                 " Твитнуть"
@@ -69,7 +69,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
                 iconPinterest
                 " Запинить"
             -}
-            a_ ((if isAmp then [] else [target_ "blank"]) ++ [href_ urlEmail,
+            a_ ([target_ "blank" | not isAmp] ++ [href_ urlEmail,
                     class_ "share-buttons__button share-buttons__button_email"]) $ do
                 iconEmail
                 " Отправить другу"
@@ -87,9 +87,9 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
 
         div_ [class_ "main__centered post__comments"] $
             p_ $ do
-              toHtml $ ("Хочется что-то добавить или сказать? Я всегда рад послушать и обсудить. Пишите на " :: Text)
+              toHtml ("Хочется что-то добавить или сказать? Я всегда рад послушать и обсудить. Пишите на " :: Text)
               a_ [ href_ $ "mailto:me@dikmax.name?subject=Комментарий к \"" ++ (post ^. fileMeta ^. postTitle) ++ "\""] "me@dikmax.name"
-              toHtml $ ("." :: Text)
+              toHtml ("." :: Text)
 
         unless isAmp subscribe
 

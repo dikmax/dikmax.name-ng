@@ -20,7 +20,7 @@ extractTeaser (Pandoc m blocks) =
 
         getTeaser :: Block -> Maybe String
         getTeaser (RawBlock "html" str) =
-            case (T.unpack str) =~ pat :: (String, String, String, [String]) of
+            case T.unpack str =~ pat :: (String, String, String, [String]) of
                 (_, _, _, [""]) -> Just ""
                 (_, _, _, [v]) -> Just $ tail v
                 _              -> Nothing

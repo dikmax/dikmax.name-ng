@@ -214,7 +214,7 @@ serveDirectoryWith cfg base = do
              else return False
 
     -- Serves a file requested by name.  Passes if the file doesn't exist.
-    file = serve =<< ((base </>) <$> getSafePath)
+    file = serve . (base </>) =<< getSafePath
 
     -- If the request is for a directory but lacks a trailing slash, redirects
     -- to the directory name with a trailing slash.

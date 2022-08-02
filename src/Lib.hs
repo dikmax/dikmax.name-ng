@@ -245,7 +245,7 @@ buildPostCover m =
 
 extractText :: MetaValue -> Maybe Text
 extractText (MetaString str) = Just str
-extractText (MetaInlines inlines) = Just $ T.concat $ map (stringify) inlines
+extractText (MetaInlines inlines) = Just $ T.concat $ map stringify inlines
 extractText _ = Nothing
 
 extractBool :: MetaValue -> Maybe Bool

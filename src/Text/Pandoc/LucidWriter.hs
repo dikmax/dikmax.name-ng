@@ -20,6 +20,7 @@ import           Control.Monad.State
 import           Control.Lens        hiding (lazy)
 import           Data.Data
 import           Data.Default
+import qualified Data.Bifunctor      as BF
 import qualified Data.Text           as T
 import           Lucid
 import           Lucid.Base
@@ -230,7 +231,7 @@ writeAttr (identifier, classes, others) defaultId =
     [id_ identifier | identifier /= ""] ++
     [id_ defaultId | identifier == "" && defaultId /= ""] ++
     [class_ classesString | classesString /= ""] ++
-    map (\(k, v) -> makeAttribute k v) others
+    map (uncurry makeAttribute) others
     where
         classesString = T.unwords classes
 
@@ -308,7 +309,7 @@ writeInline (Image attr inline target) =
                 -- Youtube video
                 writeYoutube attr inline target
        | "iframe:" `T.isPrefixOf` fst target ->
-                writeIframe attr inline (T.drop 7 $ fst target, snd target)
+                writeIframe attr inline (BF.first (T.drop 7) target)
        | otherwise ->
                 -- Just image
                 writeImage attr inline target
@@ -336,7 +337,7 @@ writeYoutube attr inline target = do
     options <- use writerOptions
 
     return $
-        case (options ^. renderType) of
+        case options ^. renderType of
             RenderAMP ->
                 div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
@@ -380,7 +381,7 @@ writeIframe attr _ target = do
     options <- use writerOptions
 
     return $
-        case (options ^. renderType) of
+        case options ^. renderType of
             RenderAMP ->
                 div_ (class_ " main__full-width post__block post__block_with-embed" : writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
@@ -416,7 +417,7 @@ writeImage attr inline target = do
     options <- use writerOptions
 
     return $
-        case (options ^. renderType) of
+        case options ^. renderType of
             RenderAMP ->
                 figure_
                     ([ id_ (extractId $ fst target)
@@ -433,7 +434,7 @@ writeImage attr inline target = do
             RenderRSS ->
                 figure_
                     ([ id_ (extractId $ fst target)
-                     , class_ $ " main__full-width post__block post__figure"
+                     , class_ " main__full-width post__block post__figure"
                      ] ++ writeAttr attr "") $
                     div_ [class_ "post__figure-outer"] $
                         div_ [class_ "post__figure-inner"] $ do
@@ -471,7 +472,7 @@ writeImage attr inline target = do
 
         img :: LucidWriterOptions -> Html ()
         img options =
-            case (options ^. renderType) of
+            case options ^. renderType of
                 RenderAMP ->
                     ampImg_
                         ([ class_ "post__figure-img_amp"
@@ -481,7 +482,7 @@ writeImage attr inline target = do
                         , alt_ $ fixImageTitle $ snd target
                         ] ++ imgAttrs False options)
                 RenderRSS ->
-                    img_ ([ class_ $ "post__figure-img"
+                    img_ ([ class_ "post__figure-img"
                         , src_ $ linkToAbsolute (options ^. renderType) (fst target)
                           (options ^. siteDomain)
                         , alt_ $ fixImageTitle $ snd target

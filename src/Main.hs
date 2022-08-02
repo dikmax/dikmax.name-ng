@@ -445,10 +445,8 @@ blog = do
         let pCover = post ^. fileMeta ^. postCover
         let color = mplus
                 (pCover ^. coverColor)
-                (maybe
-                    Nothing
-                    (\img -> (^. imageColor) <$> imageGetter imagesContent img)
-                    (pCover ^. coverImg))
+                ((fmap (^. imageColor) . imageGetter imagesContent)
+                    =<< (pCover ^. coverImg))
 
         -- TODO move to build post
         let updatedPost = post & fileMeta %~ (\m -> m

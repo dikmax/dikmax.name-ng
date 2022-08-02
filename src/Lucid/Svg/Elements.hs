@@ -26,10 +26,9 @@ doctype_ = makeElementNoEnd "?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYP
 
 -- | @svg@ element + svg 1.1 attributes
 svg11_:: Term [Attribute] (s -> t) => s -> t
-svg11_ m = svg_ [ makeAttribute "xmlns" "http://www.w3.org/2000/svg"
+svg11_ = svg_ [ makeAttribute "xmlns" "http://www.w3.org/2000/svg"
                 , makeAttribute "xmlns:xlink" "http://www.w3.org/1999/xlink"
                 , makeAttribute "version" "1.1" ]
-           m
 
 -- | @a@ element
 a_ :: Term arg result => arg -> result

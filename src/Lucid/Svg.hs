@@ -47,7 +47,6 @@ import           Prelude
 import           Data.Functor.Identity
 import           Data.Int               (Int64)
 import           Data.Monoid
-import           Data.Text.Lazy
 import           Data.Text.Lazy         as LT
 import           Data.Text.Lazy.Builder as B
 import           Lucid.Base
@@ -68,11 +67,11 @@ prettyText svg = B.toLazyText $ LT.foldr go mempty text Nothing (-1)
       | c == '?' = "<?" <> f Nothing n
       | c == '!' = "<!" <> f Nothing n
       | c == '/' = "\n"
-                    <> (B.fromLazyText $ LT.replicate n "  " )
+                    <> B.fromLazyText (LT.replicate n "  ")
                     <> "</"
                     <> f Nothing (n-1)
       | otherwise = "\n"
-                    <> (B.fromLazyText $ LT.replicate (n+1)   "  " )
+                    <> B.fromLazyText (LT.replicate (n+1)   "  ")
                     <> "<"
                     <> B.singleton c
                     <> f Nothing (n+1)
