@@ -192,12 +192,13 @@ ldMeta meta =
 
 
 footer :: Html ()
-footer =
+footer = do
     footer_ [class_ "footer"] $
         div_ [class_ "footer__container"] $
             toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; " ++
                 tshow copyrightYear ++
                 "<br/>Весьма любимый корректор: Анастасия Барбосова")
+    div_ [title_ "Слава Україні", class_ "ukraine"] mempty
 
 googleAnalytics :: Html ()
 googleAnalytics =
