@@ -118,3 +118,4 @@ cabal.sandbox.config
 /_build
 /images
 /media
+/.firebase

@@ -87,7 +87,7 @@ postPage isAmp layout cd post previousPost nextPost = layout $ do
 
         div_ [class_ "main__centered post__comments"] $
             p_ $ do
-              toHtml ("Хочется что-то добавить или сказать? Я всегда рад послушать и обсудить. Пишите на " :: Text)
+              toHtml ("Хочется что-то добавить или сказать? Я всегда рад обсудить. Пишите на " :: Text)
               a_ [ href_ $ "mailto:me@dikmax.name?subject=Комментарий к \"" ++ (post ^. fileMeta ^. postTitle) ++ "\""] "me@dikmax.name"
               toHtml ("." :: Text)
 
