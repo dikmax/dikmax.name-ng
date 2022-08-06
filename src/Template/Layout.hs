@@ -198,7 +198,7 @@ footer = do
             toHtmlRaw ("&copy; Максим Дикун, 2012 &mdash; " ++
                 tshow copyrightYear ++
                 "<br/>Весьма любимый корректор: Анастасия Барбосова")
-    div_ [title_ "Слава Україні", class_ "ukraine"] mempty
+    div_ [title_ "Слава Україні!", class_ "ukraine"] mempty
 
 googleAnalytics :: Html ()
 googleAnalytics =
