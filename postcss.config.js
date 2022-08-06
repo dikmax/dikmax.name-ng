@@ -7,13 +7,7 @@ module.exports = {
   plugins: [
     require('postcss-import')({}),
     require('postcss-mixins')({}),
-    require('postcss-custom-properties')({
-      preserve: false,
-    }),
     require('postcss-custom-media')({}),
-    require('postcss-preset-env')({
-      browsers,
-    }),
     require('colorguard')({
       'ignore': ['#000000', '#ffffff', '#212121', '#b3b3b3']
     }),
@@ -28,15 +22,24 @@ module.exports = {
     require('postcss-color-mod-function')({
       transformVars: true,
     }),
+    require('postcss-custom-properties')({
+      preserve: false,
+    }),
+    require('postcss-preset-env')({
+      browsers,
+    }),
     require('stylehacks')({
       browsers
     }),
 
     // Minify
-    require('postcss-discard-comments')({}),
     require('cssnano')({
-      'autoprefixer': false,
-      'zindex': false
+      'preset': [
+        'cssnano-preset-advanced',
+        {
+          'autoprefixer': false,
+          'zindex': false,
+        }],
     }),
   ]
 };
