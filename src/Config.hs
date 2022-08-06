@@ -28,6 +28,9 @@ brotliCacheDir = buildDir </> "brotli"
 zopfliCacheDir :: FilePath
 zopfliCacheDir = buildDir </> "zopfli"
 
+avifCacheDir :: FilePath
+avifCacheDir = buildDir </> "avif"
+
 webpCacheDir :: FilePath
 webpCacheDir = buildDir </> "webp"
 

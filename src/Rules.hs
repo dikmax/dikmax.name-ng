@@ -35,7 +35,7 @@ prerequisites :: Rules ()
 prerequisites =
     phony "prerequisites" $ do
         putNormal "Checking prerequisites"
-        mapM_ check ["node", "npm", "firebase", "zopflipng", "brotli", "guetzli"]
+        mapM_ check ["node", "npm", "firebase", "zopflipng", "brotli", "guetzli", "cwebp", "avifenc"]
     where
         check executable = do
             Exit code <- cmd (EchoStdout False) ("which" :: FilePath) executable

@@ -11,13 +11,12 @@ import qualified System.Directory     as D
 
 compress :: Rules ()
 compress = do
-    phony "compress-brotli-zopfli" $ do
+    phony "compress-data" $ do
         liftIO $ do
             createCacheDirectory brotliCacheDir
             createCacheDirectory zopfliCacheDir
-            createCacheDirectory webpCacheDir
 
-        gzFiles <- getDirectoryFiles "."
+        dataFiles <- getDirectoryFiles "."
             [ siteDir <//> "*.css"
             , siteDir <//> "*.js"
             , siteDir <//> "*.json"
@@ -28,20 +27,29 @@ compress = do
             , siteDir <//> "*.xml"
             ]
 
-        need $ map (++ ".gz") gzFiles ++
-            map (++ ".br") gzFiles
+        need $ map (++ ".gz") dataFiles ++
+            map (++ ".br") dataFiles
 
-    phony "compress-webp" $ do
-        liftIO $ createCacheDirectory webpCacheDir
-        webpFiles <- getDirectoryFiles "."
+    phony "compress-images" $ do
+        liftIO $ do
+            createCacheDirectory avifCacheDir
+            createCacheDirectory webpCacheDir
+
+        imagesFiles <- getDirectoryFiles "."
             [ siteDir <//> "*.jpg"
             , siteDir <//> "*.png"
             ]
-        need $ map (++ ".webp") webpFiles
+        need $ map (++ ".webp") imagesFiles ++
+            map (++ ".avif") imagesFiles
 
     phony "compress" $
-        need ["compress-brotli-zopfli", "compress-webp"]
+        need ["compress-data", "compress-images"]
 
+    siteDir <//> "*.avif" %> \out -> do
+        let src = take (length out - 5) out
+        process avifCacheDir src out $
+            command_ [EchoStdout False, EchoStderr False] "avifenc"
+                [src, out]
     siteDir <//> "*.jpg.webp" %> \out -> do
         let src = take (length out - 5) out
         process webpCacheDir src out $
