@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f2bbedc61e1e1588d115efe92386a6c2241974e986995e6812d687ba80a6065f
+-- hash: e25d5d0e5bce0cba1c31552ee786cd48d8e79e69410ae3c07919fc80b0d148ff
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -30,7 +30,6 @@ executable dikmax.name
       Collections
       Compress
       Config
-      FileServe
       Images
       JsonLD
       Lib
@@ -97,11 +96,9 @@ executable dikmax.name
     , network-uri >=2.6 && <3
     , pandoc ==2.14.*
     , pandoc-types ==1.22.*
+    , process ==1.6.*
     , regex-posix >=0.95 && <1.0
-    , resourcet ==1.2.*
     , shake ==0.19.*
-    , snap-core ==1.0.*
-    , snap-server ==1.1.*
     , text ==1.2.*
     , time ==1.9.*
     , unordered-containers ==0.2.*
