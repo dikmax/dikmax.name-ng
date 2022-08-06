@@ -10,7 +10,7 @@ import           Data.Aeson.Types
 import           Data.Aeson.Text
 import           Data.Binary
 import           Data.Char
-import qualified Data.HashMap.Strict    as HM
+import qualified Data.Aeson.KeyMap      as KM
 import qualified Data.Text              as T
 import           Data.Text.Lazy             (toStrict)
 import           Data.Text.Lazy.Builder     (toLazyText)
@@ -48,7 +48,7 @@ makeLenses ''ImageObject
 
 instance ToJSON ImageObject where
     toJSON v = case genericToJSON (genericOptions 12) v of
-        Object o -> Object $ HM.insert "@type" "ImageObject" o
+        Object o -> Object $ KM.insert "@type" "ImageObject" o
         _ -> error "Wrong type"
 
 instance Binary ImageObject
@@ -62,7 +62,7 @@ makeLenses ''Person
 
 instance ToJSON Person where
     toJSON v = case genericToJSON (genericOptions 7) v of
-        Object o -> Object $ HM.insert "@type" "Person" o
+        Object o -> Object $ KM.insert "@type" "Person" o
         _ -> error "Wrong type"
 
 instance Binary Person
@@ -76,7 +76,7 @@ makeLenses ''Organization
 
 instance ToJSON Organization where
     toJSON v = case genericToJSON (genericOptions 13) v of
-        Object o -> Object $ HM.insert "@type" "Organization" o
+        Object o -> Object $ KM.insert "@type" "Organization" o
         _ -> error "Wrong type"
 
 instance Binary Organization
@@ -99,7 +99,7 @@ data BlogPosting = BlogPosting
 makeLenses ''BlogPosting
 
 instance ToJSON BlogPosting where
-    toJSON v = Object $ HM.fromList
+    toJSON v = Object $ KM.fromList
         [ ("@type", "BlogPosting")
         , ("headline", String $ v ^. blogPostingHeadline)
         , ("datePublished", formatDate $ v ^. blogPostingDatePublished)
@@ -132,7 +132,7 @@ makeLenses ''WebPage
 
 instance ToJSON WebPage where
     toJSON v = case genericToJSON (genericOptions 8) v of
-        Object o -> Object $ HM.insert "@type" "WebPage" o
+        Object o -> Object $ KM.insert "@type" "WebPage" o
         _ -> error "Wrong type"
 
 instance Binary WebPage
@@ -147,7 +147,7 @@ makeLenses ''AboutPage
 
 instance ToJSON AboutPage where
     toJSON v = case genericToJSON (genericOptions 10) v of
-        Object o -> Object $ HM.insert "@type" "AboutPage" o
+        Object o -> Object $ KM.insert "@type" "AboutPage" o
         _ -> error "Wrong type"
 
 instance Binary AboutPage
@@ -197,7 +197,7 @@ toJsonLD (MWebPage v) = toJsonLD' v
 toJsonLD' :: (ToJSON a) => a -> Text
 toJsonLD' v = case toJSON v of
     Object o -> toStrict $ toLazyText $ encodeToTextBuilder $
-        Object $ HM.insert "@context" "http://schema.org" o
+        Object $ KM.insert "@context" "http://schema.org" o
     _ -> ""
 
 copyrightHolder :: Person

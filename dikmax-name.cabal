@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e25d5d0e5bce0cba1c31552ee786cd48d8e79e69410ae3c07919fc80b0d148ff
+-- hash: 25a6104de345584a00daf915e93b46150574377b55d105925cb2aade83d735ee
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -78,7 +78,7 @@ executable dikmax.name
   build-depends:
       JuicyPixels >=3.3.3 && <3.4
     , JuicyPixels-extra ==0.5.*
-    , aeson ==1.5.*
+    , aeson ==2.0.*
     , base >=4.7 && <5
     , base64-bytestring ==1.*
     , basic-prelude ==0.7.*
@@ -90,11 +90,11 @@ executable dikmax.name
     , directory ==1.3.*
     , filepath ==1.4.*
     , hashable ==1.3.*
-    , lens ==4.19.*
-    , lucid ==2.9.*
+    , lens ==5.0.*
+    , lucid ==2.11.*
     , mtl ==2.2.*
     , network-uri >=2.6 && <3
-    , pandoc ==2.14.*
+    , pandoc ==2.17.*
     , pandoc-types ==1.22.*
     , process ==1.6.*
     , regex-posix >=0.95 && <1.0
