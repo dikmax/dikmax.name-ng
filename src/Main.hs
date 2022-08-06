@@ -74,6 +74,7 @@ build =
             , siteDir </> "scripts/map.js"
             , siteDir </> "data/world.json"
             ]
+        need ["compress-webp"]
 
 blog :: Rules ()
 blog = do

@@ -5,7 +5,6 @@ import dataset from 'goog:goog.dom.dataset';
 import ViewportSizeMonitor from 'goog:goog.dom.ViewportSizeMonitor';
 import events from 'goog:goog.events';
 import Size from 'goog:goog.math.Size';
-import {endsWith} from 'goog:goog.string';
 import style from 'goog:goog.style';
 import asserts from 'goog:goog.asserts';
 import Timer from 'goog:goog.Timer';
@@ -152,6 +151,47 @@ function setupLazyIframes() {
   });
 }
 
+const supportsWebP = (() => {
+  let called = false;
+  let value;
+  return () => {
+    if (!called) {
+      const elem = document.createElement('canvas');
+      if (elem.getContext?.('2d')) {
+        value = elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+      } else {
+        value = false;
+      }
+    }
+
+    called = true;
+    return value;
+  };
+})();
+
+const SRC_REGEXP = /\.(png|jpg)$/;
+const SRCSET_REGEXP = /^(.*\.(png|jpg)) (\d+)w$/;
+
+function setupWebp() {
+  if (!supportsWebP()) {
+    return;
+  }
+
+  const images = getElementsByClass('post__figure-img');
+  arrayForEach(images, (image) => {
+    const src = dataset.get(image, 'src');
+    if (SRC_REGEXP.test(src)) {
+      dataset.set(image, 'src', src + '.webp');
+    }
+    const srcset = dataset.get(image, 'srcset');
+    if (SRCSET_REGEXP.test(srcset)) {
+      dataset.set(image, 'srcset', srcset.replace(SRCSET_REGEXP, '$1.webp $3w'));
+    }
+  });
+}
+
+const PANO_TEST_REGEXP = /-pano\.jpg(\.webp)?$/;
+
 function setupPanoramas () {
   const images = getElementsByClass('post__figure-img');
 
@@ -171,7 +211,7 @@ function setupPanoramas () {
     if (!Size.equals(smallSize, largeSize)) {
       // There's no point to introduce panorama if size wouldn't change.
       const src = dataset.get(image, 'src');
-      if (src !== null && endsWith(src, '-pano.jpg')) {
+      if (src !== null && PANO_TEST_REGEXP.test(src)) {
         handlePanorama(image);
       }
     }
@@ -239,7 +279,7 @@ function handlePanorama(_image) {
   // Get names of bigger images
   const smallSrc = dataset.get(image, 'src');
   const smallSrcSet = dataset.get(image, 'srcset');
-  const largeSrc = smallSrc.replace(/-pano\.jpg$/, '-pano-full.jpg');
+  const largeSrc = smallSrc.replace(/-pano\.jpg/, '-pano-full.jpg');
   let largeSrcSet = null;
   if (smallSrcSet) {
     largeSrcSet = smallSrcSet.replace(/-pano\.jpg/g, '-pano-full.jpg');
@@ -279,6 +319,7 @@ function handlePanorama(_image) {
 export default function init() {
   setupNavigation();
   if (!MAP) {
+    setupWebp()
     setupPanoramas();
     setupLazyImages();
     setupLazyIframes();

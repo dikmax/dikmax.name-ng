@@ -11,15 +11,12 @@ import qualified System.Directory     as D
 
 compress :: Rules ()
 compress = do
-    phony "compress" $ do
+    phony "compress-brotli-zopfli" $ do
         liftIO $ do
             createCacheDirectory brotliCacheDir
             createCacheDirectory zopfliCacheDir
             createCacheDirectory webpCacheDir
-        webpFiles <- getDirectoryFiles "."
-            [ siteDir <//> "*.jpg"
-            , siteDir <//> "*.png"
-            ]
+
         gzFiles <- getDirectoryFiles "."
             [ siteDir <//> "*.css"
             , siteDir <//> "*.js"
@@ -30,9 +27,20 @@ compress = do
             , siteDir <//> "*.txt"
             , siteDir <//> "*.xml"
             ]
-        need $ map (++ ".webp") webpFiles ++
-            map (++ ".gz") gzFiles ++
+
+        need $ map (++ ".gz") gzFiles ++
             map (++ ".br") gzFiles
+
+    phony "compress-webp" $ do
+        liftIO $ createCacheDirectory webpCacheDir
+        webpFiles <- getDirectoryFiles "."
+            [ siteDir <//> "*.jpg"
+            , siteDir <//> "*.png"
+            ]
+        need $ map (++ ".webp") webpFiles
+
+    phony "compress" $
+        need ["compress-brotli-zopfli", "compress-webp"]
 
     siteDir <//> "*.jpg.webp" %> \out -> do
         let src = take (length out - 5) out
