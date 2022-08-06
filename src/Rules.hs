@@ -23,14 +23,13 @@ deploy :: Rules ()
 deploy =
     phony "deploy" $ do
         need ["build"]
-        {- TODO new deploy
-        -- gsutil -m rsync -j html,css,js,json -d -R _build/site/ gs://dikmax.name
-        -- firebase deploy --only hosting
+        {-
         need ["compress"]
         command_ [] "rsync" ["--recursive", "--delete", "--force", "--compress",
             "--progress", "--delay-updates", "--iconv=UTF8-MAC,UTF-8",
             "_build/site/", "dikmax@dikmax.name:/home/dikmax/dikmax.name/"]
         -}
+        command_ [] "firebase" ["deploy", "--only", "hosting"]
 
 prerequisites :: Rules ()
 prerequisites =
