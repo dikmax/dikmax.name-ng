@@ -66,7 +66,6 @@ build :: Rules ()
 build =
     phony "build" $ do
         need ["prerequisites"]
-        need ["sync-images", "sync-media"]
         need ["phony-images", "phony-media", "blogposts", "phony-favicons", "phony-demos"
             , siteDir </> "robots.txt"
             , siteDir </> T.unpack rssFeedFile

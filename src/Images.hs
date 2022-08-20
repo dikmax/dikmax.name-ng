@@ -79,6 +79,7 @@ imagesRules = do
                 )
 
     phony "phony-images" $ do
+        need ["sync-images"]
         imageFiles <- getDirectoryFiles "." imagesPatterns
         need [siteDir </> x | x <- imageFiles]
 

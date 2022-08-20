@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 25a6104de345584a00daf915e93b46150574377b55d105925cb2aade83d735ee
+-- hash: e6e5ab508026762eda417308e80cbf9ea1555e84dc92dafeea4f2313312d12a6
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -35,6 +35,7 @@ executable dikmax.name
       Lib
       Lucid.AMP
       Lucid.Atom
+      Lucid.Html5Extra
       Lucid.Sitemap
       Lucid.Svg
       Lucid.Svg.Attributes

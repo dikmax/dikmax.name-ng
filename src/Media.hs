@@ -38,6 +38,7 @@ mediaRules = do
                 )
 
     phony "phony-media" $ do
+        need ["sync-media"]
         mediaFiles <- getDirectoryFiles "." mediaPatterns
         need [siteDir </> x | x <- mediaFiles]
 

@@ -3,7 +3,10 @@ module Template.PostList (postList) where
 import           BasicPrelude
 import           Config
 import           Control.Lens
+import qualified Data.Text           as T
 import           Lucid
+import           Lucid.Base
+import           Lucid.Html5Extra
 import           Text.Pandoc
 import           Text.Pandoc.LucidWriter
 import           Text.Pandoc.Utils
@@ -31,7 +34,10 @@ postSingle cd file =
         maybe mempty (\cover ->
             div_ [class_ "main__centered post__block post__cover"] $
                 a_ [href_ $ postUrlFromId (file ^. fileMeta ^. postId)] $
-                    img_ [class_ "post__cover-image", src_ cover, alt_ ""]
+                    picture_ [] $ do
+                        avifSource cover
+                        webpSource cover
+                        img_ [class_ "post__cover-image", src_ cover, alt_ ""]
             ) $ file ^. fileMeta ^. postCover ^. coverImg
 
 
@@ -47,3 +53,11 @@ postSingle cd file =
         opts = def
             & commonData        .~ cd
             & showFigureNumbers .~ False
+
+        avifSource src =
+            when (".jpg" `T.isSuffixOf` src && "/" `T.isPrefixOf` src) $
+                source_ [ makeAttribute "srcset" (src ++ ".avif"), type_ "image/avif"]
+
+        webpSource src =
+            when ("/" `T.isPrefixOf` src) $
+                source_ [ makeAttribute "srcset" (src ++ ".webp"), type_ "image/webp"]

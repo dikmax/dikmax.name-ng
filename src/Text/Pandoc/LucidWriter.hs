@@ -25,6 +25,7 @@ import qualified Data.Text           as T
 import           Lucid
 import           Lucid.Base
 import           Lucid.AMP
+import           Lucid.Html5Extra
 import           Text.Pandoc
 import           Types
 
@@ -480,45 +481,41 @@ writeImage attr inline target = do
                           (options ^. siteDomain)
                         , term "layout" "responsive"
                         , alt_ $ fixImageTitle $ snd target
-                        ] ++ imgAttrs False options)
+                        ] ++ imgAttrs options)
                 RenderRSS ->
                     img_ ([ class_ "post__figure-img"
                         , src_ $ linkToAbsolute (options ^. renderType) (fst target)
                           (options ^. siteDomain)
                         , alt_ $ fixImageTitle $ snd target
-                        ] ++ imgAttrs False options)
+                        ] ++ imgAttrs options)
                 RenderNormal -> do
-                    img_ ([ class_ $ "post__figure-img post__figure-img_lazy"
-                            ++ if options ^. responsiveFigures
-                                then " post__figure-img_responsive"
-                                else ""
-                        , src_ $ imgSrc options
-                        , data_ "src" $ linkToAbsolute (options ^. renderType) (fst target)
-                            (options ^. siteDomain)
-                        , alt_ $ fixImageTitle $ snd target
-                        ] ++ imgAttrs True options)
-                    noscript_ $
-                        img_ ([ class_ "post__figure-img"
+                    picture_ [] $ do
+                        avifSource
+                        webpSource
+                        img_ ([ class_ $ "post__figure-img"
+                                ++ if options ^. responsiveFigures
+                                    then " post__figure-img_responsive"
+                                    else ""
                             , src_ $ linkToAbsolute (options ^. renderType) (fst target)
                                 (options ^. siteDomain)
                             , alt_ $ fixImageTitle $ snd target
-                            ] ++ imgAttrs False options)
+                            , loading_ "lazy"
+                            ] ++ imgAttrs options)
 
-        imgSrc :: LucidWriterOptions -> Text
-        imgSrc options = case (options ^. commonData ^. imageMeta) $ fst target of
-            Just meta -> meta ^. imageThumbnail
-            Nothing -> blankImage
+        avifSource =
+            when (".jpg" `T.isSuffixOf` fst target && "/" `T.isPrefixOf` fst target) $
+                source_ [ makeAttribute "srcset" (fst target ++ ".avif"), type_ "image/avif"]
 
-        imgAttrs :: Bool -> LucidWriterOptions -> [Attribute]
-        imgAttrs lazy options = case (options ^. commonData ^. imageMeta) $ fst target of
+        webpSource =
+            when ("/" `T.isPrefixOf` fst target) $
+                source_ [ makeAttribute "srcset" (fst target ++ ".webp"), type_ "image/webp"]
+
+        imgAttrs :: LucidWriterOptions -> [Attribute]
+        imgAttrs options = case (options ^. commonData ^. imageMeta) $ fst target of
             Just meta ->
                 [ width_ $ tshow $ meta ^. imageWidth
                 , height_ $ tshow $ meta ^. imageHeight
-                , makeAttribute
-                    (if lazy then "data-srcset" else "srcset")
-                    (linkToAbsolute (options ^. renderType) (fst target)
-                        (options ^. siteDomain) ++ " " ++ tshow (meta ^. imageWidth) ++ "w")
-                , sizes_ "100vw" ] :: [Attribute]
+                ] :: [Attribute]
             Nothing -> []
 
         fixImageTitle :: Text -> Text

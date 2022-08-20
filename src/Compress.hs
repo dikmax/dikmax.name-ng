@@ -31,16 +31,21 @@ compress = do
             map (++ ".br") dataFiles
 
     phony "compress-images" $ do
+        need ["phony-images"]
+
         liftIO $ do
             createCacheDirectory avifCacheDir
             createCacheDirectory webpCacheDir
 
-        imagesFiles <- getDirectoryFiles "."
-            [ siteDir <//> "*.jpg"
-            , siteDir <//> "*.png"
-            ]
-        need $ map (++ ".webp") imagesFiles ++
-            map (++ ".avif") imagesFiles
+        jpegFiles <- getDirectoryFiles "."
+            [ siteDir <//> "*.jpg" ]
+        need $ map (++ ".webp") jpegFiles ++
+            map (++ ".avif") jpegFiles
+
+        pngFiles <- getDirectoryFiles "."
+            [ siteDir <//> "*.png" ]
+        need $ map (++ ".webp") pngFiles
+        -- avif does poor job converting lossless files
 
     phony "compress" $
         need ["compress-data", "compress-images"]

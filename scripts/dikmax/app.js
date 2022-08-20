@@ -1,4 +1,4 @@
-import {map as arrayMap, forEach as arrayForEach} from 'goog:goog.array';
+import {forEach as arrayForEach} from 'goog:goog.array';
 import {getElementByClass, getElementsByClass, getParentElement, createDom, appendChild} from 'goog:goog.dom';
 import classlist from 'goog:goog.dom.classlist';
 import dataset from 'goog:goog.dom.dataset';
@@ -9,8 +9,6 @@ import style from 'goog:goog.style';
 import asserts from 'goog:goog.asserts';
 import Timer from 'goog:goog.Timer';
 import {MAP} from './defines';
-
-const LOAD_DELAY = 100;
 
 function setupNavigation() {
   const menuButton = getElementByClass('navbar__menu');
@@ -71,66 +69,6 @@ function constrainImage(
   return result;
 }
 
-function setupLazyImages() {
-  /** @type {!Map<!HTMLImageElement, boolean>} */
-  const images = new Map(arrayMap(
-    getElementsByClass('post__figure-img_lazy'),
-    image => [image, false]
-  ));
-
-  const vsm = new ViewportSizeMonitor();
-
-  const resizeImages = () => {
-    const size = vsm.getSize();
-    const imageMaxWidth = size.width - 32;
-    const imageMaxHeight = size.height - 60;
-
-    images.forEach((_, image) => {
-      const newSize = constrainImage(
-        false, imageMaxWidth, imageMaxHeight, image
-      );
-      style.setSize(image, `${newSize.width}px`, `${newSize.height}px`);
-    })
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    arrayForEach(entries, ({target, isIntersecting}) => {
-      const image = /** @type !HTMLImageElement */ (target);
-      images.set(image, isIntersecting);
-
-      if (isIntersecting) {
-        // Delay image load for small time in case of fast scroll.
-        setTimeout(() => {
-          if (!images.get(image)) {
-            return;
-          }
-
-          images.delete(image);
-          observer.unobserve(target);
-
-          // Load
-          events.listenOnce(image, events.EventType.LOAD, () => {
-            style.setSize(image, '', '');
-          });
-          image.src = asserts.assert(dataset.get(image, 'src'));
-          image.srcset = asserts.assert(dataset.get(image, 'srcset'));
-          dataset.remove(image, 'src');
-          dataset.remove(image, 'srcset');
-        }, LOAD_DELAY);
-      }
-    });
-  });
-
-  images.forEach((_, image) => {
-    observer.observe(image);
-  });
-
-  events.listen(vsm, events.EventType.RESIZE, () => {
-    resizeImages();
-  });
-  resizeImages();
-}
-
 function setupLazyIframes() {
   const iframes = getElementsByClass('post__embed-lazy');
 
@@ -151,49 +89,10 @@ function setupLazyIframes() {
   });
 }
 
-const supportsWebP = (() => {
-  let called = false;
-  let value;
-  return () => {
-    if (!called) {
-      const elem = document.createElement('canvas');
-      if (elem.getContext?.('2d')) {
-        value = elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-      } else {
-        value = false;
-      }
-    }
-
-    called = true;
-    return value;
-  };
-})();
-
-const SRC_REGEXP = /\.(png|jpg)$/;
-const SRCSET_REGEXP = /^(.*\.(png|jpg)) (\d+)w$/;
-
-function setupWebp() {
-  if (!supportsWebP()) {
-    return;
-  }
-
-  const images = getElementsByClass('post__figure-img');
-  arrayForEach(images, (image) => {
-    const src = dataset.get(image, 'src');
-    if (SRC_REGEXP.test(src)) {
-      dataset.set(image, 'src', src + '.webp');
-    }
-    const srcset = dataset.get(image, 'srcset');
-    if (SRCSET_REGEXP.test(srcset)) {
-      dataset.set(image, 'srcset', srcset.replace(SRCSET_REGEXP, '$1.webp $3w'));
-    }
-  });
-}
-
-const PANO_TEST_REGEXP = /-pano\.jpg(\.webp)?$/;
+const PANO_TEST_REGEXP = /-pano\.jpg(\.webp|\.avif)?$/;
 
 function setupPanoramas () {
-  const images = getElementsByClass('post__figure-img');
+  const images = document.querySelectorAll('picture>.post__figure-img');
 
   const vsm = new ViewportSizeMonitor();
   const size = vsm.getSize();
@@ -210,7 +109,7 @@ function setupPanoramas () {
     );
     if (!Size.equals(smallSize, largeSize)) {
       // There's no point to introduce panorama if size wouldn't change.
-      const src = dataset.get(image, 'src');
+      const src = image.src;
       if (src !== null && PANO_TEST_REGEXP.test(src)) {
         handlePanorama(image);
       }
@@ -261,14 +160,31 @@ function getZoomInIcon() {
 }
 
 /**
- * @param {!HTMLImageElement} _image Element to setup pano.
+ * @param {!HTMLImageElement} image Element to setup pano.
  * @private
  */
-function handlePanorama(_image) {
-  const image = _image;
+function handlePanorama(image) {
+  const picture = image.parentElement;
   let expanded = false;
-  const inner = getParentElement(image);
+  const inner = getParentElement(picture);
   style.setStyle(inner, 'cursor', 'zoom-in');
+
+  // Adding bigger image
+  const bigPicture = picture.cloneNode(true);
+  style.setElementShown(bigPicture, false);
+  arrayForEach(bigPicture.children, (child) => {
+    if (child.src) {
+      child.src = child.src.replace(/-pano\.jpg/, '-pano-full.jpg')
+    }
+    if (child.srcset) {
+      child.srcset = child.srcset.replace(/-pano\.jpg/g, '-pano-full.jpg')
+    }
+    if (child instanceof HTMLImageElement) {
+      classlist.add(child, 'post__figure-img_pano');
+    }
+  });
+
+  appendChild(inner, bigPicture);
 
   // Adding overlay
   const overlay = createDom('div', 'post__figure-pano-overlay',
@@ -276,28 +192,17 @@ function handlePanorama(_image) {
 
   appendChild(inner, overlay);
 
-  // Get names of bigger images
-  const smallSrc = dataset.get(image, 'src');
-  const smallSrcSet = dataset.get(image, 'srcset');
-  const largeSrc = smallSrc.replace(/-pano\.jpg/, '-pano-full.jpg');
-  let largeSrcSet = null;
-  if (smallSrcSet) {
-    largeSrcSet = smallSrcSet.replace(/-pano\.jpg/g, '-pano-full.jpg');
-  }
+  // Add click handler
   events.listen(inner, events.EventType.CLICK, () => {
     expanded = !expanded;
-    classlist.enable(image, 'post__figure-img_pano', expanded);
     classlist.enable(inner, 'post__figure-inner_pano', expanded);
     style.setStyle(inner, 'cursor', expanded ? 'zoom-out' : 'zoom-in');
     style.setElementShown(overlay, !expanded);
-
-    image.src = expanded ? largeSrc : smallSrc;
-    if (largeSrcSet && smallSrcSet) {
-      image.srcset = expanded ? largeSrcSet : smallSrcSet;
-    }
+    style.setElementShown(bigPicture, expanded);
+    style.setElementShown(picture, !expanded);
 
     if (expanded) {
-      const imageTop = style.getPageOffsetTop(image);
+      const imageTop = style.getPageOffsetTop(bigPicture);
       window.scrollTo(0, imageTop - 60);
 
       // Scrolling image to center
@@ -319,9 +224,7 @@ function handlePanorama(_image) {
 export default function init() {
   setupNavigation();
   if (!MAP) {
-    setupWebp()
     setupPanoramas();
-    setupLazyImages();
     setupLazyIframes();
   }
 }
