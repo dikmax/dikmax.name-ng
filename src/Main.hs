@@ -26,6 +26,7 @@ import           Rules
 import           System.Directory           (createDirectoryIfMissing)
 import           Server
 import qualified Template                   as T
+import qualified Template.Common            as T
 import           Text.Pandoc                hiding (getCurrentTime)
 import           Text.Pandoc.Error          (handleError)
 import           Types
@@ -174,7 +175,7 @@ blog = do
                 then Nothing
                 else Just $ snd $ M.elemAt (postIndex + 1) psd
         let postCd = cd & dataCss %~
-                (++ ".header_for-post:before{" ++ coverToStyle post ++ "}")
+                (++ ".header_for-post:before{" ++ T.coverToStyle post ++ "}")
 
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
@@ -199,7 +200,7 @@ blog = do
                 else Just $ snd $ M.elemAt (postIndex + 1) psd
 
         let postCd = cd & dataCss %~
-                (++ ".header_for-post:before{" ++ coverToStyle post ++ "}")
+                (++ ".header_for-post:before{" ++ T.coverToStyle post ++ "}")
         putNormal $ "Writing page " ++ out
         liftIO $ renderToFile out $
             T.postPage True (T.ampLayout postCd (post ^. fileMeta)) cd post
@@ -634,12 +635,3 @@ dateFromPost (Pandoc meta _) = maybe (terror "Post have no date") getDate $ look
     where
         getDate (MetaString s) = s
         getDate s = terror $ "Post date field have wrong value: " ++ tshow s
-
-coverToStyle :: File -> Text
-coverToStyle file =
-    maybe "" (\i -> "background-image:url(" ++ i ++ ");") (cover ^. coverImg)
-        ++ maybe "" (\i -> "background-color:" ++ i ++ ";") (cover ^. coverColor)
-        ++ "background-position-x:" ++ (cover ^. coverHCenter) ++ ";"
-        ++ "background-position-y:" ++ (cover ^. coverVCenter)
-    where
-        cover = file ^. fileMeta ^. postCover
