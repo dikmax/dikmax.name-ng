@@ -305,8 +305,10 @@ writeInline (Link attr inline target) = do
         ) inlines
 
 writeInline (Image attr inline target) =
-    if | "http://www.youtube.com/watch?v=" `T.isPrefixOf` fst target ||
-            "https://www.youtube.com/watch?v=" `T.isPrefixOf` fst target ->
+    if | "https://youtu.be/" `T.isPrefixOf` fst target ||
+            "https://www.youtube.com/watch?v=" `T.isPrefixOf` fst target ||
+            "http://youtu.be/" `T.isPrefixOf` fst target ||
+            "http://www.youtube.com/watch?v=" `T.isPrefixOf` fst target ->
                 -- Youtube video
                 writeYoutube attr inline target
        | "iframe:" `T.isPrefixOf` fst target ->
@@ -370,7 +372,10 @@ writeYoutube attr inline target = do
                     unless (null inline) $
                         p_ [class_ "figure-description"] inlines
     where
-        videoId url = T.takeWhile (/= '&') $ T.replace "http://www.youtube.com/watch?v=" "" $
+        videoId url = T.takeWhile (/= '&') $
+            T.replace "http://youtu.be/" "" $
+            T.replace "https://youtu.be/" "" $
+            T.replace "http://www.youtube.com/watch?v=" "" $
             T.replace "https://www.youtube.com/watch?v=" "" url
         embedSrc = "https://www.youtube.com/embed/" ++
             videoId (fst target) ++ "?wmode=transparent"
