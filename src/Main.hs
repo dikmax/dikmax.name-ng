@@ -55,6 +55,7 @@ main = do
         imagesRules
         mediaRules
         blog
+        fonts
         favicons
         demos
         robotsTxt
@@ -67,7 +68,8 @@ build :: Rules ()
 build =
     phony "build" $ do
         need ["prerequisites"]
-        need ["phony-images", "phony-media", "blogposts", "phony-favicons", "phony-demos"
+        need ["phony-images", "phony-media", "blogposts", "phony-fonts"
+            , "phony-favicons", "phony-demos"
             , siteDir </> "robots.txt"
             , siteDir </> T.unpack rssFeedFile
             , siteDir </> "scripts/main.js"
@@ -613,6 +615,14 @@ favicons =
         faviconsFiles <- getDirectoryFiles "." ["favicons/*"]
         forM_ faviconsFiles (\src -> do
             let out = siteDir </> dropDirectory1 src
+            copyFileChanged src out)
+
+fonts :: Rules ()
+fonts =
+    phony "phony-fonts" $ do
+        fontsFiles <- getDirectoryFiles "." ["fonts/*"]
+        forM_ fontsFiles (\src -> do
+            let out = siteDir </> src
             copyFileChanged src out)
 
 -- npm packages

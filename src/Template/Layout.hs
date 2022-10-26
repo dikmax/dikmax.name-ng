@@ -32,7 +32,6 @@ layout scripts cd meta content = do
             link_ [rel_ "yandex-tableau-widget", href_ "/yandex-widget-manifest.json"]
 
             -- Resource hints
-            link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com/"]
             link_ [rel_ "preconnect", href_ "https://www.gstatic.com/"]
             link_ [rel_ "preconnect", href_ "https://ssl.google-analytics.com/"]
 
@@ -78,10 +77,6 @@ layout scripts cd meta content = do
             content
             footer
             scripts
-            link_
-                [ rel_ "stylesheet"
-                , type_ "text/css"
-                , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
 
     where
         keywords :: [Text]
@@ -121,10 +116,6 @@ ampLayout cd meta content = ampDoctypeHtml_ $ do
         title_ $ toHtml $ pageTitle meta
         link_ [rel_ "canonical", href_ $ meta ^. postUrl]
         meta_ [name_ "viewport", content_ "width=device-width,minimum-scale=1,initial-scale=1"]
-        link_
-            [ rel_ "stylesheet"
-            , type_ "text/css"
-            , href_ "https://fonts.googleapis.com/css?family=Roboto:400,500,500italic&subset=latin,cyrillic"]
         style_ [term "amp-custom" ""] (cd ^. dataCss)
         script_ [ async_ ""
                 , term "custom-element" "amp-analytics"
