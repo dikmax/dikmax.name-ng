@@ -152,6 +152,21 @@ instance ToJSON AboutPage where
 
 instance Binary AboutPage
 
+data ServicePage = ServicePage
+    { _servicePageHeadline :: Text
+    , _servicePageCopyrightHolder :: Person
+    , _servicePageCopyrightYear :: Int
+    } deriving (Generic, Show)
+
+makeLenses ''ServicePage
+
+instance ToJSON ServicePage where
+    toJSON v = case genericToJSON (genericOptions 10) v of
+        Object o -> Object $ KM.insert "@type" "ServicePage" o
+        _ -> error "Wrong type"
+
+instance Binary ServicePage
+
 -- Metadata
 
 data Metadata = MAboutPage AboutPage
@@ -159,6 +174,7 @@ data Metadata = MAboutPage AboutPage
               | MImageObject ImageObject
               | MOrganization Organization
               | MPerson Person
+              | MServicePage ServicePage
               | MWebPage WebPage deriving (Generic, Show)
 
 instance Binary Metadata
@@ -181,6 +197,9 @@ instance ToMetadata Person where
 instance ToMetadata Organization where
     toMetadata = MOrganization
 
+instance ToMetadata ServicePage where
+    toMetadata = MServicePage
+
 instance ToMetadata WebPage where
     toMetadata = MWebPage
 
@@ -192,6 +211,7 @@ toJsonLD (MBlogPosting v) = toJsonLD' v
 toJsonLD (MImageObject v) = toJsonLD' v
 toJsonLD (MOrganization v) = toJsonLD' v
 toJsonLD (MPerson v) = toJsonLD' v
+toJsonLD (MServicePage v) = toJsonLD' v
 toJsonLD (MWebPage v) = toJsonLD' v
 
 toJsonLD' :: (ToJSON a) => a -> Text

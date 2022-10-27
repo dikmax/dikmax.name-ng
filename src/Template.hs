@@ -11,4 +11,5 @@ import           Template.Page.List     as X
 import           Template.Page.Map      as X
 import           Template.Page.NotFound as X
 import           Template.Page.Post     as X
+import           Template.Page.Service  as X
 import           Template.Page.Sitemap  as X

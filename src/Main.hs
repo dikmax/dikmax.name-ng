@@ -153,6 +153,7 @@ blog = do
             pathsFromList siteDir indexHtml ps ++ tagsPaths ++
             [ siteDir </> "about" </> indexHtml
             , siteDir </> "archive" </> indexHtml
+            , siteDir </> "privacy" </> indexHtml
             , siteDir </> "map" </> indexHtml
             , siteDir </> "map/list/" </> indexHtml
             , siteDir </> "404" </> indexHtml
@@ -364,6 +365,27 @@ blog = do
                 (T.defaultLayout (cd & dataCss .~ aboutCss) (a ^. fileMeta)) cd a
 
 
+    -- Privacy page
+    siteDir </> "privacy" </> indexHtml %> \out -> do
+        cd <- commonData Anything
+        privacy <- posts "privacy.md"
+
+        need [siteDir </> "css/service.css"]
+        serviceCss <- liftIO $ readFile $ siteDir </> "css/service.css"
+
+        putNormal $ "Writing page " ++ out
+        let a = privacy & fileMeta %~ postUrl .~ domain ++ "/"
+                        & fileMeta %~ postMeta .~
+                          toMetadata ServicePage
+                            { _servicePageHeadline = "Privacy policy"
+                            , _servicePageCopyrightHolder = copyrightHolder
+                            , _servicePageCopyrightYear = copyrightYear
+                            }
+        liftIO $ renderToFile out $
+            T.servicePage
+                (T.defaultLayout (cd & dataCss .~ serviceCss) (a ^. fileMeta)) cd a
+
+
     -- Map pages
     siteDir </> "map" </> indexHtml %> \out -> do
         cd <- commonData Anything
@@ -433,6 +455,7 @@ blog = do
         liftIO $ renderToFile out $ T.sitemapPage $
             [ def { _suLoc = "/", _suPriority = "0.8" }
             , def { _suLoc = "/about/", _suPriority = "0.5" }
+            , def { _suLoc = "/privacy/", _suPriority = "0.5" }
             ] ++ postsFilePaths
 
 

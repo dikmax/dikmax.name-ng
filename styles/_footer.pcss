@@ -10,13 +10,18 @@
     }
 
     &__container {
-        align-items: center;
+        align-items: flex-start;
         height: var(--footer-height);
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: column wrap;
+        justify-content: center;
         max-width: var(--body-width);
         margin: * auto;
         padding: * var(--body-padding);
+    }
+
+    a {
+        color: var(--dark-background-text);
     }
 }
 

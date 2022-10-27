@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.6.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e6e5ab508026762eda417308e80cbf9ea1555e84dc92dafeea4f2313312d12a6
+-- hash: 0d8a170f493857a302ed92fad25f829a1a43caa0b5c549bf4bce66cdd0b63aa7
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -57,6 +57,7 @@ executable dikmax.name
       Template.Page.Map
       Template.Page.NotFound
       Template.Page.Post
+      Template.Page.Service
       Template.Page.Sitemap
       Template.PostList
       Template.Subscribe
