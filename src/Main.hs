@@ -72,6 +72,7 @@ build =
             , "phony-favicons", "phony-demos"
             , siteDir </> "robots.txt"
             , siteDir </> T.unpack rssFeedFile
+            , siteDir </> "css/cookieconsent.css"
             , siteDir </> "scripts/main.js"
             , siteDir </> "scripts/map.js"
             , siteDir </> "data/world.json"
@@ -624,7 +625,10 @@ mapData = do
 
 -- Build styles
 styles :: Rules ()
-styles =
+styles = do
+    siteDir </> "css/cookieconsent.css" %> \out -> do
+        copyFileChanged (nodeModulesDir </> "vanilla-cookieconsent/dist/cookieconsent.css") out
+
     siteDir </> "css/*.css" %> \out -> do
         let src = "styles" </> dropDirectory3 out -<.> "pcss"
         files <- getDirectoryFiles "." ["styles//*"]

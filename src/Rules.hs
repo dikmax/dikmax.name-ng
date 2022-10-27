@@ -76,23 +76,25 @@ scripts = do
 
     siteDir </> "scripts/main.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
-        need (postcss : highlightJsMin : files)
+        need (cookieConsentMin : highlightJsMin : files)
         io <- compressScriptSimple intersectionObserver
         h <- liftIO $ BS.readFile highlightJsMin
+        cc <- liftIO $ BS.readFile cookieConsentMin
         my <- buildScript True False
-        liftIO $ BS.writeFile out (io ++ h ++ my)
+        liftIO $ BS.writeFile out (cc ++ io ++ h ++ my)
 
     siteDir </> "scripts/map.js" %> \out -> do
         files <- getDirectoryFiles "." ["scripts//*"]
-        need (proj4JsPack : files)
+        need (cookieConsentMin : proj4JsPack : files)
         l <- liftIO $ BS.readFile leaflet
         eb <- compressUglifyJs easyButton
         p <- liftIO $ BS.readFile proj4JsPack
         pl <- compressUglifyJs proj4leaflet
         gh <- compressUglifyJs greinerHormann
         t <- liftIO $ BS.readFile topojsonLib
+        cc <- liftIO $ BS.readFile cookieConsentMin
         my <- buildScript False True
-        liftIO $ BS.writeFile out (l ++ "\n" ++ eb ++ p ++ pl ++ gh ++ t ++ my)
+        liftIO $ BS.writeFile out (cc ++ l ++ "\n" ++ eb ++ p ++ pl ++ gh ++ t ++ my)
 
     where
         easyButton :: FilePath
@@ -118,6 +120,9 @@ scripts = do
 
         topojsonLib :: FilePath
         topojsonLib = nodeModulesDir </> "topojson/dist/topojson.min.js"
+
+        cookieConsentMin :: FilePath
+        cookieConsentMin = nodeModulesDir </> "vanilla-cookieconsent/dist/cookieconsent.js"
 
 compressScriptSimple :: FilePath -> Action ByteString
 compressScriptSimple path = do
@@ -162,7 +167,8 @@ buildScript dHighlightJs dMap = do
         , "--module_resolution", "NODE"
         {-, "--new_type_inf"-}] ++
         defines ++
-        [ "--externs", "scripts/externs/highlight.js"
+        [ "--externs", "scripts/externs/cookieconsent.js"
+        , "--externs", "scripts/externs/highlight.js"
         , "--externs", "scripts/externs/leaflet.js"
         , "--externs", "scripts/externs/greinerHormann.js"
         , "--externs", "scripts/externs/topojson.js"

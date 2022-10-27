@@ -39,11 +39,7 @@ layout scripts cd meta content = do
                 (\_ -> link_ [rel_ "amphtml", href_ $ meta ^. postUrl ++ "amp/"])
                 (meta ^? postId)
 
-            {-
-            link_ [rel_ "dns-prefetch", href_ "//ajaxhttpheaders2.appspot.com/"]
-            link_ [rel_ "dns-prefetch", href_ "//translate.google.com/"]
-            link_ [rel_ "dns-prefetch", href_ "//translate.googleapis.com/"]
-            -}
+            link_ [rel_ "stylesheet", href_ "/css/cookieconsent.css", media_ "print", onload_ "this.media='all'"]
 
             style_ [type_ "text/css"] (cd ^. dataCss)
             noscript_ $
@@ -195,7 +191,7 @@ footer = do
 googleAnalytics :: Html ()
 googleAnalytics =
     toHtmlRaw
-        ("<script type=\"text/javascript\">\
+        ("<script type=\"text/plain\" data-cookiecategory=\"analytics\">\
              \var _gaq=_gaq||[];\
              \_gaq.push(['_setAccount','" ++ googleAnalyticsUA ++ "']);\
              \_gaq.push(['_setDomainName','dikmax.name']);\

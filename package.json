@@ -18,7 +18,8 @@
     "proj4": "^2.8.0",
     "proj4leaflet": "^1.0.2",
     "shapefile": "^0.6.6",
-    "topojson": "^3.0.2"
+    "topojson": "^3.0.2",
+    "vanilla-cookieconsent": "^2.8.8"
   },
   "devDependencies": {
     "colorguard": "^1.2.1",
