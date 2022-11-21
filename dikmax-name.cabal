@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0d8a170f493857a302ed92fad25f829a1a43caa0b5c549bf4bce66cdd0b63aa7
+-- hash: fdfe3360b564b4157a2b6047181f05dc484d247e08b4c6a793d8dc118b6c164d
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -85,24 +85,24 @@ executable dikmax.name
     , base64-bytestring ==1.*
     , basic-prelude ==0.7.*
     , binary >=0.7 && <0.9
-    , bytestring ==0.10.*
+    , bytestring ==0.11.*
     , containers ==0.6.*
     , cryptohash ==0.11.*
     , data-default ==0.7.*
     , directory ==1.3.*
     , filepath ==1.4.*
-    , hashable ==1.3.*
-    , lens ==5.0.*
+    , hashable ==1.4.*
+    , lens ==5.1.*
     , lucid ==2.11.*
     , mtl ==2.2.*
     , network-uri >=2.6 && <3
-    , pandoc ==2.17.*
+    , pandoc ==2.19.*
     , pandoc-types ==1.22.*
     , process ==1.6.*
     , regex-posix >=0.95 && <1.0
     , shake ==0.19.*
     , text ==1.2.*
-    , time ==1.9.*
+    , time ==1.11.*
     , unordered-containers ==0.2.*
     , utf8-string ==1.0.*
     , vector ==0.12.*
