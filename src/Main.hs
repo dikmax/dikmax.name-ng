@@ -12,6 +12,7 @@ import qualified Data.ByteString.Lazy       as LBS
 import qualified Data.Map.Lazy              as M
 import qualified Data.Text                  as T
 import           Data.Time
+import           Data.Time.Format.ISO8601
 import           Data.Yaml
 import           Development.Shake
 import           Development.Shake.Config
@@ -518,7 +519,7 @@ blog = do
             M.empty
 
         dateKey :: Maybe UTCTime -> Text
-        dateKey (Just time)= T.pack $ formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S")) time
+        dateKey (Just time)= T.pack $ formatShow iso8601Format time
         dateKey Nothing = terror "No date defined"
 
         getPostsForPage ps page =
