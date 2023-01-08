@@ -15,6 +15,7 @@ import qualified Data.Text              as T
 import           Data.Text.Lazy             (toStrict)
 import           Data.Text.Lazy.Builder     (toLazyText)
 import           Data.Time
+import           Data.Time.Format.ISO8601
 import           GHC.Generics               (Generic)
 
 instance Binary UTCTime where
@@ -117,8 +118,7 @@ instance ToJSON BlogPosting where
         where
             formatDate date =
                 String $ T.pack $
-                    formatTime timeLocale (iso8601DateFormat (Just "%H:%M:%S%z"))
-                    date
+                    formatShow iso8601Format date
 
 instance Binary BlogPosting
 
