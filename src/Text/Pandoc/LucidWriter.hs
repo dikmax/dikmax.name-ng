@@ -206,6 +206,10 @@ writeBlock HorizontalRule = do
     cl <- getMainBlockClass
     return $ hr_ [class_ $ cl ++ "post__block_rule"]
 
+writeBlock (Figure (identifier, classes, others) caption blocks) = do
+    items <- concatBlocks blocks
+    return items
+
 writeBlock (Div (identifier, classes, others) blocks) = do
     cl <- getMainBlockClass
     items <- concatBlocks blocks
@@ -217,8 +221,6 @@ writeBlock (Div (identifier, classes, others) blocks) = do
                 others) ""
 
     return $ div_ mapAttrs items
-
-writeBlock Null = return mempty
 
 writeBlock b = return $ toHtml (show (toConstr b) ++ " not implemented")
 
