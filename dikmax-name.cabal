@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.2.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f957560668753ee9501d72e12127a2e6883712630dd9da31ed3c62844c2ed985
+-- hash: de80ddd2ff06abd55c556ae359c7292a4feabb2c0f437f42d84b91b5f7c01fa2
 
 name:           dikmax-name
 version:        0.1.0.0
@@ -94,9 +94,9 @@ executable dikmax.name
     , hashable ==1.4.*
     , lens ==5.2.*
     , lucid ==2.11.*
-    , mtl ==2.2.*
+    , mtl ==2.3.*
     , network-uri >=2.6 && <3
-    , pandoc ==3.0.*
+    , pandoc ==3.1.*
     , pandoc-types ==1.23.*
     , process ==1.6.*
     , regex-posix >=0.95 && <1.0
