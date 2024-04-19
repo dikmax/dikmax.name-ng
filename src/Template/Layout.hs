@@ -28,8 +28,8 @@ layout scripts cd meta content = do
             link_ [rel_ "shortcut icon", href_ "/favicon.ico?v=yyyEB94O8G"]
             meta_ [name_ "theme-color", content_ "#212121"]
 
-            -- Yandex
-            link_ [rel_ "yandex-tableau-widget", href_ "/yandex-widget-manifest.json"]
+            -- Verification
+            link_ [rel_ "me", href_ "https://mastodon.social/@dikmax"]
 
             -- Resource hints
             link_ [rel_ "preconnect", href_ "https://www.gstatic.com/"]
