@@ -173,4 +173,4 @@ googleAnalyticsUA :: Text
 googleAnalyticsUA = "UA-32213724-1"
 
 copyrightYear :: Int
-copyrightYear = 2024
+copyrightYear = 2025
